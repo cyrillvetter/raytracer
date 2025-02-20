@@ -51,6 +51,11 @@ impl Vec3 {
     }
 
     #[inline]
+    pub fn length_squared(self) -> f32 {
+        self.dot(self)
+    }
+
+    #[inline]
     pub fn length(self) -> f32 {
         f32::sqrt(self.dot(self))
     }
