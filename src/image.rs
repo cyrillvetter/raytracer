@@ -13,8 +13,7 @@ pub struct Image {
 
 impl Image {
     pub fn blank(width: u32, height: u32) -> Self {
-        let bytes = vec![0; ((width * height) * RGB) as usize];
-        Self { width, height, bytes }
+        Self { width, height, bytes: vec![0; ((width * height) * RGB) as usize] }
     }
 
     // TODO: Return a result instead of an option.
