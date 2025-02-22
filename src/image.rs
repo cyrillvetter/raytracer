@@ -47,7 +47,7 @@ impl Image {
     pub fn save_png(&self, out_path: &str) {
         let path = Path::new(out_path);
         let file = File::create(path).unwrap();
-        let ref mut w = BufWriter::new(file);
+        let w = BufWriter::new(file);
 
         // TODO: Check these settings for better image quality.
         let mut encoder = png::Encoder::new(w, self.width, self.height);
