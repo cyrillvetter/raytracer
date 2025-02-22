@@ -18,6 +18,9 @@ const IMAGE_HEIGHT: u32 = 1080;
 fn main() {
     let now = Instant::now();
     let image = create_area_circle();
+    let elapsed = now.elapsed();
+
+    println!("Elapsed: {:.2?}", elapsed);
 
     let mut window = Window::new(
         "Raytracer",
@@ -28,13 +31,9 @@ fn main() {
 
     window.set_target_fps(24);
 
-    let elapsed = now.elapsed();
-
     while window.is_open() && !window.is_key_pressed(Key::Escape, KeyRepeat::No) {
         window.update_with_buffer(&image.bytes, IMAGE_WIDTH as usize, IMAGE_HEIGHT as usize).expect("Failed to set buffer");
     }
-
-    println!("Elapsed: {:.2?}", elapsed);
 }
 
 fn create_area_circle() -> Image {
