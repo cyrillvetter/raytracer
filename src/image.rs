@@ -1,3 +1,7 @@
+use std::path::Path;
+use std::fs::File;
+use std::io::BufWriter;
+
 use crate::color::Color;
 
 pub struct Image {
@@ -18,13 +22,12 @@ impl Image {
         if pos > self.bytes.len() {
             None
         } else {
-            let be_bytes = &self.bytes[pos].to_be_bytes();
-            Some(Color::rgba(
-                be_bytes[3],
-                be_bytes[2],
-                be_bytes[1],
-                be_bytes[0]
-            ))
+            let pixel = &self.bytes[pos];
+            let r = (pixel >> 16 & 0xFF) as u8;
+            let g = (pixel >> 8 & 0xFF) as u8;
+            let b = (pixel & 0xFF) as u8;
+
+            Some(Color::rgb(r, g, b))
         }
     }
 
@@ -35,8 +38,44 @@ impl Image {
         if x >= self.width || y >= self.height {
             false
         } else {
-            self.bytes[pos] = u32::from_be_bytes([color.a, color.b, color.g, color.r]);
+            self.bytes[pos] = 0 | (color.r as u32) << 16 | (color.g as u32) << 8 | (color.b as u32);
             true
         }
+    }
+
+    // TODO: Return a result instead of unit.
+    pub fn save_png(&self, out_path: &str) {
+        let path = Path::new(out_path);
+        let file = File::create(path).unwrap();
+        let ref mut w = BufWriter::new(file);
+
+        // TODO: Check these settings for better image quality.
+        let mut encoder = png::Encoder::new(w, self.width, self.height);
+        encoder.set_color(png::ColorType::Rgba);
+        encoder.set_depth(png::BitDepth::Eight);
+        encoder.set_source_gamma(png::ScaledFloat::new(1.0 / 2.2));
+        let source_chromaticities = png::SourceChromaticities::new(
+            (0.31270, 0.32900),
+            (0.64000, 0.33000),
+            (0.30000, 0.60000),
+            (0.15000, 0.06000)
+        );
+        encoder.set_source_chromaticities(source_chromaticities);
+
+        let mut image_buffer: Vec<u8> = Vec::with_capacity((self.width * self.height * 4) as usize);
+        for pixel in self.bytes.iter() {
+            let r = (pixel >> 16 & 0xFF) as u8;
+            let g = (pixel >> 8 & 0xFF) as u8;
+            let b = (pixel & 0xFF) as u8;
+
+            image_buffer.push(r);
+            image_buffer.push(g);
+            image_buffer.push(b);
+            image_buffer.push(255);
+        }
+
+        encoder
+            .write_header().unwrap()
+            .write_image_data(&image_buffer).unwrap();
     }
 }

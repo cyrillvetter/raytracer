@@ -5,6 +5,7 @@ edition = "2021"
 
 [dependencies]
 minifb = "0.28.0"
+png = "0.17.16"
 
 [profile.dev]
 opt-level = 1
