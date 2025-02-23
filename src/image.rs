@@ -15,41 +15,28 @@ impl Image {
         Self { width, height, bytes: vec![0; (width * height) as usize] }
     }
 
-    // TODO: Return a result instead of an option.
-    pub fn get_pixel(&self, x: u32, y: u32) -> Option<Color> {
+    pub fn get_pixel(&self, x: u32, y: u32) -> Color {
         let pos = ((y * self.width) + x) as usize;
 
-        if pos > self.bytes.len() {
-            None
-        } else {
-            let pixel = &self.bytes[pos];
-            let r = (pixel >> 16 & 0xFF) as u8;
-            let g = (pixel >> 8 & 0xFF) as u8;
-            let b = (pixel & 0xFF) as u8;
+        let pixel = &self.bytes[pos];
+        let r = (pixel >> 16 & 0xFF) as u8;
+        let g = (pixel >> 8 & 0xFF) as u8;
+        let b = (pixel & 0xFF) as u8;
 
-            Some(Color::rgb(r, g, b))
-        }
+        Color::rgb(r, g, b)
     }
 
-    // TODO: Return a result instead of a boolean.
-    pub fn set_pixel(&mut self, x: u32, y: u32, color: Color) -> bool {
+    pub fn set_pixel(&mut self, x: u32, y: u32, color: Color) {
         let pos = ((y * self.width) + x) as usize;
-
-        if x >= self.width || y >= self.height {
-            false
-        } else {
-            self.bytes[pos] = 0 | (color.r as u32) << 16 | (color.g as u32) << 8 | (color.b as u32);
-            true
-        }
+        self.bytes[pos] = 0 | (color.r as u32) << 16 | (color.g as u32) << 8 | (color.b as u32);
     }
 
-    // TODO: Return a result instead of unit.
     pub fn save_png(&self, out_path: &str) {
         let path = Path::new(out_path);
         let file = File::create(path).unwrap();
         let w = BufWriter::new(file);
 
-        // TODO: Check these settings for better image quality.
+        // TODO: Check these settings.
         let mut encoder = png::Encoder::new(w, self.width, self.height);
         encoder.set_color(png::ColorType::Rgba);
         encoder.set_depth(png::BitDepth::Eight);
