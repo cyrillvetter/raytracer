@@ -25,6 +25,10 @@ fn main() {
 
     println!("Elapsed: {:.2?}", elapsed);
 
+    show_image(&image);
+}
+
+fn show_image(image: &Image) {
     let mut window = Window::new(
         "Raytracer",
         WINDOW_WIDTH as usize,
