@@ -28,7 +28,7 @@ impl Image {
 
     pub fn set_pixel(&mut self, x: u32, y: u32, color: Color) {
         let pos = ((y * self.width) + x) as usize;
-        self.bytes[pos] = 0 | (color.r as u32) << 16 | (color.g as u32) << 8 | (color.b as u32);
+        self.bytes[pos] = (color.r as u32) << 16 | (color.g as u32) << 8 | (color.b as u32);
     }
 
     pub fn save_png(&self, out_path: &str) {
