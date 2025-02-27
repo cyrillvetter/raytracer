@@ -19,16 +19,16 @@ impl Image {
         let pos = ((y * self.width) + x) as usize;
 
         let pixel = &self.bytes[pos];
-        let r = (pixel >> 16 & 0xFF) as u8;
-        let g = (pixel >> 8 & 0xFF) as u8;
-        let b = (pixel & 0xFF) as u8;
+        let r = ((pixel >> 16 & 0xFF) as f32) / 255.0;
+        let g = ((pixel >> 8 & 0xFF) as f32) / 255.0;
+        let b = ((pixel & 0xFF) as f32) / 255.0;
 
         Color::rgb(r, g, b)
     }
 
     pub fn set_pixel(&mut self, x: u32, y: u32, color: Color) {
         let pos = ((y * self.width) + x) as usize;
-        self.bytes[pos] = (color.r as u32) << 16 | (color.g as u32) << 8 | (color.b as u32);
+        self.bytes[pos] = ((color.r * 255.0) as u32) << 16 | ((color.g * 255.0) as u32) << 8 | ((color.b * 255.0) as u32);
     }
 
     pub fn save_png(&self, out_path: &str) {
