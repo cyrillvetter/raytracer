@@ -1,7 +1,8 @@
 mod vec3;
 mod color;
 mod image;
-mod shapes;
+mod sphere;
+mod ray;
 
 use std::time::Instant;
 
@@ -10,7 +11,7 @@ use minifb::{Window, WindowOptions, Key, KeyRepeat};
 use crate::image::*;
 use crate::vec3::*;
 use crate::color::*;
-use crate::shapes::*;
+use crate::sphere::*;
 
 const WINDOW_WIDTH: u32 = 1280;
 const WINDOW_HEIGHT: u32 = 720;
