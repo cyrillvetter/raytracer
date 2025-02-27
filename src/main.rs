@@ -1,17 +1,17 @@
 mod vec3;
 mod color;
 mod image;
-mod sphere;
 mod ray;
+mod hittable;
 
 use std::time::Instant;
-
 use minifb::{Window, WindowOptions, Key, KeyRepeat};
 
-use crate::image::*;
-use crate::vec3::*;
-use crate::color::*;
-use crate::sphere::*;
+use crate::image::Image;
+use crate::vec3::Vec3;
+use crate::color::Color;
+use crate::hittable::{Hittable, sphere::Sphere};
+use crate::ray::Ray;
 
 const WINDOW_WIDTH: u32 = 1280;
 const WINDOW_HEIGHT: u32 = 720;
@@ -56,11 +56,10 @@ fn show_image(image: &Image) {
 }
 
 fn create_circles() -> Image {
-    const RADIUS: f32 = 200.0;
-    let spheres = vec![
-        Sphere::new(Vec3::new(640.0, 280.0, 0.0), RADIUS, Color::RED),
-        Sphere::new(Vec3::new(520.0, 440.0, 0.0), RADIUS, Color::GREEN),
-        Sphere::new(Vec3::new(760.0, 440.0, 0.0), RADIUS, Color::BLUE),
+    let spheres = [
+        Sphere::new(Vec3::new(640.0, 360.0, -100.0), 200.0, Color::RED),
+        Sphere::new(Vec3::new(520.0, 240.0, -50.0), 100.0, Color::GREEN),
+        Sphere::new(Vec3::new(760.0, 240.0, -50.0), 100.0, Color::BLUE)
     ];
 
     let mut image = Image::blank(IMAGE_WIDTH, IMAGE_HEIGHT);
@@ -69,11 +68,19 @@ fn create_circles() -> Image {
         let f_x = x as f32;
 
         for y in 0..IMAGE_HEIGHT {
+            let ray = Ray::new(Vec3::new(f_x, y as f32, 0.0), Vec3::new(0.0, 0.0, 1.0));
+
             let mut col = Color::BLACK;
+            let mut nearest_dist = f32::MAX;
+
             for s in spheres.iter() {
-                if (Vec3::new(f_x, y as f32, 0.0) - s.origin).length_squared() <= f32::powf(s.radius, 2.0) {
-                    col = col + s.color;
-                }
+                match s.hit(&ray) {
+                    Some(dist) if dist < nearest_dist => {
+                        nearest_dist = dist;
+                        col = s.color;
+                    },
+                    _ => ()
+                };
             }
 
             image.set_pixel(x, y, col);

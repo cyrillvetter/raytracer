@@ -43,3 +43,15 @@ impl Mul<Color> for Color {
         }
     }
 }
+
+impl Mul<f32> for Color {
+    type Output = Self;
+
+    fn mul(self, rhs: f32) -> Self {
+        Self {
+            r: self.r.mul(rhs),
+            g: self.g.mul(rhs),
+            b: self.b.mul(rhs),
+        }
+    }
+}
