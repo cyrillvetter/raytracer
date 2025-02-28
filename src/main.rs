@@ -57,9 +57,9 @@ fn show_image(image: &Image) {
 
 fn create_circles() -> Image {
     let spheres = [
-        Sphere::new(Vec3::new(640.0, 360.0, -100.0), 200.0, Color::RED),
-        Sphere::new(Vec3::new(520.0, 240.0, -50.0), 100.0, Color::GREEN),
-        Sphere::new(Vec3::new(760.0, 240.0, -50.0), 100.0, Color::BLUE)
+        Sphere::new(Vec3::new(640.0, 360.0, -300.0), 200.0, Color::RED),
+        Sphere::new(Vec3::new(520.0, 240.0, -250.0), 100.0, Color::GREEN),
+        Sphere::new(Vec3::new(760.0, 240.0, -250.0), 100.0, Color::BLUE)
     ];
 
     let mut image = Image::blank(IMAGE_WIDTH, IMAGE_HEIGHT);
