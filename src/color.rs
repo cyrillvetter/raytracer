@@ -1,5 +1,7 @@
 use core::ops::*;
 
+use crate::vec3::Vec3;
+
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct Color {
     pub r: f32,
@@ -17,6 +19,13 @@ impl Color {
     #[inline]
     pub const fn rgb(r: f32, g: f32, b: f32) -> Self {
         Self { r, g, b }
+    }
+}
+
+impl From<Vec3> for Color {
+    fn from(value: Vec3) -> Self {
+        let n = value.normalize();
+        Color::rgb(n.x, n.y, n.z)
     }
 }
 

@@ -57,27 +57,30 @@ fn show_image(image: &Image) {
 
 fn create_circles() -> Image {
     let spheres = [
-        Sphere::new(Vec3::new(640.0, 360.0, -300.0), 200.0, Color::RED),
-        Sphere::new(Vec3::new(520.0, 240.0, -250.0), 100.0, Color::GREEN),
-        Sphere::new(Vec3::new(760.0, 240.0, -250.0), 100.0, Color::BLUE)
+        Sphere::new(Vec3::new(640.0, 360.0, -300.0), 200.0, Color::rgb(0.369, 0.486, 0.886)),
+        Sphere::new(Vec3::new(520.0, 240.0, -250.0), 100.0, Color::rgb(0.867, 0.176, 0.29)),
+        Sphere::new(Vec3::new(760.0, 240.0, -250.0), 100.0, Color::rgb(0.867, 0.176, 0.29))
     ];
 
     let mut image = Image::blank(IMAGE_WIDTH, IMAGE_HEIGHT);
+    let ray_dir = Vec3::new(0.0, 0.0, 1.0).normalize();
 
     for x in 0..IMAGE_WIDTH {
         let f_x = x as f32;
 
         for y in 0..IMAGE_HEIGHT {
-            let ray = Ray::new(Vec3::new(f_x, y as f32, 0.0), Vec3::new(0.0, 0.0, 1.0));
+            let pos = Vec3::new(f_x, y as f32, 0.0);
+            let ray = Ray::new(pos, ray_dir);
 
-            let mut col = Color::BLACK;
+            let mut col = Color::rgb(0.929, 0.965, 0.976);
             let mut nearest_dist = f32::MAX;
 
             for s in spheres.iter() {
                 match s.hit(&ray) {
                     Some(dist) if dist < nearest_dist => {
                         nearest_dist = dist;
-                        col = s.color;
+                        let depth = 1.0 - (ray.at(dist).z / 700.0);
+                        col = s.color * depth.clamp(0.0, 1.0);
                     },
                     _ => ()
                 };
