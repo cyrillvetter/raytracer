@@ -1,4 +1,5 @@
 use core::{f32, ops::*};
+use std::fmt;
 
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct Vec3 {
@@ -70,6 +71,12 @@ impl Default for Vec3 {
     #[inline]
     fn default() -> Self {
         Self::ZERO
+    }
+}
+
+impl fmt::Display for Vec3 {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "X: {:.4}, Y: {:.4}, Z: {:.4}", self.x, self.y, self.z)
     }
 }
 

@@ -72,15 +72,14 @@ fn create_circles() -> Image {
             let pos = Vec3::new(f_x, y as f32, 0.0);
             let ray = Ray::new(pos, ray_dir);
 
-            let mut col = Color::rgb(0.929, 0.965, 0.976);
             let mut nearest_dist = f32::MAX;
+            let mut col = Color::rgb(0.929, 0.965, 0.976);
 
             for s in spheres.iter() {
                 match s.hit(&ray) {
                     Some(dist) if dist < nearest_dist => {
                         nearest_dist = dist;
-                        let depth = 1.0 - (ray.at(dist).z / 700.0);
-                        col = s.color * depth.clamp(0.0, 1.0);
+                        col = s.color;
                     },
                     _ => ()
                 };

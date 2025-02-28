@@ -1,4 +1,5 @@
 use core::ops::*;
+use std::fmt;
 
 use crate::vec3::Vec3;
 
@@ -17,8 +18,34 @@ impl Color {
     pub const BLUE: Self = Self::rgb(0.0, 0.0, 1.0);
 
     #[inline]
+    pub const fn gray(v: f32) -> Self {
+        Self { r: v, g: v, b: v }
+    }
+
+    #[inline]
+    pub fn gray_u8(v: u8) -> Self {
+        let v = (v as f32) / 255.0;
+        Self { r: v, g: v, b: v }
+    }
+
+    #[inline]
     pub const fn rgb(r: f32, g: f32, b: f32) -> Self {
         Self { r, g, b }
+    }
+
+    #[inline]
+    pub fn rgb_u8(r: u8, g: u8, b: u8) -> Self {
+        Self {
+            r: (r as f32) / 255.0,
+            g: (g as f32) / 255.0,
+            b: (b as f32) / 255.0
+        }
+    }
+}
+
+impl Default for Color {
+    fn default() -> Self {
+        Self::BLACK
     }
 }
 
@@ -29,14 +56,65 @@ impl From<Vec3> for Color {
     }
 }
 
-impl Add<Color> for Color {
+impl fmt::Display for Color {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "R: {:.2}, G: {:.2}, B: {:.2}", self.r, self.g, self.b)
+    }
+}
+
+impl Div<Color> for Color {
     type Output = Self;
 
-    fn add(self, rhs: Self) -> Self {
+    #[inline]
+    fn div(self, rhs: Self) -> Self {
         Self {
-            r: self.r.add(rhs.r),
-            g: self.g.add(rhs.g),
-            b: self.b.add(rhs.b)
+            r: self.r.div(rhs.r),
+            g: self.g.div(rhs.g),
+            b: self.b.div(rhs.b)
+        }
+    }
+}
+
+impl DivAssign<Color> for Color {
+    #[inline]
+    fn div_assign(&mut self, rhs: Self) {
+        self.r.div_assign(rhs.r);
+        self.g.div_assign(rhs.g);
+        self.b.div_assign(rhs.b);
+    }
+}
+
+impl Div<f32> for Color {
+    type Output = Self;
+
+    #[inline]
+    fn div(self, rhs: f32) -> Self {
+        Self {
+            r: self.r.div(rhs),
+            g: self.g.div(rhs),
+            b: self.b.div(rhs)
+        }
+    }
+}
+
+impl DivAssign<f32> for Color {
+    #[inline]
+    fn div_assign(&mut self, rhs: f32) {
+        self.r.div_assign(rhs);
+        self.g.div_assign(rhs);
+        self.b.div_assign(rhs);
+    }
+}
+
+impl Div<Color> for f32 {
+    type Output = Color;
+
+    #[inline]
+    fn div(self, rhs: Color) -> Color {
+        Color {
+            r: self.div(rhs.r),
+            g: self.div(rhs.g),
+            b: self.div(rhs.b)
         }
     }
 }
@@ -44,6 +122,7 @@ impl Add<Color> for Color {
 impl Mul<Color> for Color {
     type Output = Self;
 
+    #[inline]
     fn mul(self, rhs: Self) -> Self {
         Self {
             r: self.r.mul(rhs.r),
@@ -53,14 +132,161 @@ impl Mul<Color> for Color {
     }
 }
 
+impl MulAssign<Color> for Color {
+    #[inline]
+    fn mul_assign(&mut self, rhs: Self) {
+        self.r.mul_assign(rhs.r);
+        self.g.mul_assign(rhs.g);
+        self.b.mul_assign(rhs.b);
+    }
+}
+
 impl Mul<f32> for Color {
     type Output = Self;
 
+    #[inline]
     fn mul(self, rhs: f32) -> Self {
         Self {
             r: self.r.mul(rhs),
             g: self.g.mul(rhs),
-            b: self.b.mul(rhs),
+            b: self.b.mul(rhs)
+        }
+    }
+}
+
+impl MulAssign<f32> for Color {
+    #[inline]
+    fn mul_assign(&mut self, rhs: f32) {
+        self.r.mul_assign(rhs);
+        self.g.mul_assign(rhs);
+        self.b.mul_assign(rhs);
+    }
+}
+
+impl Mul<Color> for f32 {
+    type Output = Color;
+
+    #[inline]
+    fn mul(self, rhs: Color) -> Color {
+        Color {
+            r: self.mul(rhs.r),
+            g: self.mul(rhs.g),
+            b: self.mul(rhs.b)
+        }
+    }
+}
+
+impl Add<Color> for Color {
+    type Output = Self;
+
+    #[inline]
+    fn add(self, rhs: Self) -> Self {
+        Self {
+            r: self.r.add(rhs.r),
+            g: self.g.add(rhs.g),
+            b: self.b.add(rhs.b)
+        }
+    }
+}
+
+impl AddAssign<Color> for Color {
+    #[inline]
+    fn add_assign(&mut self, rhs: Self) {
+        self.r.add_assign(rhs.r);
+        self.g.add_assign(rhs.g);
+        self.b.add_assign(rhs.b);
+    }
+}
+
+impl Add<f32> for Color {
+    type Output = Self;
+
+    #[inline]
+    fn add(self, rhs: f32) -> Self {
+        Self {
+            r: self.r.add(rhs),
+            g: self.g.add(rhs),
+            b: self.b.add(rhs)
+        }
+    }
+}
+
+impl AddAssign<f32> for Color {
+
+    #[inline]
+    fn add_assign(&mut self, rhs: f32) {
+        self.r.add_assign(rhs);
+        self.g.add_assign(rhs);
+        self.b.add_assign(rhs);
+    }
+}
+
+impl Add<Color> for f32 {
+    type Output = Color;
+
+    #[inline]
+    fn add(self, rhs: Color) -> Color {
+        Color {
+            r: self.add(rhs.r),
+            g: self.add(rhs.g),
+            b: self.add(rhs.b)
+        }
+    }
+}
+
+impl Sub<Color> for Color {
+    type Output = Self;
+
+    #[inline]
+    fn sub(self, rhs: Self) -> Self {
+        Self {
+            r: self.r.sub(rhs.r),
+            g: self.g.sub(rhs.g),
+            b: self.b.sub(rhs.b)
+        }
+    }
+}
+
+impl SubAssign<Color> for Color {
+    #[inline]
+    fn sub_assign(&mut self, rhs: Color) {
+        self.r.sub_assign(rhs.r);
+        self.g.sub_assign(rhs.g);
+        self.b.sub_assign(rhs.b);
+    }
+}
+
+impl Sub<f32> for Color {
+    type Output = Self;
+
+    #[inline]
+    fn sub(self, rhs: f32) -> Self {
+        Self {
+            r: self.r.sub(rhs),
+            g: self.g.sub(rhs),
+            b: self.b.sub(rhs)
+        }
+    }
+}
+
+impl SubAssign<f32> for Color {
+    #[inline]
+    fn sub_assign(&mut self, rhs: f32) {
+        self.r.sub_assign(rhs);
+        self.g.sub_assign(rhs);
+        self.b.sub_assign(rhs);
+    }
+}
+
+impl Sub<Color> for f32 {
+    type Output = Color;
+
+    #[inline]
+    fn sub(self, rhs: Color) -> Color {
+        Color {
+            r: self.sub(rhs.r),
+            g: self.sub(rhs.g),
+            b: self.sub(rhs.b)
         }
     }
 }

@@ -1,6 +1,7 @@
 use crate::vec3::Vec3;
 use crate::color::Color;
 use crate::ray::Ray;
+
 use super::Hittable;
 
 pub struct Sphere {
