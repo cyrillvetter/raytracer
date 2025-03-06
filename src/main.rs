@@ -15,17 +15,17 @@ use crate::hittable::{Hittable, sphere::Sphere};
 use crate::ray::Ray;
 use crate::camera::Camera;
 
-const WINDOW_WIDTH: u32 = 1280;
-const WINDOW_HEIGHT: u32 = 720;
+const WINDOW_WIDTH: u32 = 1920;
+const WINDOW_HEIGHT: u32 = 1080;
 
-const IMAGE_WIDTH: u32 = 1280;
-const IMAGE_HEIGHT: u32 = 720;
+const IMAGE_WIDTH: u32 = 1920;
+const IMAGE_HEIGHT: u32 = 1080;
 
 static OUT_PATH: &str = "out/image.png";
 
 fn main() {
     let now = Instant::now();
-    let image = create_circles();
+    let image = render_spheres();
     let elapsed = now.elapsed();
 
     println!("Elapsed: {:.2?}", elapsed);
@@ -57,11 +57,12 @@ fn show_image(image: &Image) {
     }
 }
 
-fn create_circles() -> Image {
+fn render_spheres() -> Image {
+    let sphere_color = Color::rgb(0.212, 0.216, 0.812);
     let spheres = [
-        Sphere::new(Vec3::new(0.0, 0.0, 1.0), 0.25, Color::RED),
-        Sphere::new(Vec3::new(-0.25, 0.333, 1.0), 0.1, Color::BLUE),
-        Sphere::new(Vec3::new(0.25, 0.333, 1.0), 0.1, Color::GREEN)
+        Sphere::new(Vec3::new(-0.575, 0.0, 1.0), 0.25, sphere_color),
+        Sphere::new(Vec3::new(0.0, 0.0, 1.0), 0.25, sphere_color),
+        Sphere::new(Vec3::new(0.575, 0.0, 1.0), 0.25, sphere_color),
     ];
 
     let camera = Camera::new(1.0);
@@ -88,11 +89,11 @@ fn create_circles() -> Image {
             let mut nearest_dist = f32::INFINITY;
             let mut col = Color::BLACK;
 
-            for s in spheres.iter() {
-                match s.hit(&ray) {
+            for sphere in spheres.iter() {
+                match sphere.hit(&ray) {
                     Some(dist) if dist < nearest_dist => {
                         nearest_dist = dist;
-                        col = s.color;
+                        col = sphere.color;
                     },
                     _ => ()
                 };
