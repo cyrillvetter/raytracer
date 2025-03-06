@@ -15,10 +15,10 @@ use crate::hittable::{Hittable, sphere::Sphere};
 use crate::ray::Ray;
 use crate::camera::Camera;
 
-const WINDOW_WIDTH: u32 = 1920;
+const WINDOW_WIDTH: u32 = 1280;
 const WINDOW_HEIGHT: u32 = 720;
 
-const IMAGE_WIDTH: u32 = 1920;
+const IMAGE_WIDTH: u32 = 1280;
 const IMAGE_HEIGHT: u32 = 720;
 
 static OUT_PATH: &str = "out/image.png";
@@ -58,34 +58,31 @@ fn show_image(image: &Image) {
 }
 
 fn create_circles() -> Image {
-    let camera = Camera::new(1.0);
-    let wh_ratio = (IMAGE_WIDTH as f32) / (IMAGE_HEIGHT as f32);
-
-    let top_left = Vec3::new(-(camera.size * wh_ratio) / 2.0, camera.size / 2.0, 0.0);
-    println!("{}", wh_ratio);
-    println!("{}", top_left);
-
     let spheres = [
-        Sphere::new(Vec3::new(0.0, 0.0, 1.0), 0.5, Color::RED),
-        //Sphere::new(Vec3::new(-0.25, 0.333, 1.0), 0.1, Color::BLUE),
-        //Sphere::new(Vec3::new(0.25, 0.333, 1.0), 0.1, Color::GREEN)
+        Sphere::new(Vec3::new(0.0, 0.0, 1.0), 0.25, Color::RED),
+        Sphere::new(Vec3::new(-0.25, 0.333, 1.0), 0.1, Color::BLUE),
+        Sphere::new(Vec3::new(0.25, 0.333, 1.0), 0.1, Color::GREEN)
     ];
+
+    let camera = Camera::new(1.0);
+    let aspect_ratio = (IMAGE_WIDTH as f32) / (IMAGE_HEIGHT as f32);
+
+    let left = -(camera.size * aspect_ratio) / 2.0;
+    let x_step = camera.size * (IMAGE_WIDTH as f32);
+
+    let top = camera.size / 2.0;
+    let y_step = camera.size * (IMAGE_HEIGHT as f32);
 
     let mut image = Image::blank(IMAGE_WIDTH, IMAGE_HEIGHT);
     let ray_dir = Vec3::new(0.0, 0.0, 1.0).normalize();
 
-    let mut min_vy = f32::INFINITY;
-    let mut max_vx = f32::NEG_INFINITY;
-
     for x in 0..IMAGE_WIDTH {
-        let vx = top_left.x + (x as f32) / (camera.size * (IMAGE_WIDTH as f32)) * wh_ratio;
-        max_vx = max_vx.max(vx);
+        let viewport_x = left + ((x as f32) / x_step) * aspect_ratio;
 
         for y in 0..IMAGE_HEIGHT {
-            let vy = top_left.y - (y as f32) / (camera.size * (IMAGE_HEIGHT as f32));
-            min_vy = min_vy.min(vy);
+            let viewport_y = top - (y as f32) / y_step;
 
-            let pixel = Vec3::new(vx, vy, 0.0);
+            let pixel = Vec3::new(viewport_x, viewport_y, 0.0);
             let ray = Ray::new(pixel, ray_dir);
 
             let mut nearest_dist = f32::INFINITY;
@@ -104,11 +101,6 @@ fn create_circles() -> Image {
             image.set_pixel(x, y, col);
         }
     }
-
-    println!("");
-    println!("max");
-    println!("x: {}", max_vx);
-    println!("y: {}", min_vy);
 
     image
 }
