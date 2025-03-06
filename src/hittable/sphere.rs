@@ -18,7 +18,7 @@ impl Sphere {
 
 impl Hittable for Sphere {
     fn hit(&self, ray: &Ray) -> Option<f32> {
-        let v = self.center - ray.origin;
+        let v = ray.origin - self.center;
         let a = ray.direction.length_squared();
         let b = 2.0 * (ray.direction.dot(v));
         let c = v.length_squared() - self.radius.powf(2.0);

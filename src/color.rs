@@ -41,6 +41,16 @@ impl Color {
             b: (b as f32) / 255.0
         }
     }
+
+    // TODO: Remove this clamp function and always clamp the values between 0 and 1.
+    #[inline]
+    pub fn clamp(self) -> Self {
+        Self {
+            r: self.r.clamp(0.0, 1.0),
+            g: self.g.clamp(0.0, 1.0),
+            b: self.b.clamp(0.0, 1.0)
+        }
+    }
 }
 
 impl Default for Color {

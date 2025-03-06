@@ -60,10 +60,12 @@ fn show_image(image: &Image) {
 fn render_spheres() -> Image {
     let sphere_color = Color::rgb(0.212, 0.216, 0.812);
     let spheres = [
-        Sphere::new(Vec3::new(-0.575, 0.0, 1.0), 0.25, sphere_color),
-        Sphere::new(Vec3::new(0.0, 0.0, 1.0), 0.25, sphere_color),
-        Sphere::new(Vec3::new(0.575, 0.0, 1.0), 0.25, sphere_color),
+        Sphere::new(Vec3::new(-0.575, 0.0, -1.0), 0.25, sphere_color),
+        Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.25, sphere_color),
+        Sphere::new(Vec3::new(0.575, 0.0, -0.95), 0.25, sphere_color)
     ];
+
+    let light_origin = Vec3::new(-10.0, 2.0, 10.0);
 
     let camera = Camera::new(1.0);
     let aspect_ratio = (IMAGE_WIDTH as f32) / (IMAGE_HEIGHT as f32);
@@ -75,7 +77,7 @@ fn render_spheres() -> Image {
     let y_step = camera.size * (IMAGE_HEIGHT as f32);
 
     let mut image = Image::blank(IMAGE_WIDTH, IMAGE_HEIGHT);
-    let ray_dir = Vec3::new(0.0, 0.0, 1.0).normalize();
+    let ray_dir = Vec3::new(0.0, 0.0, -1.0).normalize();
 
     for x in 0..IMAGE_WIDTH {
         let viewport_x = left + ((x as f32) / x_step) * aspect_ratio;
@@ -92,8 +94,15 @@ fn render_spheres() -> Image {
             for sphere in spheres.iter() {
                 match sphere.hit(&ray) {
                     Some(dist) if dist < nearest_dist => {
+                        let ambient = sphere.color * 0.075;
+
+                        let q = ray.at(dist);
+                        let n = (q - sphere.center).normalize();
+                        let s = (light_origin - q).normalize();
+                        let diffuse = sphere.color * s.dot(n).max(0.0);
+
+                        col = (ambient + diffuse).clamp();
                         nearest_dist = dist;
-                        col = sphere.color;
                     },
                     _ => ()
                 };
