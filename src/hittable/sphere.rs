@@ -11,8 +11,8 @@ pub struct Sphere {
 }
 
 impl Sphere {
-    pub const fn new(origin: Vec3, radius: f32, color: Color) -> Self {
-        Self { center: origin, radius, color }
+    pub const fn new(center: Vec3, radius: f32, color: Color) -> Self {
+        Self { center, radius, color }
     }
 }
 

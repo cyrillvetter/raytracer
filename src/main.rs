@@ -3,6 +3,7 @@ mod color;
 mod image;
 mod ray;
 mod hittable;
+mod camera;
 
 use std::time::Instant;
 use minifb::{Window, WindowOptions, Key, KeyRepeat};
@@ -12,11 +13,12 @@ use crate::vec3::Vec3;
 use crate::color::Color;
 use crate::hittable::{Hittable, sphere::Sphere};
 use crate::ray::Ray;
+use crate::camera::Camera;
 
-const WINDOW_WIDTH: u32 = 1280;
+const WINDOW_WIDTH: u32 = 1920;
 const WINDOW_HEIGHT: u32 = 720;
 
-const IMAGE_WIDTH: u32 = 1280;
+const IMAGE_WIDTH: u32 = 1920;
 const IMAGE_HEIGHT: u32 = 720;
 
 static OUT_PATH: &str = "out/image.png";
@@ -56,24 +58,38 @@ fn show_image(image: &Image) {
 }
 
 fn create_circles() -> Image {
+    let camera = Camera::new(1.0);
+    let wh_ratio = (IMAGE_WIDTH as f32) / (IMAGE_HEIGHT as f32);
+
+    let top_left = Vec3::new(-(camera.size * wh_ratio) / 2.0, camera.size / 2.0, 0.0);
+    println!("{}", wh_ratio);
+    println!("{}", top_left);
+
     let spheres = [
-        Sphere::new(Vec3::new(640.0, 360.0, -300.0), 200.0, Color::rgb(0.369, 0.486, 0.886)),
-        Sphere::new(Vec3::new(520.0, 240.0, -250.0), 100.0, Color::rgb(0.867, 0.176, 0.29)),
-        Sphere::new(Vec3::new(760.0, 240.0, -250.0), 100.0, Color::rgb(0.867, 0.176, 0.29))
+        Sphere::new(Vec3::new(0.0, 0.0, 1.0), 0.5, Color::RED),
+        //Sphere::new(Vec3::new(-0.25, 0.333, 1.0), 0.1, Color::BLUE),
+        //Sphere::new(Vec3::new(0.25, 0.333, 1.0), 0.1, Color::GREEN)
     ];
 
     let mut image = Image::blank(IMAGE_WIDTH, IMAGE_HEIGHT);
     let ray_dir = Vec3::new(0.0, 0.0, 1.0).normalize();
 
+    let mut min_vy = f32::INFINITY;
+    let mut max_vx = f32::NEG_INFINITY;
+
     for x in 0..IMAGE_WIDTH {
-        let f_x = x as f32;
+        let vx = top_left.x + (x as f32) / (camera.size * (IMAGE_WIDTH as f32)) * wh_ratio;
+        max_vx = max_vx.max(vx);
 
         for y in 0..IMAGE_HEIGHT {
-            let pos = Vec3::new(f_x, y as f32, 0.0);
-            let ray = Ray::new(pos, ray_dir);
+            let vy = top_left.y - (y as f32) / (camera.size * (IMAGE_HEIGHT as f32));
+            min_vy = min_vy.min(vy);
+
+            let pixel = Vec3::new(vx, vy, 0.0);
+            let ray = Ray::new(pixel, ray_dir);
 
             let mut nearest_dist = f32::INFINITY;
-            let mut col = Color::rgb(0.929, 0.965, 0.976);
+            let mut col = Color::BLACK;
 
             for s in spheres.iter() {
                 match s.hit(&ray) {
@@ -88,6 +104,11 @@ fn create_circles() -> Image {
             image.set_pixel(x, y, col);
         }
     }
+
+    println!("");
+    println!("max");
+    println!("x: {}", max_vx);
+    println!("y: {}", min_vy);
 
     image
 }
