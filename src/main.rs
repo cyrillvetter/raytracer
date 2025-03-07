@@ -60,10 +60,10 @@ fn show_image(image: &Image) {
 }
 
 fn render_spheres() -> Image {
-    let spheres = [
-        Sphere::new(Vec3::new(-0.575, 0.0, -1.0), 0.25, Color::rgb_u8(207, 54, 67)),
-        Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.25, Color::rgb_u8(55, 184, 57)),
-        Sphere::new(Vec3::new(0.575, 0.0, -1.0), 0.25, Color::rgb_u8(54, 55, 207)),
+    let objects: Vec<Box<dyn Hittable>> = vec![
+        Box::new(Sphere::new(Vec3::new(-0.575, 0.0, -1.0), 0.25, Color::rgb_u8(207, 54, 67))),
+        Box::new(Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.25, Color::rgb_u8(55, 184, 57))),
+        Box::new(Sphere::new(Vec3::new(0.575, 0.0, -1.0), 0.25, Color::rgb_u8(54, 55, 207))),
     ];
 
     let camera = Camera::new(1.0);
@@ -77,22 +77,17 @@ fn render_spheres() -> Image {
             let ray = Ray::new(pixel, ray_dir);
 
             let mut nearest_dist = f32::INFINITY;
-            let mut nearest_sphere: Option<Sphere> = None;
+            let mut color = Color::BLACK;
 
-            for sphere in &spheres {
-                match sphere.hit(&ray) {
+            for object in objects.iter() {
+                match object.hit(&ray) {
                     Some(dist) if dist < nearest_dist => {
                         nearest_dist = dist;
-                        nearest_sphere = Some(sphere.clone());
+                        color = object.get_color(ray.at(dist));
                     },
                     _ => ()
                 };
             }
-
-            let color = match nearest_sphere {
-                Some(sphere) => sphere.get_color(ray.at(nearest_dist)),
-                None => Color::BLACK
-            };
 
             image.set_pixel(x, y, color);
         }
