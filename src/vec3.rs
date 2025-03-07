@@ -27,22 +27,18 @@ impl Vec3 {
 
     pub const NEG_Z: Self = Self::new(0.0, 0.0, -1.0);
 
-    #[inline]
     pub const fn new(x: f32, y: f32, z: f32) -> Self {
         Self { x, y, z }
     }
 
-    #[inline]
     pub const fn splat(v: f32) -> Self {
         Self { x: v, y: v, z: v }
     }
 
-    #[inline]
     pub fn dot(self, rhs: Self) -> f32 {
         (self.x * rhs.x) + (self.y * rhs.y) + (self.z * rhs.z)
     }
 
-    #[inline]
     pub fn cross(self, rhs: Self) -> Self {
         Self {
             x: self.y * rhs.z - rhs.y * self.z,
@@ -51,24 +47,20 @@ impl Vec3 {
         }
     }
 
-    #[inline]
     pub fn length_squared(self) -> f32 {
         self.dot(self)
     }
 
-    #[inline]
     pub fn length(self) -> f32 {
         f32::sqrt(self.dot(self))
     }
 
-    #[inline]
     pub fn normalize(self) -> Vec3 {
         self * self.length().recip()
     }
 }
 
 impl Default for Vec3 {
-    #[inline]
     fn default() -> Self {
         Self::ZERO
     }
@@ -83,7 +75,6 @@ impl fmt::Display for Vec3 {
 impl Div<Vec3> for Vec3 {
     type Output = Self;
 
-    #[inline]
     fn div(self, rhs: Self) -> Self {
         Self {
             x: self.x.div(rhs.x),
@@ -94,7 +85,6 @@ impl Div<Vec3> for Vec3 {
 }
 
 impl DivAssign<Vec3> for Vec3 {
-    #[inline]
     fn div_assign(&mut self, rhs: Self) {
         self.x.div_assign(rhs.x);
         self.y.div_assign(rhs.y);
@@ -105,7 +95,6 @@ impl DivAssign<Vec3> for Vec3 {
 impl Div<f32> for Vec3 {
     type Output = Self;
 
-    #[inline]
     fn div(self, rhs: f32) -> Self {
         Self {
             x: self.x.div(rhs),
@@ -116,7 +105,6 @@ impl Div<f32> for Vec3 {
 }
 
 impl DivAssign<f32> for Vec3 {
-    #[inline]
     fn div_assign(&mut self, rhs: f32) {
         self.x.div_assign(rhs);
         self.y.div_assign(rhs);
@@ -127,7 +115,6 @@ impl DivAssign<f32> for Vec3 {
 impl Div<Vec3> for f32 {
     type Output = Vec3;
 
-    #[inline]
     fn div(self, rhs: Vec3) -> Vec3 {
         Vec3 {
             x: self.div(rhs.x),
@@ -140,7 +127,6 @@ impl Div<Vec3> for f32 {
 impl Mul<Vec3> for Vec3 {
     type Output = Self;
 
-    #[inline]
     fn mul(self, rhs: Self) -> Self {
         Self {
             x: self.x.mul(rhs.x),
@@ -151,7 +137,6 @@ impl Mul<Vec3> for Vec3 {
 }
 
 impl MulAssign<Vec3> for Vec3 {
-    #[inline]
     fn mul_assign(&mut self, rhs: Self) {
         self.x.mul_assign(rhs.x);
         self.y.mul_assign(rhs.y);
@@ -162,7 +147,6 @@ impl MulAssign<Vec3> for Vec3 {
 impl Mul<f32> for Vec3 {
     type Output = Self;
 
-    #[inline]
     fn mul(self, rhs: f32) -> Self {
         Self {
             x: self.x.mul(rhs),
@@ -173,7 +157,6 @@ impl Mul<f32> for Vec3 {
 }
 
 impl MulAssign<f32> for Vec3 {
-    #[inline]
     fn mul_assign(&mut self, rhs: f32) {
         self.x.mul_assign(rhs);
         self.y.mul_assign(rhs);
@@ -184,7 +167,6 @@ impl MulAssign<f32> for Vec3 {
 impl Mul<Vec3> for f32 {
     type Output = Vec3;
 
-    #[inline]
     fn mul(self, rhs: Vec3) -> Vec3 {
         Vec3 {
             x: self.mul(rhs.x),
@@ -197,7 +179,6 @@ impl Mul<Vec3> for f32 {
 impl Add<Vec3> for Vec3 {
     type Output = Self;
 
-    #[inline]
     fn add(self, rhs: Self) -> Self {
         Self {
             x: self.x.add(rhs.x),
@@ -208,7 +189,6 @@ impl Add<Vec3> for Vec3 {
 }
 
 impl AddAssign<Vec3> for Vec3 {
-    #[inline]
     fn add_assign(&mut self, rhs: Self) {
         self.x.add_assign(rhs.x);
         self.y.add_assign(rhs.y);
@@ -219,7 +199,6 @@ impl AddAssign<Vec3> for Vec3 {
 impl Add<f32> for Vec3 {
     type Output = Self;
 
-    #[inline]
     fn add(self, rhs: f32) -> Self {
         Self {
             x: self.x.add(rhs),
@@ -231,7 +210,6 @@ impl Add<f32> for Vec3 {
 
 impl AddAssign<f32> for Vec3 {
 
-    #[inline]
     fn add_assign(&mut self, rhs: f32) {
         self.x.add_assign(rhs);
         self.y.add_assign(rhs);
@@ -242,7 +220,6 @@ impl AddAssign<f32> for Vec3 {
 impl Add<Vec3> for f32 {
     type Output = Vec3;
 
-    #[inline]
     fn add(self, rhs: Vec3) -> Vec3 {
         Vec3 {
             x: self.add(rhs.x),
@@ -255,7 +232,6 @@ impl Add<Vec3> for f32 {
 impl Sub<Vec3> for Vec3 {
     type Output = Self;
 
-    #[inline]
     fn sub(self, rhs: Self) -> Self {
         Self {
             x: self.x.sub(rhs.x),
@@ -266,7 +242,6 @@ impl Sub<Vec3> for Vec3 {
 }
 
 impl SubAssign<Vec3> for Vec3 {
-    #[inline]
     fn sub_assign(&mut self, rhs: Vec3) {
         self.x.sub_assign(rhs.x);
         self.y.sub_assign(rhs.y);
@@ -277,7 +252,6 @@ impl SubAssign<Vec3> for Vec3 {
 impl Sub<f32> for Vec3 {
     type Output = Self;
 
-    #[inline]
     fn sub(self, rhs: f32) -> Self {
         Self {
             x: self.x.sub(rhs),
@@ -288,7 +262,6 @@ impl Sub<f32> for Vec3 {
 }
 
 impl SubAssign<f32> for Vec3 {
-    #[inline]
     fn sub_assign(&mut self, rhs: f32) {
         self.x.sub_assign(rhs);
         self.y.sub_assign(rhs);
@@ -299,7 +272,6 @@ impl SubAssign<f32> for Vec3 {
 impl Sub<Vec3> for f32 {
     type Output = Vec3;
 
-    #[inline]
     fn sub(self, rhs: Vec3) -> Vec3 {
         Vec3 {
             x: self.sub(rhs.x),
@@ -312,7 +284,6 @@ impl Sub<Vec3> for f32 {
 impl Neg for Vec3 {
     type Output = Self;
 
-    #[inline]
     fn neg(self) -> Self {
         Self {
             x: self.x.neg(),

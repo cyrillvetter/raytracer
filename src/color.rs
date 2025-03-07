@@ -17,23 +17,19 @@ impl Color {
     pub const GREEN: Self = Self::rgb(0.0, 1.0, 0.0);
     pub const BLUE: Self = Self::rgb(0.0, 0.0, 1.0);
 
-    #[inline]
     pub const fn gray(v: f32) -> Self {
         Self { r: v, g: v, b: v }
     }
 
-    #[inline]
     pub fn gray_u8(v: u8) -> Self {
         let v = (v as f32) / 255.0;
         Self { r: v, g: v, b: v }
     }
 
-    #[inline]
     pub const fn rgb(r: f32, g: f32, b: f32) -> Self {
         Self { r, g, b }
     }
 
-    #[inline]
     pub fn rgb_u8(r: u8, g: u8, b: u8) -> Self {
         Self {
             r: (r as f32) / 255.0,
@@ -43,7 +39,6 @@ impl Color {
     }
 
     // TODO: Remove this clamp function and always clamp the values between 0 and 1.
-    #[inline]
     pub fn clamp(self) -> Self {
         Self {
             r: self.r.clamp(0.0, 1.0),
@@ -75,7 +70,6 @@ impl fmt::Display for Color {
 impl Div<Color> for Color {
     type Output = Self;
 
-    #[inline]
     fn div(self, rhs: Self) -> Self {
         Self {
             r: self.r.div(rhs.r),
@@ -86,7 +80,6 @@ impl Div<Color> for Color {
 }
 
 impl DivAssign<Color> for Color {
-    #[inline]
     fn div_assign(&mut self, rhs: Self) {
         self.r.div_assign(rhs.r);
         self.g.div_assign(rhs.g);
@@ -97,7 +90,6 @@ impl DivAssign<Color> for Color {
 impl Div<f32> for Color {
     type Output = Self;
 
-    #[inline]
     fn div(self, rhs: f32) -> Self {
         Self {
             r: self.r.div(rhs),
@@ -108,7 +100,6 @@ impl Div<f32> for Color {
 }
 
 impl DivAssign<f32> for Color {
-    #[inline]
     fn div_assign(&mut self, rhs: f32) {
         self.r.div_assign(rhs);
         self.g.div_assign(rhs);
@@ -119,7 +110,6 @@ impl DivAssign<f32> for Color {
 impl Div<Color> for f32 {
     type Output = Color;
 
-    #[inline]
     fn div(self, rhs: Color) -> Color {
         Color {
             r: self.div(rhs.r),
@@ -132,7 +122,6 @@ impl Div<Color> for f32 {
 impl Mul<Color> for Color {
     type Output = Self;
 
-    #[inline]
     fn mul(self, rhs: Self) -> Self {
         Self {
             r: self.r.mul(rhs.r),
@@ -143,7 +132,6 @@ impl Mul<Color> for Color {
 }
 
 impl MulAssign<Color> for Color {
-    #[inline]
     fn mul_assign(&mut self, rhs: Self) {
         self.r.mul_assign(rhs.r);
         self.g.mul_assign(rhs.g);
@@ -154,7 +142,6 @@ impl MulAssign<Color> for Color {
 impl Mul<f32> for Color {
     type Output = Self;
 
-    #[inline]
     fn mul(self, rhs: f32) -> Self {
         Self {
             r: self.r.mul(rhs),
@@ -165,7 +152,6 @@ impl Mul<f32> for Color {
 }
 
 impl MulAssign<f32> for Color {
-    #[inline]
     fn mul_assign(&mut self, rhs: f32) {
         self.r.mul_assign(rhs);
         self.g.mul_assign(rhs);
@@ -176,7 +162,6 @@ impl MulAssign<f32> for Color {
 impl Mul<Color> for f32 {
     type Output = Color;
 
-    #[inline]
     fn mul(self, rhs: Color) -> Color {
         Color {
             r: self.mul(rhs.r),
@@ -189,7 +174,6 @@ impl Mul<Color> for f32 {
 impl Add<Color> for Color {
     type Output = Self;
 
-    #[inline]
     fn add(self, rhs: Self) -> Self {
         Self {
             r: self.r.add(rhs.r),
@@ -200,7 +184,6 @@ impl Add<Color> for Color {
 }
 
 impl AddAssign<Color> for Color {
-    #[inline]
     fn add_assign(&mut self, rhs: Self) {
         self.r.add_assign(rhs.r);
         self.g.add_assign(rhs.g);
@@ -211,7 +194,6 @@ impl AddAssign<Color> for Color {
 impl Add<f32> for Color {
     type Output = Self;
 
-    #[inline]
     fn add(self, rhs: f32) -> Self {
         Self {
             r: self.r.add(rhs),
@@ -223,7 +205,6 @@ impl Add<f32> for Color {
 
 impl AddAssign<f32> for Color {
 
-    #[inline]
     fn add_assign(&mut self, rhs: f32) {
         self.r.add_assign(rhs);
         self.g.add_assign(rhs);
@@ -234,7 +215,6 @@ impl AddAssign<f32> for Color {
 impl Add<Color> for f32 {
     type Output = Color;
 
-    #[inline]
     fn add(self, rhs: Color) -> Color {
         Color {
             r: self.add(rhs.r),
@@ -247,7 +227,6 @@ impl Add<Color> for f32 {
 impl Sub<Color> for Color {
     type Output = Self;
 
-    #[inline]
     fn sub(self, rhs: Self) -> Self {
         Self {
             r: self.r.sub(rhs.r),
@@ -258,7 +237,6 @@ impl Sub<Color> for Color {
 }
 
 impl SubAssign<Color> for Color {
-    #[inline]
     fn sub_assign(&mut self, rhs: Color) {
         self.r.sub_assign(rhs.r);
         self.g.sub_assign(rhs.g);
@@ -269,7 +247,6 @@ impl SubAssign<Color> for Color {
 impl Sub<f32> for Color {
     type Output = Self;
 
-    #[inline]
     fn sub(self, rhs: f32) -> Self {
         Self {
             r: self.r.sub(rhs),
@@ -280,7 +257,6 @@ impl Sub<f32> for Color {
 }
 
 impl SubAssign<f32> for Color {
-    #[inline]
     fn sub_assign(&mut self, rhs: f32) {
         self.r.sub_assign(rhs);
         self.g.sub_assign(rhs);
@@ -291,7 +267,6 @@ impl SubAssign<f32> for Color {
 impl Sub<Color> for f32 {
     type Output = Color;
 
-    #[inline]
     fn sub(self, rhs: Color) -> Color {
         Color {
             r: self.sub(rhs.r),

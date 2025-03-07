@@ -28,9 +28,8 @@ static OUT_PATH: &str = "out/image.png";
 fn main() {
     let now = Instant::now();
     let image = render_spheres();
-    let elapsed = now.elapsed();
 
-    println!("Elapsed: {:.2?}", elapsed);
+    println!("Elapsed: {:.2?}", now.elapsed());
 
     show_image(&image);
 }
