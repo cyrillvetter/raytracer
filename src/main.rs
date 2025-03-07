@@ -23,7 +23,7 @@ const WINDOW_HEIGHT: u32 = 1080;
 const IMAGE_WIDTH: u32 = 1920;
 const IMAGE_HEIGHT: u32 = 1080;
 
-const LIGHT_ORIGIN: Vec3 = Vec3::new(-10.0, 12.0, 25.0);
+const LIGHT_ORIGIN: Vec3 = Vec3::new(-10.0, 7.0, 10.0);
 
 static OUT_PATH: &str = "out/image.png";
 
@@ -69,8 +69,8 @@ fn render_spheres() -> Image {
     for _ in 0..OBJECTS_AMOUNT {
         let x = rng.random_range(-0.9..0.9);
         let y = rng.random_range(-0.50..0.50);
-        let z = rng.random_range(1.0..20.0);
-        let radius = rng.random_range(0.0075..0.02);
+        let z = rng.random_range(1.0..2.0);
+        let radius = rng.random_range(0.0075..0.025);
 
         let r = rng.random();
         let g = rng.random();
