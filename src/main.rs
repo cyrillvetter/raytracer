@@ -7,6 +7,7 @@ mod camera;
 
 use std::time::Instant;
 use minifb::{Window, WindowOptions, Key, KeyRepeat};
+use rand::Rng;
 
 use crate::image::Image;
 use crate::vec3::Vec3;
@@ -60,11 +61,22 @@ fn show_image(image: &Image) {
 }
 
 fn render_spheres() -> Image {
-    let objects: Vec<Box<dyn Hittable>> = vec![
-        Box::new(Sphere::new(Vec3::new(-0.575, 0.0, -1.0), 0.25, Color::rgb_u8(207, 54, 67))),
-        Box::new(Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.25, Color::rgb_u8(55, 184, 57))),
-        Box::new(Sphere::new(Vec3::new(0.575, 0.0, -1.0), 0.25, Color::rgb_u8(54, 55, 207))),
-    ];
+    const OBJECTS_AMOUNT: usize = 1000;
+    let mut rng = rand::rng();
+    let mut objects: Vec<Box<dyn Hittable>> = Vec::with_capacity(OBJECTS_AMOUNT);
+
+    for _ in 0..OBJECTS_AMOUNT {
+        let x = rng.random_range(-0.9..0.9);
+        let y = rng.random_range(-0.55..0.55);
+        let z = rng.random_range(1.0..10.0);
+        let radius = rng.random_range(0.02..0.07);
+
+        let r = rng.random();
+        let g = rng.random();
+        let b = rng.random();
+
+        objects.push(Box::new(Sphere::new(Vec3::new(x, y, z), radius, Color::rgb(r, g, b))));
+    }
 
     let camera = Camera::new(1.0);
 
