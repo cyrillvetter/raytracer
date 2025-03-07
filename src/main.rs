@@ -68,25 +68,14 @@ fn render_spheres() -> Image {
     const AMBIENT_FACTOR: f32 = 0.05;
 
     let camera = Camera::new(1.0);
-    let aspect_ratio = (IMAGE_WIDTH as f32) / (IMAGE_HEIGHT as f32);
-
-    let left = -(camera.size * aspect_ratio) / 2.0;
-    let x_step = camera.size * (IMAGE_WIDTH as f32);
-
-    let top = camera.size / 2.0;
-    let y_step = camera.size * (IMAGE_HEIGHT as f32);
 
     let mut image = Image::blank(IMAGE_WIDTH, IMAGE_HEIGHT);
     let ray_dir = Vec3::new(0.0, 0.0, -1.0).normalize();
 
     for x in 0..IMAGE_WIDTH {
-        let viewport_x = left + ((x as f32) / x_step) * aspect_ratio;
-
         for y in 0..IMAGE_HEIGHT {
-            let viewport_y = top - (y as f32) / y_step;
-
-            let pixel = Vec3::new(viewport_x, viewport_y, 0.0);
-            let ray = Ray::new(pixel, ray_dir);
+            let world_coordinates = camera.in_world(x, y);
+            let ray = Ray::new(world_coordinates, ray_dir);
 
             let mut nearest_dist = f32::INFINITY;
             let mut nearest_sphere: Option<Sphere> = None;
