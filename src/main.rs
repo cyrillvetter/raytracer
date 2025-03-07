@@ -41,7 +41,7 @@ fn show_image(image: &Image) {
         WindowOptions::default()
     ).expect("Failed to create window");
 
-    window.set_target_fps(24);
+    window.set_target_fps(30);
     let mut image_saved = false;
 
     while window.is_open() && !window.is_key_pressed(Key::Escape, KeyRepeat::No) {
@@ -65,7 +65,7 @@ fn render_spheres() -> Image {
     ];
 
     let light_origin = Vec3::new(-10.0, 7.0, 12.0);
-    const AMBIENT_FACTOR: f32 = 0.05;
+    const AMBIENT_FACTOR: f32 = 0.04;
 
     let camera = Camera::new(1.0);
 
@@ -74,8 +74,8 @@ fn render_spheres() -> Image {
 
     for x in 0..IMAGE_WIDTH {
         for y in 0..IMAGE_HEIGHT {
-            let world_coordinates = camera.in_world(x, y);
-            let ray = Ray::new(world_coordinates, ray_dir);
+            let pixel = camera.in_world(x, y);
+            let ray = Ray::new(pixel, ray_dir);
 
             let mut nearest_dist = f32::INFINITY;
             let mut nearest_sphere: Option<Sphere> = None;
