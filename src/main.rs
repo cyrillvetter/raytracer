@@ -21,6 +21,8 @@ const WINDOW_HEIGHT: u32 = 1080;
 const IMAGE_WIDTH: u32 = 1920;
 const IMAGE_HEIGHT: u32 = 1080;
 
+const LIGHT_ORIGIN: Vec3 = Vec3::new(-10.0, 7.0, 12.0);
+
 static OUT_PATH: &str = "out/image.png";
 
 fn main() {
@@ -64,9 +66,6 @@ fn render_spheres() -> Image {
         Sphere::new(Vec3::new(0.575, 0.0, -1.0), 0.25, Color::rgb_u8(54, 55, 207)),
     ];
 
-    let light_origin = Vec3::new(-10.0, 7.0, 12.0);
-    const AMBIENT_FACTOR: f32 = 0.04;
-
     let camera = Camera::new(1.0);
 
     let mut image = Image::blank(IMAGE_WIDTH, IMAGE_HEIGHT);
@@ -91,15 +90,7 @@ fn render_spheres() -> Image {
             }
 
             let color = match nearest_sphere {
-                Some(sphere) => {
-                    let ambient = sphere.color * AMBIENT_FACTOR;
-
-                    let q = ray.at(nearest_dist);
-                    let n = (q - sphere.center).normalize();
-                    let s = (light_origin - q).normalize();
-                    let diffuse = sphere.color * s.dot(n).max(0.0);
-                    (ambient + diffuse).clamp()
-                },
+                Some(sphere) => sphere.get_color(ray.at(nearest_dist)),
                 None => Color::BLACK
             };
 

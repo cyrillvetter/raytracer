@@ -2,7 +2,10 @@ use crate::vec3::Vec3;
 use crate::color::Color;
 use crate::ray::Ray;
 
+use crate::LIGHT_ORIGIN;
 use super::Hittable;
+
+const AMBIENT_FACTOR: f32 = 0.04;
 
 #[derive(Debug, Clone)]
 pub struct Sphere {
@@ -31,5 +34,14 @@ impl Hittable for Sphere {
         } else {
             Some((-b - discriminant.sqrt()) / (2.0 * a))
         }
+    }
+
+    fn get_color(&self, q: Vec3) -> Color {
+        let ambient = self.color * AMBIENT_FACTOR;
+
+        let n = (q - self.center).normalize();
+        let s = (LIGHT_ORIGIN - q).normalize();
+        let diffuse = self.color * s.dot(n).max(0.0);
+        (ambient + diffuse).clamp()
     }
 }
