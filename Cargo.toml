@@ -11,7 +11,7 @@ png = "0.17.16"
 opt-level = 1
 
 [profile.release]
-opt-level = 3
+opt-level = 2
 lto = true
 codegen-units = 1
 incremental = false
