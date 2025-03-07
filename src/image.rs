@@ -15,6 +15,7 @@ impl Image {
         Self { width, height, bytes: vec![0; (width * height) as usize] }
     }
 
+    #[allow(dead_code)]
     pub fn get_pixel(&self, x: u32, y: u32) -> Color {
         let pos = ((y * self.width) + x) as usize;
 

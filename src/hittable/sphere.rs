@@ -4,6 +4,7 @@ use crate::ray::Ray;
 
 use super::Hittable;
 
+#[derive(Debug, Clone)]
 pub struct Sphere {
     pub center: Vec3,
     pub radius: f32,

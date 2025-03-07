@@ -58,14 +58,14 @@ fn show_image(image: &Image) {
 }
 
 fn render_spheres() -> Image {
-    let sphere_color = Color::rgb(0.212, 0.216, 0.812);
     let spheres = [
-        Sphere::new(Vec3::new(-0.575, 0.0, -1.0), 0.25, sphere_color),
-        Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.25, sphere_color),
-        Sphere::new(Vec3::new(0.575, 0.0, -0.95), 0.25, sphere_color)
+        Sphere::new(Vec3::new(-0.575, 0.0, -1.0), 0.25, Color::rgb_u8(207, 54, 67)),
+        Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.25, Color::rgb_u8(55, 184, 57)),
+        Sphere::new(Vec3::new(0.575, 0.0, -1.0), 0.25, Color::rgb_u8(54, 55, 207)),
     ];
 
-    let light_origin = Vec3::new(-10.0, 2.0, 10.0);
+    let light_origin = Vec3::new(-10.0, 7.0, 12.0);
+    const AMBIENT_FACTOR: f32 = 0.05;
 
     let camera = Camera::new(1.0);
     let aspect_ratio = (IMAGE_WIDTH as f32) / (IMAGE_HEIGHT as f32);
@@ -89,26 +89,32 @@ fn render_spheres() -> Image {
             let ray = Ray::new(pixel, ray_dir);
 
             let mut nearest_dist = f32::INFINITY;
-            let mut col = Color::BLACK;
+            let mut nearest_sphere: Option<Sphere> = None;
 
-            for sphere in spheres.iter() {
+            for sphere in &spheres {
                 match sphere.hit(&ray) {
                     Some(dist) if dist < nearest_dist => {
-                        let ambient = sphere.color * 0.075;
-
-                        let q = ray.at(dist);
-                        let n = (q - sphere.center).normalize();
-                        let s = (light_origin - q).normalize();
-                        let diffuse = sphere.color * s.dot(n).max(0.0);
-
-                        col = (ambient + diffuse).clamp();
                         nearest_dist = dist;
+                        nearest_sphere = Some(sphere.clone());
                     },
                     _ => ()
                 };
             }
 
-            image.set_pixel(x, y, col);
+            let color = match nearest_sphere {
+                Some(sphere) => {
+                    let ambient = sphere.color * AMBIENT_FACTOR;
+
+                    let q = ray.at(nearest_dist);
+                    let n = (q - sphere.center).normalize();
+                    let s = (light_origin - q).normalize();
+                    let diffuse = sphere.color * s.dot(n).max(0.0);
+                    (ambient + diffuse).clamp()
+                },
+                None => Color::BLACK
+            };
+
+            image.set_pixel(x, y, color);
         }
     }
 
