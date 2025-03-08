@@ -66,7 +66,7 @@ fn render_spheres() -> Image {
     ];
 
     let lights = [
-        Light::new(Vec3::new(-10.0, 15.0, 12.0), Color::rgb(0.992, 0.973, 0.918), 1.0),
+        Light::new(Vec3::new(-10.0, 7.0, 12.0), Color::rgb(0.992, 0.973, 0.918), 1.0),
     ];
 
     let camera = Camera::new(1.0);
