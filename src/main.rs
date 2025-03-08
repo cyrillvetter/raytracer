@@ -72,13 +72,13 @@ fn render_spheres() -> Image {
 
     for x in 0..IMAGE_WIDTH {
         for y in 0..IMAGE_HEIGHT {
-            let pixel = camera.in_world(x, y);
-            let ray = Ray::new(pixel, ray_dir);
+            let world_coordinates = camera.in_world(x, y);
+            let ray = Ray::new(world_coordinates, ray_dir);
 
             let mut nearest_dist = f32::INFINITY;
             let mut color = Color::BLACK;
 
-            for object in objects.iter() {
+            for object in &objects {
                 match object.hit(&ray) {
                     Some(dist) if dist < nearest_dist => {
                         nearest_dist = dist;
