@@ -4,6 +4,7 @@ mod image;
 mod ray;
 mod hittable;
 mod camera;
+mod light;
 
 use std::time::Instant;
 use minifb::{Window, WindowOptions, Key, KeyRepeat};
@@ -14,14 +15,13 @@ use crate::color::Color;
 use crate::hittable::{Hittable, sphere::Sphere};
 use crate::ray::Ray;
 use crate::camera::Camera;
+use crate::light::Light;
 
 const WINDOW_WIDTH: u32 = 1920;
 const WINDOW_HEIGHT: u32 = 1080;
 
 const IMAGE_WIDTH: u32 = 1920;
 const IMAGE_HEIGHT: u32 = 1080;
-
-const LIGHT_ORIGIN: Vec3 = Vec3::new(-10.0, 7.0, 12.0);
 
 static OUT_PATH: &str = "out/image.png";
 
@@ -65,6 +65,10 @@ fn render_spheres() -> Image {
         Box::new(Sphere::new(Vec3::new(0.575, 0.0, -1.0), 0.25, Color::rgb_u8(54, 55, 207))),
     ];
 
+    let lights = [
+        Light::new(Vec3::new(-10.0, 15.0, 12.0), Color::rgb(0.992, 0.973, 0.918), 1.0),
+    ];
+
     let camera = Camera::new(1.0);
 
     let mut image = Image::blank(IMAGE_WIDTH, IMAGE_HEIGHT);
@@ -82,7 +86,7 @@ fn render_spheres() -> Image {
                 match object.hit(&ray) {
                     Some(dist) if dist < nearest_dist => {
                         nearest_dist = dist;
-                        color = object.get_color(ray.at(dist));
+                        color = object.get_color(ray.at(dist), &lights);
                     },
                     _ => ()
                 };

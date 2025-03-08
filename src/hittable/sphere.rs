@@ -1,8 +1,8 @@
-use crate::vec3::Vec3;
-use crate::color::Color;
-use crate::ray::Ray;
+use crate::Vec3;
+use crate::Color;
+use crate::Ray;
+use crate::Light;
 
-use crate::LIGHT_ORIGIN;
 use super::Hittable;
 
 const AMBIENT_FACTOR: f32 = 0.04;
@@ -36,12 +36,16 @@ impl Hittable for Sphere {
         }
     }
 
-    fn get_color(&self, q: Vec3) -> Color {
-        let ambient = self.color * AMBIENT_FACTOR;
-
+    fn get_color(&self, q: Vec3, lights: &[Light]) -> Color {
+        let mut color = self.color * AMBIENT_FACTOR;
         let n = (q - self.center).normalize();
-        let s = (LIGHT_ORIGIN - q).normalize();
-        let diffuse = self.color * s.dot(n).max(0.0);
-        (ambient + diffuse).clamp()
+
+        for light in lights {
+            let s = (light.origin - q).normalize();
+            let diffuse = self.color * s.dot(n).max(0.0) * light.color * light.intensity;
+            color += diffuse
+        }
+
+        color.clamp()
     }
 }
