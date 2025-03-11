@@ -1,5 +1,5 @@
 use crate::math::Vec3;
-use crate::color::Color;
+use crate::Color;
 
 pub struct Light {
     pub origin: Vec3,
