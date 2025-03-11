@@ -5,7 +5,7 @@ use crate::Light;
 
 use super::Hittable;
 
-const AMBIENT_FACTOR: f32 = 0.04;
+const AMBIENT_FACTOR: f32 = 0.05;
 
 #[derive(Debug, Clone)]
 pub struct Sphere {
