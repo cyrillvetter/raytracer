@@ -17,11 +17,11 @@ use crate::hittable::{Hittable, sphere::Sphere};
 use crate::ray::Ray;
 use crate::camera::Camera;
 
-const WINDOW_WIDTH: u32 = 1920;
-const WINDOW_HEIGHT: u32 = 1080;
+const WINDOW_WIDTH: u32 = 1280;
+const WINDOW_HEIGHT: u32 = 720;
 
-const IMAGE_WIDTH: u32 = 1920;
-const IMAGE_HEIGHT: u32 = 1080;
+const IMAGE_WIDTH: u32 = 1280;
+const IMAGE_HEIGHT: u32 = 720;
 
 const LIGHT_ORIGIN: Vec3 = Vec3::new(-10.0, 7.0, 10.0);
 
@@ -62,21 +62,21 @@ fn show_image(image: &Image) {
 }
 
 fn render_spheres() -> Image {
-    const OBJECTS_AMOUNT: usize = 10000;
+    const OBJECTS_AMOUNT: usize = 1000;
     let mut rng = rand::rng();
-    let mut objects: Vec<Sphere> = Vec::with_capacity(OBJECTS_AMOUNT);
+    let mut objects: Vec<Box<dyn Hittable + Sync>> = Vec::with_capacity(OBJECTS_AMOUNT);
 
     for _ in 0..OBJECTS_AMOUNT {
         let x = rng.random_range(-0.9..0.9);
         let y = rng.random_range(-0.50..0.50);
         let z = rng.random_range(1.0..2.0);
-        let radius = rng.random_range(0.0075..0.025);
+        let radius = rng.random_range(0.02..0.075);
 
         let r = rng.random();
         let g = rng.random();
         let b = rng.random();
 
-        objects.push(Sphere::new(Vec3::new(x, y, z), radius, Color::rgb(r, g, b)));
+        objects.push(Box::new(Sphere::new(Vec3::new(x, y, z), radius, Color::rgb(r, g, b))));
     }
 
     let camera = Camera::new(1.0);
@@ -93,11 +93,10 @@ fn render_spheres() -> Image {
     Image::new(IMAGE_WIDTH as u32, IMAGE_HEIGHT as u32, pixels)
 }
 
-fn render_line(pixels: &mut [u32], y: u32, camera: &Camera, objects: &Vec<Sphere>) {
+fn render_line(pixels: &mut [u32], y: u32, camera: &Camera, objects: &Vec<Box<dyn Hittable + Sync>>) {
     let ray_dir = Vec3::new(0.0, 0.0, -1.0).normalize();
 
     for x in 0..pixels.len() {
-
         let pixel = camera.in_world(x as u32, y);
         let ray = Ray::new(pixel, ray_dir);
 
