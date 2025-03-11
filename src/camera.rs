@@ -1,5 +1,5 @@
 use crate::{IMAGE_WIDTH, IMAGE_HEIGHT};
-use crate::vec3::Vec3;
+use crate::math::Vec3;
 
 pub struct Camera {
     half_width: f32,

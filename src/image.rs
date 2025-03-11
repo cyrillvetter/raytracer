@@ -2,7 +2,7 @@ use std::path::Path;
 use std::fs::File;
 use std::io::BufWriter;
 
-use crate::color::Color;
+use crate::Color;
 
 pub struct Image {
     pub width: u32,

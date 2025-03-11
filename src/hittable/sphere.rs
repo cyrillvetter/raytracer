@@ -1,7 +1,7 @@
-use crate::vec3::Vec3;
-use crate::color::Color;
-use crate::ray::Ray;
-use crate::light::Light;
+use crate::math::Vec3;
+use crate::Color;
+use crate::math::Ray;
+use crate::Light;
 
 use super::{Hittable, AMBIENT_FACTOR};
 

@@ -1,9 +1,9 @@
 use crate::{IMAGE_WIDTH, IMAGE_HEIGHT};
+use crate::math::Vec3;
+use crate::math::Ray;
 use crate::image::Image;
-use crate::vec3::Vec3;
 use crate::color::Color;
 use crate::hittable::{Hittable, sphere::Sphere};
-use crate::ray::Ray;
 use crate::camera::Camera;
 use crate::light::Light;
 

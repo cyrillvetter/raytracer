@@ -1,9 +1,9 @@
 pub mod sphere;
 
-use crate::ray::Ray;
-use crate::color::Color;
-use crate::vec3::Vec3;
-use crate::light::Light;
+use crate::math::Ray;
+use crate::Color;
+use crate::math::Vec3;
+use crate::Light;
 
 const AMBIENT_FACTOR: f32 = 0.05;
 

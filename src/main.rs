@@ -1,23 +1,12 @@
-mod render;
-mod vec3;
-mod color;
-mod image;
-mod ray;
-mod hittable;
-mod camera;
-mod light;
-
 use std::time::Instant;
 use minifb::{Window, WindowOptions, Key, KeyRepeat};
 
-use crate::render::render_image;
-use crate::image::Image;
+use raytracer::{IMAGE_WIDTH, IMAGE_HEIGHT};
+use raytracer::render_image;
+use raytracer::Image;
 
 const WINDOW_WIDTH: u32 = 1280;
 const WINDOW_HEIGHT: u32 = 720;
-
-const IMAGE_WIDTH: u32 = 1280;
-const IMAGE_HEIGHT: u32 = 720;
 
 static OUT_PATH: &str = "out/image.png";
 
