@@ -1,11 +1,9 @@
-use crate::Vec3;
-use crate::Color;
-use crate::Ray;
-use crate::Light;
+use crate::vec3::Vec3;
+use crate::color::Color;
+use crate::ray::Ray;
+use crate::light::Light;
 
-use super::Hittable;
-
-const AMBIENT_FACTOR: f32 = 0.05;
+use super::{Hittable, AMBIENT_FACTOR};
 
 #[derive(Debug, Clone)]
 pub struct Sphere {

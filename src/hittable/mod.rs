@@ -1,9 +1,11 @@
 pub mod sphere;
 
-use crate::Ray;
-use crate::Color;
-use crate::Vec3;
-use crate::Light;
+use crate::ray::Ray;
+use crate::color::Color;
+use crate::vec3::Vec3;
+use crate::light::Light;
+
+const AMBIENT_FACTOR: f32 = 0.05;
 
 pub trait Hittable {
     fn hit(&self, ray: &Ray) -> Option<f32>;
