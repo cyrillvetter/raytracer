@@ -1,4 +1,5 @@
 pub mod sphere;
+pub use sphere::Sphere;
 
 use crate::math::Ray;
 use crate::Color;

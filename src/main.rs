@@ -1,7 +1,6 @@
 use std::time::Instant;
 use minifb::{Window, WindowOptions, Key, KeyRepeat};
 
-use raytracer::{IMAGE_WIDTH, IMAGE_HEIGHT};
 use raytracer::render_image;
 use raytracer::Image;
 
@@ -38,7 +37,7 @@ fn show_image(image: &Image) {
         }
 
         window
-            .update_with_buffer(&image.bytes, IMAGE_WIDTH as usize, IMAGE_HEIGHT as usize)
+            .update_with_buffer(&image.bytes, image.width as usize, image.height as usize)
             .expect("Failed to set buffer");
     }
 }

@@ -17,5 +17,5 @@ pub use camera::Camera;
 mod light;
 pub use light::Light;
 
-pub const IMAGE_WIDTH: u32 = 1280;
-pub const IMAGE_HEIGHT: u32 = 720;
+const IMAGE_WIDTH: u32 = 1280;
+const IMAGE_HEIGHT: u32 = 720;

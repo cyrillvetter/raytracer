@@ -17,6 +17,10 @@ impl Color {
     pub const GREEN: Self = Self::rgb(0.0, 1.0, 0.0);
     pub const BLUE: Self = Self::rgb(0.0, 0.0, 1.0);
 
+    pub const fn rgb(r: f32, g: f32, b: f32) -> Self {
+        Self { r, g, b }
+    }
+
     pub const fn gray(v: f32) -> Self {
         Self { r: v, g: v, b: v }
     }
@@ -24,10 +28,6 @@ impl Color {
     pub fn gray_u8(v: u8) -> Self {
         let v = (v as f32) / 255.0;
         Self { r: v, g: v, b: v }
-    }
-
-    pub const fn rgb(r: f32, g: f32, b: f32) -> Self {
-        Self { r, g, b }
     }
 
     pub fn rgb_u8(r: u8, g: u8, b: u8) -> Self {
@@ -39,11 +39,11 @@ impl Color {
     }
 
     // TODO: Remove this clamp function and always clamp the values between 0 and 1.
-    pub fn clamp(self) -> Self {
+    pub fn clamp(&self) -> Self {
         Self {
             r: self.r.clamp(0.0, 1.0),
             g: self.g.clamp(0.0, 1.0),
-            b: self.b.clamp(0.0, 1.0)
+            b: self.b.clamp(0.0, 1.0),
         }
     }
 }

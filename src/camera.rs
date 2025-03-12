@@ -1,5 +1,8 @@
 use crate::{IMAGE_WIDTH, IMAGE_HEIGHT};
 use crate::math::Vec3;
+use crate::math::Ray;
+
+const RAY_DIR: Vec3 = Vec3::new(0.0, 0.0, -1.0);
 
 pub struct Camera {
     half_width: f32,
@@ -16,9 +19,9 @@ impl Camera {
         }
     }
 
-    pub fn in_world(&self, x: u32, y: u32) -> Vec3 {
+    pub fn ray_from(&self, x: u32, y:u32) -> Ray {
         let world_x = ((x as f32) - self.half_width) * self.meter_per_pixel;
         let world_y = (self.half_height - (y as f32)) * self.meter_per_pixel;
-        Vec3::new(world_x, world_y, 0.0)
+        Ray::new(Vec3::new(world_x, world_y, 0.0), RAY_DIR)
     }
 }

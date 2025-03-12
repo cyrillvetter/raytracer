@@ -1,9 +1,8 @@
 use crate::{IMAGE_WIDTH, IMAGE_HEIGHT};
 use crate::math::Vec3;
-use crate::math::Ray;
 use crate::image::Image;
 use crate::color::Color;
-use crate::hittable::{Hittable, sphere::Sphere};
+use crate::hittable::{Hittable, Sphere};
 use crate::camera::Camera;
 use crate::light::Light;
 
@@ -19,14 +18,11 @@ pub fn render_image() -> Image {
     ];
 
     let camera = Camera::new(1.0);
-
     let mut image = Image::blank(IMAGE_WIDTH, IMAGE_HEIGHT);
-    let ray_dir = Vec3::new(0.0, 0.0, -1.0).normalize();
 
     for x in 0..IMAGE_WIDTH {
         for y in 0..IMAGE_HEIGHT {
-            let world_coordinates = camera.in_world(x, y);
-            let ray = Ray::new(world_coordinates, ray_dir);
+            let ray = camera.ray_from(x, y);
 
             let mut nearest_dist = f32::INFINITY;
             let mut color = Color::BLACK;
