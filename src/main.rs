@@ -31,7 +31,7 @@ fn show_image(image: &Image) {
     let mut image_saved = false;
 
     while window.is_open() && !window.is_key_pressed(Key::Escape, KeyRepeat::No) {
-        if !image_saved && (window.is_key_down(Key::LeftCtrl) || window.is_key_down(Key::RightCtrl)) && window.is_key_down(Key::S) {
+        if !image_saved && window.is_key_pressed(Key::Enter, KeyRepeat::No) {
             image_saved = true;
             image.save_png(OUT_PATH);
             println!("Image saved to: {}", OUT_PATH);
