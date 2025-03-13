@@ -34,7 +34,7 @@ pub fn render_image() -> Image {
                         color = object.get_color(ray.at(dist), &lights);
                     },
                     _ => ()
-                };
+                }
             }
 
             image.set_pixel(x, y, color);
