@@ -52,7 +52,7 @@ impl Vec3 {
     }
 
     pub fn length(self) -> f32 {
-        f32::sqrt(self.dot(self))
+        self.dot(self).sqrt()
     }
 
     pub fn normalize(self) -> Vec3 {

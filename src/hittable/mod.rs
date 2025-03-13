@@ -1,6 +1,9 @@
 pub mod sphere;
 pub use sphere::Sphere;
 
+pub mod triangle;
+pub use triangle::Triangle;
+
 use crate::math::Ray;
 use crate::Color;
 use crate::math::Vec3;
