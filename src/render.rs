@@ -11,7 +11,7 @@ pub fn render_image() -> Image {
         Box::new(Sphere::new(Vec3::new(-0.575, 0.0, -1.0), 0.25, Color::rgb_u8(207, 54, 67))),
         Box::new(Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.25, Color::rgb_u8(55, 184, 57))),
         Box::new(Sphere::new(Vec3::new(0.575, 0.0, -1.0), 0.25, Color::rgb_u8(54, 55, 207))),
-        Box::new(Triangle::new(Vec3::new(-0.1, 0.0, -0.1), Vec3::new(0.1, 0.1, -0.1), Vec3::new(-0.1, -0.1, -0.1))),
+        Box::new(Triangle::new(Vec3::new(0.0, 0.0, -0.25), Vec3::new(0.5, 0.0, -0.25), Vec3::new(0.0, 0.5, -0.25), Color::RED)),
     ];
 
     let lights = [
