@@ -32,7 +32,7 @@ impl Hittable for Triangle {
             return None;
         }
 
-        let inv_det = 1.0 / det;
+        let inv_det = det.recip();
         let s = ray.origin - self.v1;
         let u = inv_det * s.dot(ray_cross_e2);
         if u < 0.0 || u > 1.0 {
