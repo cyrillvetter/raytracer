@@ -4,9 +4,7 @@ pub use sphere::Sphere;
 pub mod triangle;
 pub use triangle::Triangle;
 
-use crate::math::Ray;
-use crate::Color;
-use crate::math::Vec3;
+use crate::primitive::*;
 use crate::Light;
 
 const AMBIENT_FACTOR: f32 = 0.05;

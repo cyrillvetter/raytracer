@@ -1,7 +1,6 @@
 use crate::{IMAGE_WIDTH, IMAGE_HEIGHT};
-use crate::math::Vec3;
+use crate::primitive::*;
 use crate::image::Image;
-use crate::color::Color;
 use crate::hittable::{Hittable, Sphere};
 use crate::camera::Camera;
 use crate::light::Light;
@@ -43,4 +42,3 @@ pub fn render_image() -> Image {
 
     image
 }
-

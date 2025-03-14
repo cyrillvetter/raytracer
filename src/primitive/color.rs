@@ -1,7 +1,7 @@
 use core::ops::*;
 use std::fmt;
 
-use crate::math::Vec3;
+use crate::primitive::*;
 
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct Color {

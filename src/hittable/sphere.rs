@@ -1,6 +1,4 @@
-use crate::math::Vec3;
-use crate::Color;
-use crate::math::Ray;
+use crate::primitive::*;
 use crate::Light;
 
 use super::{Hittable, AMBIENT_FACTOR};

@@ -1,6 +1,5 @@
+use crate::primitive::*;
 use crate::{IMAGE_WIDTH, IMAGE_HEIGHT};
-use crate::math::Vec3;
-use crate::math::Ray;
 
 const RAY_DIR: Vec3 = Vec3::new(0.0, 0.0, -1.0);
 

@@ -1,5 +1,4 @@
-use crate::math::Vec3;
-use crate::Color;
+use crate::primitive::*;
 
 #[derive(Debug, Clone)]
 pub struct Light {

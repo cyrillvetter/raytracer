@@ -3,3 +3,6 @@ pub use vec3::Vec3;
 
 pub mod ray;
 pub use ray::Ray;
+
+pub mod color;
+pub use color::Color;

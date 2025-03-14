@@ -1,10 +1,7 @@
-mod math;
+mod primitive;
 
 mod render;
 pub use render::render_image;
-
-mod color;
-pub use color::Color;
 
 mod image;
 pub use image::Image;
