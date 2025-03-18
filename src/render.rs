@@ -1,9 +1,11 @@
 use crate::{IMAGE_WIDTH, IMAGE_HEIGHT};
 use crate::primitive::*;
 use crate::image::Image;
-use crate::hittable::{Hittable, Sphere};
+use crate::hittable::{Hittable, Sphere, Triangle};
 use crate::camera::Camera;
 use crate::light::Light;
+
+const BACKGROUND: Color = Color::BLACK;
 
 pub fn render_image() -> Image {
     let objects: Vec<Box<dyn Hittable>> = vec![
@@ -24,17 +26,22 @@ pub fn render_image() -> Image {
             let ray = camera.ray_from(x, y);
 
             let mut nearest_dist = f32::INFINITY;
-            let mut color = Color::BLACK;
+            let mut nearest_object: Option<&Box<dyn Hittable>> = None;
 
             for object in &objects {
                 match object.hit(&ray) {
                     Some(dist) if dist < nearest_dist => {
                         nearest_dist = dist;
-                        color = object.get_color(ray.at(dist), &lights);
+                        nearest_object = Some(object);
                     },
                     _ => ()
                 }
             }
+
+            let color = match nearest_object {
+                Some(object) => object.get_color(ray.at(nearest_dist), &lights),
+                None => BACKGROUND
+            };
 
             image.set_pixel(x, y, color);
         }
