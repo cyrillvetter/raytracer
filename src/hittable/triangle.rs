@@ -1,7 +1,7 @@
 use crate::primitive::*;
 use crate::scene::Scene;
 
-use super::Hittable;
+use super::{Hittable, HitRecord};
 
 #[derive(Debug, Clone)]
 pub struct Triangle {
@@ -19,7 +19,7 @@ impl Triangle {
 
 impl Hittable for Triangle {
     // Möller–Trumbore intersection algorithm.
-    fn hit(&self, ray: &Ray) -> Option<f32> {
+    fn hit(&self, ray: &Ray) -> Option<HitRecord> {
         let e1 = self.v2 - self.v1;
         let e2 = self.v3 - self.v1;
 
@@ -44,13 +44,15 @@ impl Hittable for Triangle {
 
         let t = inv_det * e2.dot(s_cross_e1);
         if t > f32::EPSILON {
-            Some(t)
+            let hit = ray.at(t);
+            let normal = self.normal;
+            Some(HitRecord::new(t, hit, normal))
         } else {
             None
         }
     }
 
-    fn get_color(&self, _q: Vec3, _scene: &Scene) -> Color {
+    fn get_color(&self, _r: HitRecord, _scene: &Scene) -> Color {
         unimplemented!()
     }
 }

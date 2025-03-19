@@ -1,7 +1,7 @@
 use crate::primitive::*;
 use crate::scene::Scene;
 
-use super::{Hittable, AMBIENT_FACTOR};
+use super::{Hittable, HitRecord, AMBIENT_FACTOR};
 
 #[derive(Debug, Clone)]
 pub struct Sphere {
@@ -17,7 +17,7 @@ impl Sphere {
 }
 
 impl Hittable for Sphere {
-    fn hit(&self, ray: &Ray) -> Option<f32> {
+    fn hit(&self, ray: &Ray) -> Option<HitRecord> {
         let v = ray.origin - self.center;
         let a = ray.direction.length_squared();
         let b = 2.0 * (ray.direction.dot(v));
@@ -28,17 +28,19 @@ impl Hittable for Sphere {
         if discriminant < 0.0 {
             None
         } else {
-            Some((-b - discriminant.sqrt()) / (2.0 * a))
+            let t = (-b - discriminant.sqrt()) / (2.0 * a);
+            let hit = ray.at(t);
+            let normal = (hit - self.center).normalize();
+            Some(HitRecord::new(t, hit, normal))
         }
     }
 
-    fn get_color(&self, q: Vec3, scene: &Scene) -> Color {
+    fn get_color(&self, r: HitRecord, scene: &Scene) -> Color {
         let mut color = self.color * AMBIENT_FACTOR;
-        let n = (q - self.center).normalize();
 
         for light in scene.lights.iter() {
-            let s = (light.origin - q).normalize();
-            let diffuse = self.color * s.dot(n).max(0.0) * light.color * light.intensity;
+            let s = (light.origin - r.hit).normalize();
+            let diffuse = self.color * s.dot(r.normal).max(0.0) * light.color * light.intensity;
             color += diffuse
         }
 
