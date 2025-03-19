@@ -25,6 +25,7 @@ impl Scene {
             for primitive in mesh.primitives() {
                 let reader = primitive.reader(|buffer| Some(&buffers[buffer.index()]));
                 let positions: Vec<Vec3> = reader.read_positions().unwrap().map(|a| a.into()).collect();
+                let normals: Vec<Vec3> = reader.read_normals().unwrap().map(|a| a.into()).collect();
 
                 let Some(U16(index_buffer)) = reader.read_indices() else {
                     panic!("Index type not supported");
@@ -35,7 +36,7 @@ impl Scene {
                 let mut triangles: Vec<Triangle> = Vec::with_capacity(triangle_amount);
 
                 for i in (0..indices.len()).step_by(3) {
-                    triangles.push(Triangle::new(positions[indices[i]], positions[indices[i + 1]], positions[indices[i + 2]]));
+                    triangles.push(Triangle::new(positions[indices[i]], positions[indices[i + 1]], positions[indices[i + 2]], normals[indices[i]]));
                 }
 
                 objects.push(Box::new(Mesh::new(triangles, Color::WHITE)));

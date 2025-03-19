@@ -12,8 +12,8 @@ pub struct Triangle {
 }
 
 impl Triangle {
-    pub fn new(v1: Vec3, v2: Vec3, v3: Vec3) -> Self {
-        Self { v1, v2, v3, normal: v2.cross(v3) }
+    pub fn new(v1: Vec3, v2: Vec3, v3: Vec3, normal: Vec3) -> Self {
+        Self { v1, v2, v3, normal }
     }
 }
 

@@ -7,8 +7,12 @@ use crate::scene::{Scene, Camera, Light};
 const BACKGROUND: Color = Color::BLACK;
 
 pub fn render_image() -> Image {
-    let scene = Scene::import("scenes/cube.gltf");
-    //let scene = create_scene();
+    let mut scene = Scene::import("scenes/cube.gltf");
+
+    // Temporarily add spheres manually.
+    scene.objects.push(Box::new(Sphere::new(Vec3::new(-0.575, 0.0, -1.0), 0.25, Color::rgb_u8(207, 54, 67))));
+    scene.objects.push(Box::new(Sphere::new(Vec3::new(0.575, 0.0, -1.0), 0.25, Color::rgb_u8(54, 55, 207))));
+
     let mut image = Image::blank(IMAGE_WIDTH, IMAGE_HEIGHT);
 
     for x in 0..IMAGE_WIDTH {
@@ -42,6 +46,7 @@ pub fn render_image() -> Image {
     image
 }
 
+#[allow(dead_code)]
 fn create_scene() -> Scene {
     Scene {
         camera: Camera::new(1.0),
