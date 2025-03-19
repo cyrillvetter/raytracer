@@ -44,9 +44,7 @@ impl Hittable for Triangle {
 
         let t = inv_det * e2.dot(s_cross_e1);
         if t > f32::EPSILON {
-            let hit = ray.at(t);
-            let normal = self.normal;
-            Some(HitRecord::new(t, hit, normal))
+            Some(HitRecord::new(t, ray.at(t), self.normal))
         } else {
             None
         }

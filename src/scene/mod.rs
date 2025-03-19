@@ -39,14 +39,14 @@ impl Scene {
                     triangles.push(Triangle::new(positions[indices[i]], positions[indices[i + 1]], positions[indices[i + 2]], normals[indices[i]]));
                 }
 
-                objects.push(Box::new(Mesh::new(triangles, Color::WHITE)));
+                objects.push(Box::new(Mesh::new(triangles, Color::rgb_u8(54, 55, 207))));
             }
         }
 
         Scene {
             camera: Camera::new(1.0),
             lights: vec![
-                Light::new(Vec3::new(-10.0, 7.0, 12.0), Color::rgb(0.992, 0.973, 0.918), 1.0),
+                Light::new(Vec3::new(-10.0, 7.0, 18.0), Color::rgb(0.992, 0.973, 0.918), 1.0),
             ],
             objects
         }
