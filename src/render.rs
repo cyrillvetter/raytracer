@@ -7,7 +7,8 @@ use crate::scene::{Scene, Camera, Light};
 const BACKGROUND: Color = Color::BLACK;
 
 pub fn render_image() -> Image {
-    let scene = create_scene();
+    let scene = Scene::import("scenes/cube.gltf");
+    //let scene = create_scene();
     let mut image = Image::blank(IMAGE_WIDTH, IMAGE_HEIGHT);
 
     for x in 0..IMAGE_WIDTH {

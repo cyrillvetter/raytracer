@@ -37,6 +37,6 @@ impl Hittable for Mesh {
     }
 
     fn get_color(&self, _q: Vec3, _scene: &Scene) -> Color {
-        Color::BLACK
+        self.color
     }
 }

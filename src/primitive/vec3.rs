@@ -72,6 +72,12 @@ impl fmt::Display for Vec3 {
     }
 }
 
+impl From<[f32; 3]> for Vec3 {
+    fn from(a: [f32; 3]) -> Self {
+        Self::new(a[0], a[1], a[2])
+    }
+}
+
 impl Div<Vec3> for Vec3 {
     type Output = Self;
 

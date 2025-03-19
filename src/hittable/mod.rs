@@ -4,8 +4,8 @@ pub use sphere::Sphere;
 pub mod mesh;
 pub use mesh::Mesh;
 
-mod triangle;
-use triangle::Triangle;
+pub mod triangle;
+pub use triangle::Triangle;
 
 use crate::primitive::*;
 use crate::scene::Scene;
