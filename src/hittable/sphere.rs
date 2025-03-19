@@ -1,5 +1,5 @@
 use crate::primitive::*;
-use crate::Light;
+use crate::scene::Scene;
 
 use super::{Hittable, AMBIENT_FACTOR};
 
@@ -32,11 +32,11 @@ impl Hittable for Sphere {
         }
     }
 
-    fn get_color(&self, q: Vec3, lights: &[Light]) -> Color {
+    fn get_color(&self, q: Vec3, scene: &Scene) -> Color {
         let mut color = self.color * AMBIENT_FACTOR;
         let n = (q - self.center).normalize();
 
-        for light in lights {
+        for light in scene.lights.iter() {
             let s = (light.origin - q).normalize();
             let diffuse = self.color * s.dot(n).max(0.0) * light.color * light.intensity;
             color += diffuse

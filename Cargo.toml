@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+gltf = { version = "1.4.1", features = ["KHR_lights_punctual"] }
 minifb = "0.28.0"
 png = "0.17.16"
 
