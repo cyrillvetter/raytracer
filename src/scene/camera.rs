@@ -20,7 +20,7 @@ impl Camera {
         }
     }
 
-    pub fn ray_from(&self, x: u32, y:u32) -> Ray {
+    pub fn ray_from(&self, x: u32, y: u32) -> Ray {
         let world_x = ((x as f32) - self.half_width) * self.meter_per_pixel;
         let world_y = (self.half_height - (y as f32)) * self.meter_per_pixel;
         Ray::new(Vec3::new(world_x, world_y, 0.0), RAY_DIR)

@@ -9,7 +9,7 @@ use glam::Vec3;
 const BACKGROUND: Color = Color::BLACK;
 
 pub fn render_image() -> Image {
-    let scene = Scene::import("scenes/icospheres.gltf");
+    let scene = Scene::import("scenes/monkey.gltf");
     let mut image = Image::blank(IMAGE_WIDTH, IMAGE_HEIGHT);
 
     for x in 0..IMAGE_WIDTH {
