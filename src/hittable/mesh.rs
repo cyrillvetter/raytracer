@@ -1,6 +1,5 @@
 use crate::primitive::*;
 use crate::scene::Scene;
-
 use super::{Hittable, HitRecord, Triangle, AMBIENT_FACTOR};
 
 pub struct Mesh {

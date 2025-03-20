@@ -4,10 +4,11 @@ pub use camera::Camera;
 pub mod light;
 pub use light::Light;
 
-use crate::primitive::*;
+use crate::primitive::Color;
 use crate::hittable::{Hittable, Mesh, Triangle};
 
 use gltf::mesh::util::ReadIndices::U16;
+use glam::Vec3;
 
 pub struct Scene {
     pub camera: Camera,

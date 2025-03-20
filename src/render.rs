@@ -1,8 +1,10 @@
 use crate::{IMAGE_WIDTH, IMAGE_HEIGHT};
-use crate::primitive::*;
+use crate::primitive::Color;
 use crate::Image;
 use crate::hittable::{Hittable, HitRecord, Sphere};
 use crate::scene::{Scene, Camera, Light};
+
+use glam::Vec3;
 
 const BACKGROUND: Color = Color::BLACK;
 

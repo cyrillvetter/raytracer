@@ -1,7 +1,8 @@
 use crate::primitive::*;
 use crate::scene::Scene;
-
 use super::{Hittable, HitRecord, AMBIENT_FACTOR};
+
+use glam::Vec3;
 
 #[derive(Debug, Clone)]
 pub struct Sphere {

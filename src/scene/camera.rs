@@ -1,5 +1,7 @@
-use crate::primitive::*;
+use crate::primitive::Ray;
 use crate::{IMAGE_WIDTH, IMAGE_HEIGHT};
+
+use glam::Vec3;
 
 const RAY_DIR: Vec3 = Vec3::new(0.0, 0.0, -1.0);
 

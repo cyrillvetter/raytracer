@@ -10,6 +10,8 @@ pub use triangle::Triangle;
 use crate::primitive::*;
 use crate::scene::Scene;
 
+use glam::Vec3;
+
 const AMBIENT_FACTOR: f32 = 0.05;
 
 #[derive(Debug, Clone, Copy, PartialEq)]
