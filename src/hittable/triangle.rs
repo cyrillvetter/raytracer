@@ -19,33 +19,22 @@ impl Triangle {
 }
 
 impl Hittable for Triangle {
-    // Möller–Trumbore intersection algorithm.
+    // Barycentric coordinates intersection.
     fn hit(&self, ray: &Ray) -> Option<HitRecord> {
-        let e1 = self.v2 - self.v1;
-        let e2 = self.v3 - self.v1;
+        let t = ((self.v1 - ray.origin).dot(self.normal)) / ray.direction.dot(self.normal);
+        let p = ray.at(t);
+        let calc_area = |v1: Vec3, v2: Vec3| {
+            0.5 * (v1.cross(v2)).length()
+        };
 
-        let ray_cross_e2 = ray.direction.cross(e2);
-        let det = e1.dot(ray_cross_e2);
-        if det > -f32::EPSILON && det < f32::EPSILON {
-            return None;
-        }
+        let triangle_area = calc_area(self.v1, self.v2);
 
-        let inv_det = det.recip();
-        let s = ray.origin - self.v1;
-        let u = inv_det * s.dot(ray_cross_e2);
-        if u < 0.0 || u > 1.0 {
-            return None;
-        }
+        let t1 = calc_area(p, self.v2) / triangle_area;
+        let t2 = calc_area(p, self.v3) / triangle_area;
+        let t3 = calc_area(p, self.v1) / triangle_area;
 
-        let s_cross_e1 = s.cross(e1);
-        let v = inv_det * ray.direction.dot(s_cross_e1);
-        if v < 0.0 || u + v > 1.0 {
-            return None;
-        }
-
-        let t = inv_det * e2.dot(s_cross_e1);
-        if t > f32::EPSILON {
-            Some(HitRecord::new(t, ray.at(t), self.normal))
+        if t1 >= 0.0 && t2 >= 0.0 && t3 >= 0.0 && (t1 + t2 + t3) == 1.0 {
+            Some(HitRecord::new(t, p, self.normal))
         } else {
             None
         }
