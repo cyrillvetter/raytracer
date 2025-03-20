@@ -29,5 +29,6 @@ impl HitRecord {
 
 pub trait Hittable {
     fn hit(&self, ray: &Ray) -> Option<HitRecord>;
+    // TODO: Remove get_color function.
     fn get_color(&self, r: HitRecord, scene: &Scene) -> Color;
 }
