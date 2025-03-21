@@ -21,15 +21,33 @@ impl Triangle {
 impl Hittable for Triangle {
     // Inverse matrix intersection.
     fn hit(&self, ray: &Ray) -> Option<HitRecord> {
-        let t = (self.v1 - ray.origin).dot(self.normal) / ray.direction.dot(self.normal);
-        let p = ray.at(t);
+        let denominator = ray.direction.dot(self.normal);
+        if denominator > -f32::EPSILON && denominator < f32::EPSILON {
+            return None;
+        }
 
-        let v1 = (self.v2 - p).cross(self.v2 - self.v1);
-        let v2 = (self.v3 - p).cross(self.v3 - self.v2);
-        let v3 = (self.v1 - p).cross(self.v1 - self.v3);
+        let lambda = (self.v1 - ray.origin).dot(self.normal) / denominator;
 
-        if v1.z.signum() == v2.z.signum() && v2.z.signum() == v3.z.signum() {
-            Some(HitRecord::new(t, p, self.normal))
+        if lambda <= 0.0 {
+            return None;
+        }
+
+        let q = ray.at(lambda);
+
+        let b_p = q - self.v2;
+        let c_p = q - self.v3;
+        let a_p = q - self.v1;
+
+        let b_a = self.v1 - self.v2;
+        let c_b = self.v2 - self.v3;
+        let a_c = self.v3 - self.v1;
+
+        let c1 = b_p.cross(b_a);
+        let c2 = c_p.cross(c_b);
+        let c3 = a_p.cross(a_c);
+
+        if c1.z.signum() == c2.z.signum() && c2.z.signum() == c3.z.signum() {
+            Some(HitRecord::new(lambda, q, self.normal))
         } else {
             None
         }
