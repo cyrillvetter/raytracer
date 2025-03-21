@@ -2,7 +2,7 @@ use crate::primitive::*;
 use crate::scene::Scene;
 use super::{Hittable, HitRecord};
 
-use glam::{Vec3, Mat3};
+use glam::Vec3;
 
 #[derive(Debug, Clone)]
 pub struct Triangle {
@@ -21,14 +21,15 @@ impl Triangle {
 impl Hittable for Triangle {
     // Inverse matrix intersection.
     fn hit(&self, ray: &Ray) -> Option<HitRecord> {
-        let v = self.v3 - self.v1;
-        let w = self.v2 - self.v1;
-        let a = Mat3::from_cols(ray.direction, -v, -w);
-        let b = self.v1 - ray.origin;
+        let t = (self.v1 - ray.origin).dot(self.normal) / ray.direction.dot(self.normal);
+        let p = ray.at(t);
 
-        let r = a.inverse() * b;
-        if r.x >= 0.0 && r.y >= 0.0 && r.y <= 1.0 && r.z >= 0.0 && r.z <= 1.0 {
-            Some(HitRecord::new(r.x, ray.at(r.x), self.normal))
+        let v1 = (self.v2 - p).cross(self.v2 - self.v1);
+        let v2 = (self.v3 - p).cross(self.v3 - self.v2);
+        let v3 = (self.v1 - p).cross(self.v1 - self.v3);
+
+        if v1.z.signum() == v2.z.signum() && v2.z.signum() == v3.z.signum() {
+            Some(HitRecord::new(t, p, self.normal))
         } else {
             None
         }
