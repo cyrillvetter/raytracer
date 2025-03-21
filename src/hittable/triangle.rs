@@ -21,18 +21,7 @@ impl Triangle {
 impl Hittable for Triangle {
     // Inverse matrix intersection.
     fn hit(&self, ray: &Ray) -> Option<HitRecord> {
-        let t = (self.v1 - ray.origin).dot(self.normal) / ray.direction.dot(self.normal);
-        let p = ray.at(t);
-
-        let v1 = (self.v2 - p).cross(self.v2 - self.v1);
-        let v2 = (self.v3 - p).cross(self.v3 - self.v2);
-        let v3 = (self.v1 - p).cross(self.v1 - self.v3);
-
-        if v1.z.signum() == v2.z.signum() && v2.z.signum() == v3.z.signum() {
-            Some(HitRecord::new(t, p, self.normal))
-        } else {
-            None
-        }
+        todo!()
     }
 
     fn get_color(&self, _r: HitRecord, _scene: &Scene) -> Color {
