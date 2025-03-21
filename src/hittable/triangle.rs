@@ -19,15 +19,28 @@ impl Triangle {
 }
 
 impl Hittable for Triangle {
-    // Inverse matrix intersection.
+    // Equation system intersection.
     fn hit(&self, ray: &Ray) -> Option<HitRecord> {
         let v = self.v2 - self.v1;
         let w = self.v3- self.v1;
 
         let a = Mat3::from_cols(ray.direction, -v, -w);
+        let tmp0 = a.x_axis.cross(a.y_axis);
+        let det = a.z_axis.dot(tmp0);
+
+        if det > -f32::EPSILON && det < f32::EPSILON {
+            return None;
+        }
+
         let b = self.v1 - ray.origin;
 
-        let r = a.inverse() * b;
+        let tmp1 = a.y_axis.cross(a.z_axis);
+        let tmp2 = a.z_axis.cross(a.x_axis);
+
+        let inv_det = Vec3::splat(det.recip());
+        let inv = Mat3::from_cols(tmp1 * inv_det, tmp2 * inv_det, tmp0 * inv_det).transpose();
+        let r = inv * b;
+
         if r.x >= 0.0 && r.y >= 0.0 && r.z >= 0.0 && r.y + r.z <= 1.0 {
             Some(HitRecord::new(r.x, ray.at(r.x), self.normal))
         } else {
