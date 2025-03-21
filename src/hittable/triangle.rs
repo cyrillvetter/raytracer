@@ -33,25 +33,17 @@ impl Hittable for Triangle {
 
         let q = ray.at(lambda);
 
-        let v0 = self.v2 - self.v1;
-        let v1 = self.v3 - self.v1;
-        let v2 = q - self.v1;
+        let area = |p1: Vec3, p2: Vec3, p3: Vec3| {
+            0.5 * (p2 - p1).cross(p3 - p1).length()
+        };
 
-        let d00 = v0.dot(v0);
-        let d01 = v0.dot(v1);
-        let d11 = v1.dot(v1);
+        let triangle_area = area(self.v1, self.v2, self.v3);
+        let lambda1 = area(q, self.v2, self.v3) / triangle_area;
+        let lambda2 = area(q, self.v3, self.v1) / triangle_area;
+        let lambda3 = area(q, self.v1, self.v2) / triangle_area;
 
-        let discriminant = d00 * d11 - d01 * d01;
-        if discriminant > -f32::EPSILON && discriminant < f32::EPSILON {
-            return None;
-        }
-
-        let d20 = v2.dot(v0);
-        let d21 = v2.dot(v1);
-
-        let mu = (d11 * d20 - d01 * d21) / discriminant;
-        let tau = (d00 * d21 - d01 * d20) / discriminant;
-        if mu >= 0.0 && mu <= 1.0 && tau >= 0.0 && tau <= 1.0 && (mu + tau) <= 1.0 {
+        let r = lambda1 + lambda2 + lambda3 - 1.0;
+        if r < f32::EPSILON && r > -f32::EPSILON {
             Some(HitRecord::new(lambda, q, self.normal))
         } else {
             None
