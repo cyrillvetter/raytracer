@@ -1,6 +1,5 @@
 use crate::primitive::*;
-use crate::scene::Scene;
-use super::{Hittable, HitRecord, AMBIENT_FACTOR};
+use super::{Hittable, HitRecord};
 
 use glam::Vec3;
 
@@ -32,19 +31,7 @@ impl Hittable for Sphere {
             let t = (-b - discriminant.sqrt()) / (2.0 * a);
             let hit = ray.at(t);
             let normal = (hit - self.center).normalize();
-            Some(HitRecord::new(t, hit, normal))
+            Some(HitRecord::new(t, hit, normal, self.color))
         }
-    }
-
-    fn get_color(&self, r: HitRecord, scene: &Scene) -> Color {
-        let mut color = self.color * AMBIENT_FACTOR;
-
-        for light in scene.lights.iter() {
-            let s = (light.origin - r.hit).normalize();
-            let diffuse = self.color * s.dot(r.normal).max(0.0) * light.color * light.intensity;
-            color += diffuse
-        }
-
-        color.clamp()
     }
 }

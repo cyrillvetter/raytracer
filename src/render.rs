@@ -7,6 +7,7 @@ use crate::scene::{Scene, Camera, Light};
 use glam::Vec3;
 
 const BACKGROUND: Color = Color::BLACK;
+const AMBIENT_FACTOR: f32 = 0.05;
 
 pub fn render_image() -> Image {
     let scene = Scene::import("scenes/monkey.gltf");
@@ -41,6 +42,15 @@ pub fn render_image() -> Image {
     }
 
     image
+}
+
+fn calc_pixel_color(hit: &HitRecord, scene: &Scene) -> Color {
+    let mut color = hit.color * AMBIENT_FACTOR;
+
+    for light in scene.lights.iter() {
+        // Diffuse.
+        let s = (light.origin - )
+    }
 }
 
 #[allow(dead_code)]

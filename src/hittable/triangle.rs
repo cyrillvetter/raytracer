@@ -1,5 +1,4 @@
 use crate::primitive::*;
-use crate::scene::Scene;
 use super::{Hittable, HitRecord};
 
 use glam::Vec3;
@@ -45,13 +44,9 @@ impl Hittable for Triangle {
 
         let t = inv_det * e2.dot(s_cross_e1);
         if t > f32::EPSILON {
-            Some(HitRecord::new(t, ray.at(t), self.normal))
+            Some(HitRecord::new(t, ray.at(t), self.normal, Color::BLACK))
         } else {
             None
         }
-    }
-
-    fn get_color(&self, _r: HitRecord, _scene: &Scene) -> Color {
-        unimplemented!()
     }
 }

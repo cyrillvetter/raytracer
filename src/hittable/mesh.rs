@@ -1,10 +1,12 @@
 use crate::primitive::*;
 use crate::scene::Scene;
-use super::{Hittable, HitRecord, Triangle, AMBIENT_FACTOR};
+use super::{Hittable, HitRecord, Triangle};
 
+use glam::Vec3;
+
+#[derive(Debug)]
 pub struct Mesh {
-    pub triangles: Vec<Triangle>,
-    pub color: Color,
+    triangles: Vec<Triangle>
 }
 
 impl Mesh {
