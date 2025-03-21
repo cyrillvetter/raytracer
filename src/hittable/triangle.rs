@@ -21,13 +21,14 @@ impl Triangle {
 impl Hittable for Triangle {
     // Inverse matrix intersection.
     fn hit(&self, ray: &Ray) -> Option<HitRecord> {
-        let v = self.v3 - self.v1;
-        let w = self.v2 - self.v1;
+        let v = self.v2 - self.v1;
+        let w = self.v3- self.v1;
+
         let a = Mat3::from_cols(ray.direction, -v, -w);
         let b = self.v1 - ray.origin;
 
         let r = a.inverse() * b;
-        if r.x >= 0.0 && r.y >= 0.0 && r.y <= 1.0 && r.z >= 0.0 && r.z <= 1.0 {
+        if r.x >= 0.0 && r.y >= 0.0 && r.z >= 0.0 && r.y + r.z <= 1.0 {
             Some(HitRecord::new(r.x, ray.at(r.x), self.normal))
         } else {
             None
