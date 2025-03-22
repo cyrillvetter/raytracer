@@ -1,8 +1,8 @@
 use crate::{IMAGE_WIDTH, IMAGE_HEIGHT};
 use crate::primitive::Color;
 use crate::Image;
-use crate::hittable::{Hittable, HitRecord, Sphere};
-use crate::scene::{Scene, Camera, Light};
+use crate::triangle::Triangle;
+use crate::scene::Scene;
 
 use glam::Vec3;
 
@@ -18,23 +18,21 @@ pub fn render_image() -> Image {
             let ray = scene.camera.ray_from(x, y);
 
             let mut nearest_dist = f32::INFINITY;
-            let mut nearest_hit: Option<HitRecord> = None;
-            let mut nearest_object: Option<&Box<dyn Hittable>> = None;
+            let mut nearest_triangle: Option<&Triangle> = None;
 
-            for object in scene.objects.iter() {
-                match object.hit(&ray) {
-                    Some(r) if r.t < nearest_dist => {
-                        nearest_dist = r.t;
-                        nearest_hit = Some(r);
-                        nearest_object = Some(object);
+            for triangle in scene.triangles.iter() {
+                match triangle.hit(&ray) {
+                    Some(dist) if dist < nearest_dist => {
+                        nearest_dist = dist;
+                        nearest_triangle = Some(triangle);
                     },
                     _ => ()
                 }
             }
 
-            let color = match nearest_object {
-                Some(object) => object.get_color(nearest_hit.unwrap(), &scene),
-                None => BACKGROUND
+            let color = match nearest_triangle {
+                Some(triangle) => calculate_color(triangle, &scene, ray.at(nearest_dist)),
+                _ => BACKGROUND
             };
 
             image.set_pixel(x, y, color);
@@ -44,26 +42,14 @@ pub fn render_image() -> Image {
     image
 }
 
-fn calc_pixel_color(hit: &HitRecord, scene: &Scene) -> Color {
-    let mut color = hit.color * AMBIENT_FACTOR;
+fn calculate_color(triangle: &Triangle, scene: &Scene, hit: Vec3) -> Color {
+    let mut color = triangle.color * AMBIENT_FACTOR;
 
     for light in scene.lights.iter() {
-        // Diffuse.
-        let s = (light.origin - )
+        let s = (light.origin - hit).normalize();
+        let diffuse = triangle.color * s.dot(triangle.v1.normal).max(0.0) * light.color * light.intensity;
+        color += diffuse;
     }
-}
 
-#[allow(dead_code)]
-fn create_scene() -> Scene {
-    Scene {
-        camera: Camera::new(1.0),
-        lights: vec![
-            Light::new(Vec3::new(-10.0, 7.0, 12.0), Color::rgb(0.992, 0.973, 0.918), 1.0),
-        ],
-        objects: vec![
-            Box::new(Sphere::new(Vec3::new(-0.575, 0.0, -1.0), 0.25, Color::rgb_u8(207, 54, 67))),
-            Box::new(Sphere::new(Vec3::new(0.0, 0.0, -1.0), 0.25, Color::rgb_u8(55, 184, 57))),
-            Box::new(Sphere::new(Vec3::new(0.575, 0.0, -1.0), 0.25, Color::rgb_u8(54, 55, 207))),
-        ]
-    }
+    color.clamp()
 }

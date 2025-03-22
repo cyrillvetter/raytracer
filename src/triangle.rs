@@ -1,27 +1,25 @@
 use crate::primitive::*;
-use super::{Hittable, HitRecord};
 
 use glam::Vec3;
 
 #[derive(Debug, Clone)]
 pub struct Triangle {
-    pub v1: Vec3,
-    pub v2: Vec3,
-    pub v3: Vec3,
-    pub normal: Vec3
+    pub v1: Vertex,
+    pub v2: Vertex,
+    pub v3: Vertex,
+    pub color: Color,
+}
+
+#[derive(Debug, Clone, Copy)]
+pub struct Vertex {
+    pub position: Vec3,
+    pub normal: Vec3,
 }
 
 impl Triangle {
-    pub fn new(v1: Vec3, v2: Vec3, v3: Vec3, normal: Vec3) -> Self {
-        Self { v1, v2, v3, normal }
-    }
-}
-
-impl Hittable for Triangle {
-    // Möller–Trumbore intersection algorithm.
-    fn hit(&self, ray: &Ray) -> Option<HitRecord> {
-        let e1 = self.v2 - self.v1;
-        let e2 = self.v3 - self.v1;
+    pub fn hit(&self, ray: &Ray) -> Option<f32> {
+        let e1 = self.v2.position - self.v1.position;
+        let e2 = self.v3.position - self.v1.position;
 
         let ray_cross_e2 = ray.direction.cross(e2);
         let det = e1.dot(ray_cross_e2);
@@ -30,7 +28,7 @@ impl Hittable for Triangle {
         }
 
         let inv_det = det.recip();
-        let s = ray.origin - self.v1;
+        let s = ray.origin - self.v1.position;
         let u = inv_det * s.dot(ray_cross_e2);
         if u < 0.0 || u > 1.0 {
             return None;
@@ -44,9 +42,15 @@ impl Hittable for Triangle {
 
         let t = inv_det * e2.dot(s_cross_e1);
         if t > f32::EPSILON {
-            Some(HitRecord::new(t, ray.at(t), self.normal, Color::BLACK))
+            Some(t)
         } else {
             None
         }
+    }
+}
+
+impl Vertex {
+    pub const fn new(position: Vec3, normal: Vec3) -> Self {
+        Self { position, normal }
     }
 }

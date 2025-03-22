@@ -1,12 +1,12 @@
-mod primitive;
-
 mod render;
 pub use render::render_image;
 
+mod primitive;
+
+mod triangle;
+
 mod image;
 pub use image::Image;
-
-mod hittable;
 
 mod scene;
 

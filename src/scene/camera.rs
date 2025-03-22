@@ -5,6 +5,7 @@ use glam::Vec3;
 
 const RAY_DIR: Vec3 = Vec3::new(0.0, 0.0, -1.0);
 
+#[derive(Debug, Clone, Copy)]
 pub struct Camera {
     half_width: f32,
     half_height: f32,
