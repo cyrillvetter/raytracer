@@ -10,7 +10,7 @@ pub struct Triangle {
     pub material_index: usize,
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone)]
 pub struct Vertex {
     pub position: Vec3,
     pub normal: Vec3,
