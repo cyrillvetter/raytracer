@@ -1,16 +1,17 @@
 use crate::{IMAGE_WIDTH, IMAGE_HEIGHT};
 use crate::primitive::Color;
-use crate::Image;
 use crate::triangle::Triangle;
+use crate::Material;
 use crate::scene::Scene;
+use crate::Image;
 
 use glam::Vec3;
 
-const BACKGROUND: Color = Color::BLACK;
+const BACKGROUND: Color = Color::rgb(0.827, 0.933, 1.0);
 const AMBIENT_FACTOR: f32 = 0.05;
 
 pub fn render_image() -> Image {
-    let scene = Scene::import("scenes/monkey.gltf");
+    let scene = Scene::import("scenes/lighthouse.gltf");
     let mut image = Image::blank(IMAGE_WIDTH, IMAGE_HEIGHT);
 
     for x in 0..IMAGE_WIDTH {
@@ -43,11 +44,12 @@ pub fn render_image() -> Image {
 }
 
 fn calculate_color(triangle: &Triangle, scene: &Scene, hit: Vec3) -> Color {
-    let mut color = triangle.color * AMBIENT_FACTOR;
+    let Material::Solid(triangle_color) = scene.materials[triangle.material_index];
+    let mut color = triangle_color * AMBIENT_FACTOR;
 
     for light in scene.lights.iter() {
         let s = (light.origin - hit).normalize();
-        let diffuse = triangle.color * s.dot(triangle.v1.normal).max(0.0) * light.color * light.intensity;
+        let diffuse = triangle_color * s.dot(triangle.v1.normal).max(0.0) * light.color * light.intensity;
         color += diffuse;
     }
 

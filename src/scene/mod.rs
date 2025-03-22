@@ -6,6 +6,7 @@ pub use light::Light;
 
 use crate::primitive::Color;
 use crate::triangle::{Triangle, Vertex};
+use crate::material::Material;
 
 use gltf::mesh::util::ReadIndices::U16;
 use glam::Vec3;
@@ -14,12 +15,25 @@ use glam::Vec3;
 pub struct Scene {
     pub camera: Camera,
     pub lights: Vec<Light>,
-    pub triangles: Vec<Triangle>
+    pub triangles: Vec<Triangle>,
+    pub materials: Vec<Material>
 }
 
 impl Scene {
     pub fn import(path: &str) -> Self {
         let (gltf, buffers, _) = gltf::import(path).unwrap();
+
+        let materials: Vec<Material> = gltf
+            .materials()
+            .map(|material| {
+                let base_color = material.pbr_metallic_roughness().base_color_factor();
+                Material::Solid(Color::rgb(
+                    base_color[0],
+                    base_color[1],
+                    base_color[2],
+                ))
+            })
+            .collect();
 
         let mut triangles: Vec<Triangle> = Vec::new();
 
@@ -38,12 +52,14 @@ impl Scene {
                 let triangle_amount = indices.len() / 3;
                 triangles.reserve(triangle_amount);
 
+                let material_index = primitive.material().index().unwrap();
+
                 for i in (0..indices.len()).step_by(3) {
                     let triangle = Triangle {
                         v1: Vertex::new(positions[indices[i]], normals[indices[i]]),
                         v2: Vertex::new(positions[indices[i + 1]], normals[indices[i + 1]]),
                         v3: Vertex::new(positions[indices[i + 2]], normals[indices[i + 2]]),
-                        color: Color::rgb_u8(54, 55, 207)
+                        material_index,
                     };
 
                     triangles.push(triangle);
@@ -56,7 +72,8 @@ impl Scene {
             lights: vec![
                 Light::new(Vec3::new(-10.0, 7.0, 18.0), Color::rgb(0.992, 0.973, 0.918), 1.0),
             ],
-            triangles
+            triangles,
+            materials
         }
     }
 }

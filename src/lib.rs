@@ -5,6 +5,9 @@ mod primitive;
 
 mod triangle;
 
+mod material;
+pub use material::Material;
+
 mod image;
 pub use image::Image;
 
