@@ -1,7 +1,6 @@
 use crate::{IMAGE_WIDTH, IMAGE_HEIGHT};
 use crate::primitive::Color;
 use crate::triangle::Triangle;
-use crate::Material;
 use crate::scene::Scene;
 use crate::Image;
 
@@ -44,14 +43,9 @@ pub fn render_scene(scene: Scene) -> Image {
 }
 
 fn calculate_color(triangle: &Triangle, scene: &Scene, hit: Vec3) -> Color {
-    let triangle_color = match triangle.material_index {
-        Some(index) => {
-            let Material::Solid(triangle_color) = scene.materials[index];
-            triangle_color
-        },
-        _ => DEFAULT_COLOR
-    };
-
+    let triangle_color = triangle
+        .material_index
+        .map_or(DEFAULT_COLOR, |index| scene.materials[index].color_at(hit));
     let mut color = triangle_color * AMBIENT_FACTOR;
 
     for light in scene.lights.iter() {
