@@ -49,7 +49,7 @@ fn calculate_color(triangle: &Triangle, scene: &Scene, hit: Vec3) -> Color {
     let mut color = triangle_color * AMBIENT_FACTOR;
 
     for light in scene.lights.iter() {
-        let light_dir = light.origin - hit;
+        let light_dir = (light.origin - hit).normalize();
         let shadow_ray = Ray::new(hit + light_dir * f32::EPSILON, light_dir);
         let mut in_shadow = false;
 
