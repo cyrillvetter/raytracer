@@ -42,7 +42,7 @@ fn pick_scene() -> Scene {
         return Scene::import(&scene_paths[0]);
     }
 
-    println!("Pick a scene from the list below:");
+    println!("Pick a scene:");
     for (i, path) in scene_paths.iter().enumerate() {
         println!("{}: {}", i + 1, path.file_stem().unwrap().to_str().unwrap());
     }

@@ -1,5 +1,5 @@
 use crate::{IMAGE_WIDTH, IMAGE_HEIGHT};
-use crate::primitive::Color;
+use crate::primitive::*;
 use crate::triangle::Triangle;
 use crate::scene::Scene;
 use crate::Image;
@@ -7,7 +7,7 @@ use crate::Image;
 use glam::Vec3;
 
 const BACKGROUND: Color = Color::BLACK;
-const DEFAULT_COLOR: Color = Color::gray(0.85);
+const DEFAULT_COLOR: Color = Color::gray(0.8);
 const AMBIENT_FACTOR: f32 = 0.05;
 
 pub fn render_scene(scene: Scene) -> Image {
@@ -49,9 +49,23 @@ fn calculate_color(triangle: &Triangle, scene: &Scene, hit: Vec3) -> Color {
     let mut color = triangle_color * AMBIENT_FACTOR;
 
     for light in scene.lights.iter() {
-        let s = (light.origin - hit).normalize();
-        let diffuse = triangle_color * s.dot(triangle.v1.normal).max(0.0) * light.color * light.intensity;
-        color += diffuse;
+        let light_dir = light.origin - hit;
+        let shadow_ray = Ray::new(hit + light_dir * f32::EPSILON, light_dir);
+        let mut in_shadow = false;
+
+        for triangle in scene.triangles.iter() {
+            if triangle.hit(&shadow_ray).is_some() {
+                color += triangle_color * 0.5;
+                in_shadow = true;
+                break;
+            }
+        }
+
+        if !in_shadow {
+            let s = (light.origin - hit).normalize();
+            let diffuse = triangle_color * s.dot(triangle.v1.normal).max(0.0) * light.color * light.intensity;
+            color += diffuse;
+        }
     }
 
     color.clamp()

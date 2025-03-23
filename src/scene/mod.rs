@@ -72,7 +72,7 @@ impl Scene {
         Scene {
             camera: Camera::new(1.0),
             lights: vec![
-                Light::new(Vec3::new(-10.0, 7.0, 18.0), Color::rgb(0.992, 0.973, 0.918), 1.0),
+                Light::new(Vec3::new(-10.0, 7.0, 18.0), Color::WHITE, 3.0),
             ],
             triangles,
             materials
