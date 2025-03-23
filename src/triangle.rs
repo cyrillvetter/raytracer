@@ -7,7 +7,7 @@ pub struct Triangle {
     pub v1: Vertex,
     pub v2: Vertex,
     pub v3: Vertex,
-    pub material_index: usize,
+    pub material_index: Option<usize>,
 }
 
 #[derive(Debug, Clone)]

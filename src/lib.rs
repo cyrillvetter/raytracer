@@ -1,5 +1,5 @@
 mod render;
-pub use render::render_image;
+pub use render::render_scene;
 
 mod primitive;
 
@@ -11,7 +11,7 @@ pub use material::Material;
 mod image;
 pub use image::Image;
 
-mod scene;
+pub mod scene;
 
 const IMAGE_WIDTH: u32 = 1280;
 const IMAGE_HEIGHT: u32 = 720;

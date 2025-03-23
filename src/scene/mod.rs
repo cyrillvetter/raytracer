@@ -4,6 +4,8 @@ pub use camera::Camera;
 pub mod light;
 pub use light::Light;
 
+use std::path::Path;
+
 use crate::primitive::Color;
 use crate::triangle::{Triangle, Vertex};
 use crate::material::Material;
@@ -20,7 +22,7 @@ pub struct Scene {
 }
 
 impl Scene {
-    pub fn import(path: &str) -> Self {
+    pub fn import(path: &Path) -> Self {
         let (gltf, buffers, _) = gltf::import(path).unwrap();
 
         let materials: Vec<Material> = gltf
@@ -52,7 +54,7 @@ impl Scene {
                 let triangle_amount = indices.len() / 3;
                 triangles.reserve(triangle_amount);
 
-                let material_index = primitive.material().index().unwrap();
+                let material_index = primitive.material().index();
 
                 for i in (0..indices.len()).step_by(3) {
                     let triangle = Triangle {

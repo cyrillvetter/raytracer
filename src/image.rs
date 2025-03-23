@@ -32,9 +32,8 @@ impl Image {
         self.bytes[pos] = ((color.r * 255.0) as u32) << 16 | ((color.g * 255.0) as u32) << 8 | ((color.b * 255.0) as u32);
     }
 
-    pub fn save_png(&self, out_path: &str) {
-        let path = Path::new(out_path);
-        let file = File::create(path).unwrap();
+    pub fn save_png(&self, out_path: &Path) {
+        let file = File::create(out_path).unwrap();
         let w = BufWriter::new(file);
 
         // TODO: Check these settings.

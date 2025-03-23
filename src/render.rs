@@ -7,11 +7,11 @@ use crate::Image;
 
 use glam::Vec3;
 
-const BACKGROUND: Color = Color::rgb(0.827, 0.933, 1.0);
+const BACKGROUND: Color = Color::BLACK;
+const DEFAULT_COLOR: Color = Color::gray(0.85);
 const AMBIENT_FACTOR: f32 = 0.05;
 
-pub fn render_image() -> Image {
-    let scene = Scene::import("scenes/lighthouse.gltf");
+pub fn render_scene(scene: Scene) -> Image {
     let mut image = Image::blank(IMAGE_WIDTH, IMAGE_HEIGHT);
 
     for x in 0..IMAGE_WIDTH {
@@ -44,7 +44,14 @@ pub fn render_image() -> Image {
 }
 
 fn calculate_color(triangle: &Triangle, scene: &Scene, hit: Vec3) -> Color {
-    let Material::Solid(triangle_color) = scene.materials[triangle.material_index];
+    let triangle_color = match triangle.material_index {
+        Some(index) => {
+            let Material::Solid(triangle_color) = scene.materials[index];
+            triangle_color
+        },
+        _ => DEFAULT_COLOR
+    };
+
     let mut color = triangle_color * AMBIENT_FACTOR;
 
     for light in scene.lights.iter() {
