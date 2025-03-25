@@ -13,5 +13,11 @@ pub use image::Image;
 
 pub mod scene;
 
+mod camera;
+pub use camera::Camera;
+
+mod light;
+pub use light::Light;
+
 const IMAGE_WIDTH: u32 = 1280;
 const IMAGE_HEIGHT: u32 = 720;

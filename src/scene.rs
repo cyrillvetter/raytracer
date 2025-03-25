@@ -1,16 +1,13 @@
-pub mod camera;
-pub use camera::Camera;
-
-pub mod light;
-pub use light::Light;
-
 use std::path::Path;
 
 use crate::primitive::Color;
 use crate::triangle::{Triangle, Vertex};
 use crate::material::Material;
+use crate::Camera;
+use crate::Light;
 
 use gltf::mesh::util::ReadIndices::U16;
+use gltf::camera::Projection::Orthographic;
 use glam::Vec3;
 
 #[derive(Debug)]
@@ -24,6 +21,15 @@ pub struct Scene {
 impl Scene {
     pub fn import(path: &Path) -> Self {
         let (gltf, buffers, _) = gltf::import(path).unwrap();
+
+        let gltf_camera = gltf.cameras().next();
+        let camera = match gltf_camera {
+            Some(cam) => match cam.projection() {
+                Orthographic(orth) => Camera::orthographic(orth.ymag(), -orth.znear()),
+                _ => unimplemented!()
+            },
+            _ => Camera::orthographic(0.5, -0.1),
+        };
 
         let materials: Vec<Material> = gltf
             .materials()
@@ -70,7 +76,7 @@ impl Scene {
         }
 
         Scene {
-            camera: Camera::new(1.0),
+            camera,
             lights: vec![
                 Light::new(Vec3::new(-10.0, 7.0, 18.0), Color::WHITE, 3.0),
             ],
