@@ -38,6 +38,22 @@ impl Color {
         }
     }
 
+    pub fn from_linear(r: f32, g: f32, b: f32) -> Self {
+        let convert = |c: f32| {
+            if c <= 0.0031308 {
+                return 12.92 * c;
+            } else {
+                return 1.055 * (c.powf(1.0 / 2.4)) - 0.055;
+            }
+        };
+
+        Self {
+            r: convert(r),
+            g: convert(g),
+            b: convert(b),
+        }
+    }
+
     // TODO: Remove this clamp function and always clamp the values between 0 and 1.
     pub fn clamp(&self) -> Self {
         Self {

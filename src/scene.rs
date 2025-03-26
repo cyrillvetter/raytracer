@@ -6,8 +6,10 @@ use crate::material::Material;
 use crate::Camera;
 use crate::Light;
 
+use super::{IMAGE_HEIGHT, IMAGE_WIDTH};
+
 use gltf::Document;
-use gltf::camera::Projection::Orthographic;
+use gltf::camera::Projection::{Orthographic, Perspective};
 use glam::{Vec3, Quat, Affine3A};
 
 #[derive(Debug)]
@@ -28,7 +30,7 @@ impl Scene {
             .materials()
             .map(|material| {
                 let base_color = material.pbr_metallic_roughness().base_color_factor();
-                Material::Solid(Color::rgb(
+                Material::Solid(Color::from_linear(
                     base_color[0],
                     base_color[1],
                     base_color[2],
@@ -85,7 +87,23 @@ impl Scene {
                         .unwrap_or(Affine3A::ZERO);
                         Camera::orthographic(orth.ymag(), -orth.znear(), transform)
                     },
-                    _ => unimplemented!()
+                    Perspective(persp) => {
+                        let transform = gltf.nodes().find_map(|n| match n.camera() {
+                            Some(c) if c.index() == cam.index() => {
+                                let (trans, rot, _) = n.transform().decomposed();
+                                Some(Affine3A::from_rotation_translation(Quat::from_array(rot), Vec3::from_array(trans)))
+                            },
+                            _ => None
+                        })
+                        .unwrap_or(Affine3A::ZERO);
+
+                        // TODO: Maybe always set the aspect ratio based on the image height/width.
+                        Camera::perspective(
+                            persp.aspect_ratio().unwrap_or((IMAGE_WIDTH as f32) / (IMAGE_HEIGHT as f32)),
+                            persp.yfov(),
+                            transform
+                        )
+                    },
                 },
                 _ => Camera::orthographic(0.5, -0.1, Affine3A::ZERO),
             }
@@ -94,7 +112,7 @@ impl Scene {
         Scene {
             camera,
             lights: vec![
-                Light::new(Vec3::new(-10.0, 7.0, 18.0), Color::WHITE, 3.0),
+                Light::new(Vec3::new(-0.62623, 2.0163, 2.2484), Color::WHITE, 1.5),
             ],
             triangles,
             materials

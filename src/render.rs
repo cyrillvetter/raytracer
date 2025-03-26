@@ -46,22 +46,23 @@ fn calculate_color(triangle: &Triangle, scene: &Scene, hit: Vec3) -> Color {
     let triangle_color = triangle
         .material_index
         .map_or(DEFAULT_COLOR, |index| scene.materials[index].color_at(hit));
-    let mut color = triangle_color * AMBIENT_FACTOR;
+    let mut color = Color::BLACK;
 
     for light in scene.lights.iter() {
         let light_dir = light.origin - hit;
-        let shadow_ray = Ray::new(hit + light_dir * f32::EPSILON, light_dir.normalize());
+        let shadow_ray = Ray::new(hit + light_dir * 10e-6, light_dir.normalize());
         let mut in_shadow = false;
 
         for triangle in scene.triangles.iter() {
             if triangle.hit(&shadow_ray).is_some() {
-                color += triangle_color * 0.5;
+                color += triangle_color / 3.0;
                 in_shadow = true;
                 break;
             }
         }
 
         if !in_shadow {
+            color += triangle_color * AMBIENT_FACTOR;
             let s = (light.origin - hit).normalize();
             let diffuse = triangle_color * s.dot(triangle.v1.normal).max(0.0) * light.color * light.intensity;
             color += diffuse;
