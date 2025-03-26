@@ -6,9 +6,10 @@ use crate::material::Material;
 use crate::Camera;
 use crate::Light;
 
+use gltf::Document;
 use gltf::mesh::util::ReadIndices::U16;
 use gltf::camera::Projection::Orthographic;
-use glam::Vec3;
+use glam::{Vec3, Quat, Affine3A};
 
 #[derive(Debug)]
 pub struct Scene {
@@ -22,14 +23,7 @@ impl Scene {
     pub fn import(path: &Path) -> Self {
         let (gltf, buffers, _) = gltf::import(path).unwrap();
 
-        let gltf_camera = gltf.cameras().next();
-        let camera = match gltf_camera {
-            Some(cam) => match cam.projection() {
-                Orthographic(orth) => Camera::orthographic(orth.ymag(), -orth.znear()),
-                _ => unimplemented!()
-            },
-            _ => Camera::orthographic(0.5, -0.1),
-        };
+        let camera = import_camera(&gltf);
 
         let materials: Vec<Material> = gltf
             .materials()
@@ -72,6 +66,27 @@ impl Scene {
 
                     triangles.push(triangle);
                 }
+            }
+        }
+
+        fn import_camera(gltf: &Document) -> Camera {
+            let gltf_camera = gltf.cameras().next();
+            match gltf_camera {
+                Some(cam) => match cam.projection() {
+                    Orthographic(orth) => {
+                        let transform = gltf.nodes().find_map(|n| match n.camera() {
+                            Some(c) if c.index() == cam.index() => {
+                                let (trans, rot, _) = n.transform().decomposed();
+                                Some(Affine3A::from_rotation_translation(Quat::from_array(rot), Vec3::from_array(trans)))
+                            },
+                            _ => None
+                        })
+                        .unwrap_or(Affine3A::ZERO);
+                        Camera::orthographic(orth.ymag(), -orth.znear(), transform)
+                    },
+                    _ => unimplemented!()
+                },
+                _ => Camera::orthographic(0.5, -0.1, Affine3A::ZERO),
             }
         }
 
