@@ -7,7 +7,6 @@ use crate::Camera;
 use crate::Light;
 
 use gltf::Document;
-use gltf::mesh::util::ReadIndices::U16;
 use gltf::camera::Projection::Orthographic;
 use glam::{Vec3, Quat, Affine3A};
 
@@ -45,11 +44,13 @@ impl Scene {
                 let positions: Vec<Vec3> = reader.read_positions().unwrap().map(|a| a.into()).collect();
                 let normals: Vec<Vec3> = reader.read_normals().unwrap().map(|a| a.into()).collect();
 
-                let Some(U16(index_buffer)) = reader.read_indices() else {
-                    panic!("Index type not supported");
-                };
-
-                let indices: Vec<usize> = index_buffer.map(|i| i as usize).collect();
+                // TODO: Remove into_32 to avoid casting twice.
+                let indices: Vec<usize> = reader
+                    .read_indices()
+                    .expect("No indices found")
+                    .into_u32()
+                    .map(|i| i as usize)
+                    .collect();
 
                 let triangle_amount = indices.len() / 3;
                 triangles.reserve(triangle_amount);
