@@ -9,6 +9,8 @@ pub enum Camera {
     Orthographic(OrthographicCamera)
 }
 
+// TODO: Maybe remove orthographic camera for simplicity.
+
 #[derive(Debug, Clone)]
 pub struct PerspectiveCamera {
     half_width: f32,
