@@ -9,7 +9,7 @@ use crate::Light;
 use super::{IMAGE_HEIGHT, IMAGE_WIDTH};
 
 use gltf::Document;
-use gltf::camera::Projection::{Orthographic, Perspective};
+use gltf::camera::Projection::Perspective;
 use glam::{Vec3, Quat, Affine3A};
 
 #[derive(Debug)]
@@ -76,17 +76,6 @@ impl Scene {
             let gltf_camera = gltf.cameras().next();
             match gltf_camera {
                 Some(cam) => match cam.projection() {
-                    Orthographic(orth) => {
-                        let transform = gltf.nodes().find_map(|n| match n.camera() {
-                            Some(c) if c.index() == cam.index() => {
-                                let (trans, rot, _) = n.transform().decomposed();
-                                Some(Affine3A::from_rotation_translation(Quat::from_array(rot), Vec3::from_array(trans)))
-                            },
-                            _ => None
-                        })
-                        .unwrap_or(Affine3A::ZERO);
-                        Camera::orthographic(orth.ymag(), -orth.znear(), transform)
-                    },
                     Perspective(persp) => {
                         let transform = gltf.nodes().find_map(|n| match n.camera() {
                             Some(c) if c.index() == cam.index() => {
@@ -98,14 +87,15 @@ impl Scene {
                         .unwrap_or(Affine3A::ZERO);
 
                         // TODO: Maybe always set the aspect ratio based on the image height/width.
-                        Camera::perspective(
+                        Camera::new(
                             persp.aspect_ratio().unwrap_or((IMAGE_WIDTH as f32) / (IMAGE_HEIGHT as f32)),
                             persp.yfov(),
                             transform
                         )
                     },
+                    _ => unimplemented!()
                 },
-                _ => Camera::orthographic(0.5, -0.1, Affine3A::ZERO),
+                _ => Camera::new((IMAGE_WIDTH as f32) / (IMAGE_HEIGHT as f32) / 2.0, 0.4, Affine3A::ZERO),
             }
         }
 

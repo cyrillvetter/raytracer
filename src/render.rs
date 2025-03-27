@@ -49,13 +49,13 @@ fn calculate_color(triangle: &Triangle, scene: &Scene, hit: Vec3) -> Color {
     let mut color = Color::BLACK;
 
     for light in scene.lights.iter() {
-        let light_dir = light.origin - hit;
-        let shadow_ray = Ray::new(hit + light_dir * 10e-6, light_dir.normalize());
+        let light_dir = (light.origin - hit).normalize();
+        let shadow_ray = Ray::new(hit + light_dir * 1e-5, light_dir);
         let mut in_shadow = false;
 
         for triangle in scene.triangles.iter() {
             if triangle.hit(&shadow_ray).is_some() {
-                color += triangle_color / 3.0;
+                color = Color::BLACK;
                 in_shadow = true;
                 break;
             }

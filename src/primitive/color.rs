@@ -71,9 +71,12 @@ impl Default for Color {
 }
 
 impl From<Vec3> for Color {
-    fn from(value: Vec3) -> Self {
-        let n = value.normalize();
-        Color::rgb(n.x, n.y, n.z)
+    fn from(v: Vec3) -> Self {
+        Color::rgb(
+            v.x.clamp(0.0, 1.0),
+            v.y.clamp(0.0, 1.0),
+            v.z.clamp(0.0, 1.0)
+        )
     }
 }
 
