@@ -1,7 +1,7 @@
 use std::time::Instant;
 use std::fs::read_dir;
 use std::io::stdin;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 use minifb::{Window, WindowOptions, Key, KeyRepeat};
 
@@ -25,14 +25,14 @@ fn main() {
 
 fn pick_scene() -> Scene {
     let paths = read_dir(SCENES_PATH).expect("No scenes found");
-    let scene_paths = paths
+    let scene_paths: Vec<PathBuf> = paths
         .filter_map(|res| res.ok())
         .map(|dir_entry| dir_entry.path())
         .filter_map(|path| path
             .extension()
             .map_or(false, |ext| ext == "gltf")
             .then_some(path))
-        .collect::<Vec<_>>();
+        .collect();
 
     if scene_paths.is_empty() {
         panic!("No scenes found.");
