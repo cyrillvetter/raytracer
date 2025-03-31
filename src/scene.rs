@@ -2,7 +2,7 @@ use std::path::Path;
 
 use crate::primitive::Color;
 use crate::triangle::{Triangle, Vertex};
-use crate::material::{Material, Phong};
+use crate::material::{Material, Phong, Metal};
 use crate::Camera;
 use crate::Light;
 
@@ -29,11 +29,21 @@ impl Scene {
         let materials: Vec<Material> = gltf
             .materials()
             .map(|material| {
-                let base_color = material.pbr_metallic_roughness().base_color_factor();
-                Material::Phong(Phong {
-                    color: Color::rgb(base_color[0], base_color[1], base_color[2]),
-                    shininess: 1.0,
-                })
+                let pbr = material.pbr_metallic_roughness();
+                let base_color_factor = pbr.base_color_factor();
+                let color = Color::rgb(base_color_factor[0], base_color_factor[1], base_color_factor[2]);
+                let metallic = pbr.metallic_factor();
+
+                if metallic < 1.0 {
+                    Material::Phong(Phong {
+                        color,
+                        roughness: pbr.roughness_factor()
+                    })
+                } else {
+                    Material::Metal(Metal {
+                        color
+                    })
+                }
             })
             .collect();
 
@@ -101,7 +111,8 @@ impl Scene {
         Scene {
             camera,
             lights: vec![
-                Light::new(Vec3::new(-0.62623, 2.0163, 2.2484), Color::WHITE, 1.2),
+                Light::new(Vec3::new(-0.62623, 2.0163, 2.2484), Color::WHITE, 1.25),
+                Light::new(Vec3::new(0.62623, 2.0163, 2.2484), Color::WHITE, 0.7),
             ],
             triangles,
             materials
