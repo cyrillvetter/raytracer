@@ -2,7 +2,7 @@ use std::path::Path;
 
 use crate::primitive::Color;
 use crate::triangle::{Triangle, Vertex};
-use crate::material::Material;
+use crate::material::{Material, Phong};
 use crate::Camera;
 use crate::Light;
 
@@ -30,11 +30,10 @@ impl Scene {
             .materials()
             .map(|material| {
                 let base_color = material.pbr_metallic_roughness().base_color_factor();
-                Material::Solid(Color::rgb(
-                    base_color[0],
-                    base_color[1],
-                    base_color[2],
-                ))
+                Material::Phong(Phong {
+                    color: Color::rgb(base_color[0], base_color[1], base_color[2]),
+                    shininess: 1.0,
+                })
             })
             .collect();
 

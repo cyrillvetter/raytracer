@@ -16,8 +16,16 @@ pub struct Vertex {
     pub normal: Vec3,
 }
 
+#[derive(Debug, Clone)]
+pub struct HitRecord {
+    pub t: f32,
+    pub point: Vec3,
+    pub normal: Vec3,
+    pub material_index: Option<usize>,
+}
+
 impl Triangle {
-    pub fn hit(&self, ray: &Ray) -> Option<f32> {
+    pub fn hit(&self, ray: &Ray) -> Option<HitRecord> {
         let e1 = self.v2.position - self.v1.position;
         let e2 = self.v3.position - self.v1.position;
 
@@ -42,7 +50,12 @@ impl Triangle {
 
         let t = inv_det * e2.dot(s_cross_e1);
         if t > f32::EPSILON {
-            Some(t)
+            Some(HitRecord {
+                t,
+                point: ray.at(t),
+                normal: self.v1.normal,
+                material_index: self.material_index
+            })
         } else {
             None
         }
