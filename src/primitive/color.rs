@@ -38,7 +38,16 @@ impl Color {
         }
     }
 
-    pub fn from_linear(r: f32, g: f32, b: f32) -> Self {
+    // TODO: Remove this clamp function and always clamp the values between 0 and 1.
+    pub fn clamp(&self) -> Self {
+        Self {
+            r: self.r.clamp(0.0, 1.0),
+            g: self.g.clamp(0.0, 1.0),
+            b: self.b.clamp(0.0, 1.0),
+        }
+    }
+
+    pub fn gamma_correct(self) -> Self {
         let convert = |c: f32| {
             if c <= 0.0031308 {
                 return 12.92 * c;
@@ -48,18 +57,9 @@ impl Color {
         };
 
         Self {
-            r: convert(r),
-            g: convert(g),
-            b: convert(b),
-        }
-    }
-
-    // TODO: Remove this clamp function and always clamp the values between 0 and 1.
-    pub fn clamp(&self) -> Self {
-        Self {
-            r: self.r.clamp(0.0, 1.0),
-            g: self.g.clamp(0.0, 1.0),
-            b: self.b.clamp(0.0, 1.0),
+            r: convert(self.r),
+            g: convert(self.g),
+            b: convert(self.b),
         }
     }
 }

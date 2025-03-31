@@ -30,7 +30,7 @@ impl Scene {
             .materials()
             .map(|material| {
                 let base_color = material.pbr_metallic_roughness().base_color_factor();
-                Material::Solid(Color::from_linear(
+                Material::Solid(Color::rgb(
                     base_color[0],
                     base_color[1],
                     base_color[2],
@@ -102,7 +102,7 @@ impl Scene {
         Scene {
             camera,
             lights: vec![
-                Light::new(Vec3::new(-0.62623, 2.0163, 2.2484), Color::WHITE, 1.5),
+                Light::new(Vec3::new(-0.62623, 2.0163, 2.2484), Color::WHITE, 1.2),
             ],
             triangles,
             materials

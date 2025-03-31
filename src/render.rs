@@ -35,7 +35,7 @@ pub fn render_scene(scene: Scene) -> Image {
                 _ => BACKGROUND
             };
 
-            image.set_pixel(x, y, color);
+            image.set_pixel(x, y, color.gamma_correct());
         }
     }
 
@@ -46,7 +46,7 @@ fn calculate_color(triangle: &Triangle, scene: &Scene, hit: Vec3) -> Color {
     let triangle_color = triangle
         .material_index
         .map_or(DEFAULT_COLOR, |index| scene.materials[index].color_at(hit));
-    let mut color = Color::BLACK;
+    let mut color = triangle_color * AMBIENT_FACTOR;
 
     for light in scene.lights.iter() {
         let light_dir = (light.origin - hit).normalize();
@@ -55,14 +55,13 @@ fn calculate_color(triangle: &Triangle, scene: &Scene, hit: Vec3) -> Color {
 
         for triangle in scene.triangles.iter() {
             if triangle.hit(&shadow_ray).is_some() {
-                color = Color::BLACK;
+                color *= 0.5;
                 in_shadow = true;
                 break;
             }
         }
 
         if !in_shadow {
-            color += triangle_color * AMBIENT_FACTOR;
             let s = (light.origin - hit).normalize();
             let diffuse = triangle_color * s.dot(triangle.v1.normal).max(0.0) * light.color * light.intensity;
             color += diffuse;
