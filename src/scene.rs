@@ -35,44 +35,39 @@ impl Scene {
 }
 
 fn import_lights(gltf: &Document) -> Vec<Light> {
-    let mut lights: Vec<Light> = Vec::new();
-
-    for node in gltf.nodes() {
-        if let Some(light) = node.light() {
-            lights.push(Light::new(
-                node.transform().decomposed().0.into(),
-                light.color().into(),
-                light.intensity() / 1000.0
-            ));
-        }
-    }
-
-    lights
+    gltf.nodes()
+        .filter_map(|node| {
+            node.light().map(|light| {
+                Light::new(
+                    node.transform().decomposed().0.into(),
+                    light.color().into(),
+                    light.intensity() / 1000.0
+                )
+            })
+        })
+        .collect()
 }
 
 fn import_camera(gltf: &Document) -> Camera {
-    let gltf_camera = gltf.cameras().next();
-    match gltf_camera {
-        Some(cam) => {
-            let Perspective(persp) = cam.projection() else {
-                unimplemented!()
-            };
+    gltf.nodes()
+        .find_map(|node| {
+            node.camera().map(|cam| {
+                let Perspective(persp) = cam.projection() else {
+                    panic!("Orthographic camera not supported.");
+                };
 
-            let transform = gltf.nodes().find_map(|n| match n.camera() {
-                Some(c) if c.index() == cam.index() => {
-                    let (trans, rot, _) = n.transform().decomposed();
-                    Some(Affine3A::from_rotation_translation(Quat::from_array(rot), Vec3::from_array(trans)))
-                },
-                _ => None
-            }).unwrap_or(Affine3A::ZERO);
+                let aspect_ratio = persp.aspect_ratio().unwrap_or((IMAGE_WIDTH as f32) / (IMAGE_HEIGHT as f32));
+                let (trans, rot, _) = node.transform().decomposed();
+                let transform = Affine3A::from_rotation_translation(Quat::from_array(rot), Vec3::from_array(trans));
 
-            Camera::new(
-                persp.aspect_ratio().unwrap_or((IMAGE_WIDTH as f32) / (IMAGE_HEIGHT as f32)),
-                persp.yfov(),
-                transform)
-        },
-        _ => Camera::new((IMAGE_WIDTH as f32) / (IMAGE_HEIGHT as f32), 0.4, Affine3A::ZERO)
-    }
+                Camera::new(
+                    aspect_ratio,
+                    persp.yfov(),
+                    transform
+                )
+            })
+        })
+        .unwrap_or(Camera::new((IMAGE_WIDTH as f32) / (IMAGE_HEIGHT as f32), 0.4, Affine3A::ZERO))
 }
 
 fn import_triangles(gltf: &Document, buffers: &Vec<Data>) -> Vec<Triangle> {
