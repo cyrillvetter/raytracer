@@ -1,4 +1,4 @@
-use crate::{IMAGE_WIDTH, IMAGE_HEIGHT};
+use crate::{IMAGE_WIDTH, IMAGE_HEIGHT, AA_SIZE};
 use crate::primitive::*;
 use crate::triangle::HitRecord;
 use crate::scene::Scene;
@@ -14,9 +14,16 @@ pub fn render_scene(scene: Scene) -> Image {
 
     for x in 0..IMAGE_WIDTH {
         for y in 0..IMAGE_HEIGHT {
-            let ray = scene.camera.ray_from(x, y);
-            let color = trace_ray(ray, MAX_DEPTH, &scene);
-            image.set_pixel(x, y, color.gamma_correct());
+            let mut color = Color::BLACK;
+
+            for x_offset in 0..AA_SIZE {
+                for y_offset in 0..AA_SIZE {
+                    let ray = scene.camera.ray_from((x * AA_SIZE) + x_offset, (y * AA_SIZE) + y_offset);
+                    color += trace_ray(ray, MAX_DEPTH, &scene);
+                }
+            }
+
+            image.set_pixel(x, y, (color / (AA_SIZE as f32).powf(2.0)).gamma_correct());
         }
     }
 

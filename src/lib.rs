@@ -21,3 +21,4 @@ pub use light::Light;
 
 const IMAGE_WIDTH: u32 = 1280;
 const IMAGE_HEIGHT: u32 = 720;
+const AA_SIZE: u32 = 4;
