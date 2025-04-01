@@ -7,6 +7,7 @@ use crate::material::Scatterable;
 
 const FALLBACK_COLOR: Color = Color::rgb(1.0, 0.0, 1.0);
 const MAX_DEPTH: f32 = 5.0;
+const BACKGROUND: Color = Color::BLACK;
 
 pub fn render_scene(scene: Scene) -> Image {
     let mut image = Image::blank(IMAGE_WIDTH, IMAGE_HEIGHT);
@@ -48,9 +49,6 @@ fn trace_ray(ray: Ray, depth: f32, scene: &Scene) -> Color {
             },
             _ => FALLBACK_COLOR
         },
-        _ => {
-            let a = 0.5 * ray.direction.y + 1.0;
-            (1.0 - a) * Color::WHITE + a * Color::rgb(0.5, 0.7, 1.0)
-        },
+        _ => BACKGROUND
     }
 }

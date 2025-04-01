@@ -9,7 +9,7 @@ pub struct Camera {
     half_height: f32,
     meter_per_pixel: f32,
     focal_length: f32,
-    transform: Affine3A,
+    transform: Affine3A
 }
 
 // TODO: Try to simplify the orthographic/perspective calculation.

@@ -24,6 +24,18 @@ impl Scene {
     pub fn import(path: &Path) -> Self {
         let (gltf, buffers, _) = gltf::import(path).unwrap();
 
+        let mut lights: Vec<Light> = Vec::new();
+
+        for node in gltf.nodes() {
+            if let Some(light) = node.light() {
+                lights.push(Light::new(
+                    node.transform().decomposed().0.into(),
+                    light.color().into(),
+                    light.intensity() / 1000.0
+                ));
+            }
+        }
+
         let camera = import_camera(&gltf);
 
         let materials: Vec<Material> = gltf
@@ -110,10 +122,7 @@ impl Scene {
 
         Scene {
             camera,
-            lights: vec![
-                Light::new(Vec3::new(-0.62623, 2.0163, 2.2484), Color::WHITE, 1.25),
-                Light::new(Vec3::new(0.62623, 2.0163, 2.2484), Color::WHITE, 0.7),
-            ],
+            lights,
             triangles,
             materials
         }

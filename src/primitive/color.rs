@@ -80,6 +80,12 @@ impl From<Vec3> for Color {
     }
 }
 
+impl From<[f32; 3]> for Color {
+    fn from(a: [f32; 3]) -> Self {
+        Color::rgb(a[0], a[1], a[2])
+    }
+}
+
 impl fmt::Display for Color {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "R: {:.2}, G: {:.2}, B: {:.2}", self.r, self.g, self.b)

@@ -35,20 +35,27 @@ impl Scatterable for Phong {
         let reflection_dir = ray.direction.reflect(hit_record.normal).normalize();
 
         for light in scene.lights.iter() {
-            let light_dir = (light.origin - hit_record.point).normalize();
+            let light_vec = light.origin - hit_record.point;
+            let light_distance = light_vec.length();
+            let light_dir = light_vec / light_distance;
             let light_intensity = light.intensity / (scene.lights.len() as f32);
+
             let shadow_ray = Ray::new(hit_record.point + light_dir * 1e-4, light_dir);
             let mut in_shadow = false;
 
             for triangle in scene.triangles.iter() {
-                if triangle.hit(&shadow_ray).is_some() {
-                    in_shadow = true;
+                match triangle.hit(&shadow_ray) {
+                    Some(obstacle_hit) if obstacle_hit.t < light_distance => {
+                        in_shadow = true;
+                        break;
+                    },
+                    _ => ()
                 }
             }
 
             if !in_shadow {
                 let s = (light.origin - hit_record.point).normalize();
-                let diffuse = self.color * s.dot(hit_record.normal).max(0.0) * light.color * light_intensity;
+                let diffuse = self.color * s.dot(hit_record.normal).max(0.0) * light_distance.powf(2.0).recip() * light.color * light_intensity;
                 let specular = light.color * (1.0 - self.roughness) * reflection_dir.dot(light_dir).powf((1.0 - self.roughness) * 128.0).max(0.0);
 
                 color += diffuse + specular;
