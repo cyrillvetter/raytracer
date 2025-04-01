@@ -15,7 +15,7 @@ pub fn render_scene(scene: Scene) -> Image {
     for x in 0..IMAGE_WIDTH {
         for y in 0..IMAGE_HEIGHT {
             let ray = scene.camera.ray_from(x, y);
-            let color = trace_ray(ray, 5.0, &scene);
+            let color = trace_ray(ray, MAX_DEPTH, &scene);
             image.set_pixel(x, y, color.gamma_correct());
         }
     }
@@ -44,7 +44,7 @@ fn trace_ray(ray: Ray, depth: f32, scene: &Scene) -> Color {
     match nearest_hit {
         Some(hit_record) => match hit_record.material_index {
             Some(index) => match scene.materials[index].scatter(&ray, &hit_record, scene) {
-                (Some(reflective_ray), color) => color * (0.9f32).powf(MAX_DEPTH - depth - 1.0) * trace_ray(reflective_ray, depth - 1.0, scene),
+                (Some(reflective_ray), color) => color * (0.9f32).powf(MAX_DEPTH - depth) * trace_ray(reflective_ray, depth - 1.0, scene),
                 (None, color) => color,
             },
             _ => FALLBACK_COLOR

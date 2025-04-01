@@ -53,27 +53,25 @@ fn import_lights(gltf: &Document) -> Vec<Light> {
 fn import_camera(gltf: &Document) -> Camera {
     let gltf_camera = gltf.cameras().next();
     match gltf_camera {
-        Some(cam) => match cam.projection() {
-            Perspective(persp) => {
-                let transform = gltf.nodes().find_map(|n| match n.camera() {
-                    Some(c) if c.index() == cam.index() => {
-                        let (trans, rot, _) = n.transform().decomposed();
-                        Some(Affine3A::from_rotation_translation(Quat::from_array(rot), Vec3::from_array(trans)))
-                    },
-                    _ => None
-                })
-                .unwrap_or(Affine3A::ZERO);
+        Some(cam) => {
+            let Perspective(persp) = cam.projection() else {
+                unimplemented!()
+            };
 
-                // TODO: Maybe always set the aspect ratio based on the image height/width.
-                Camera::new(
-                    persp.aspect_ratio().unwrap_or((IMAGE_WIDTH as f32) / (IMAGE_HEIGHT as f32)),
-                    persp.yfov(),
-                    transform
-                )
-            },
-            _ => unimplemented!()
+            let transform = gltf.nodes().find_map(|n| match n.camera() {
+                Some(c) if c.index() == cam.index() => {
+                    let (trans, rot, _) = n.transform().decomposed();
+                    Some(Affine3A::from_rotation_translation(Quat::from_array(rot), Vec3::from_array(trans)))
+                },
+                _ => None
+            }).unwrap_or(Affine3A::ZERO);
+
+            Camera::new(
+                persp.aspect_ratio().unwrap_or((IMAGE_WIDTH as f32) / (IMAGE_HEIGHT as f32)),
+                persp.yfov(),
+                transform)
         },
-        _ => Camera::new((IMAGE_WIDTH as f32) / (IMAGE_HEIGHT as f32) / 2.0, 0.4, Affine3A::ZERO),
+        _ => Camera::new((IMAGE_WIDTH as f32) / (IMAGE_HEIGHT as f32), 0.4, Affine3A::ZERO)
     }
 }
 
