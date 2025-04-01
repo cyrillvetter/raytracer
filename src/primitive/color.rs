@@ -1,7 +1,7 @@
 use core::ops::*;
 use std::fmt;
 
-use glam::Vec3;
+use glam::Vec3A;
 
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct Color {
@@ -70,8 +70,8 @@ impl Default for Color {
     }
 }
 
-impl From<Vec3> for Color {
-    fn from(v: Vec3) -> Self {
+impl From<Vec3A> for Color {
+    fn from(v: Vec3A) -> Self {
         Color::rgb(
             v.x.clamp(0.0, 1.0),
             v.y.clamp(0.0, 1.0),
