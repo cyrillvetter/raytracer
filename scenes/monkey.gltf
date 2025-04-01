@@ -167,12 +167,12 @@
 		},
 		{
 			"doubleSided":true,
-			"name":"Brown",
+			"name":"Blue",
 			"pbrMetallicRoughness":{
 				"baseColorFactor":[
-					0.3350400924682617,
-					0.0824294164776802,
-					0.023582788184285164,
+					0.03560072183609009,
+					0.036889251321554184,
+					0.6239606738090515,
 					1
 				],
 				"metallicFactor":0,

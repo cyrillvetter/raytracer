@@ -23,7 +23,7 @@ pub fn render_scene(scene: Scene) -> Image {
                 }
             }
 
-            image.set_pixel(x, y, (color / (AA_SIZE as f32).powf(2.0)).gamma_correct());
+            image.set_pixel(x, y, (color / (AA_SIZE * AA_SIZE) as f32).gamma_correct());
         }
     }
 
