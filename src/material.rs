@@ -55,8 +55,14 @@ impl Scatterable for Phong {
 
             if !in_shadow {
                 let s = (light.origin - hit_record.point).normalize();
-                let diffuse = self.color * s.dot(hit_record.normal).max(0.0) * light_distance.powf(2.0).recip() * light.color * light_intensity;
-                let specular = light.color * (1.0 - self.roughness) * reflection_dir.dot(light_dir).powf((1.0 - self.roughness) * 128.0).max(0.0);
+                let diffuse = self.color *
+                    s.dot(hit_record.normal).max(0.0) *
+                    light_distance.powf(2.0).recip() *
+                    light.color *
+                    light_intensity;
+                let specular = light.color *
+                    (1.0 - self.roughness) *
+                    reflection_dir.dot(light_dir).powf((1.0 - self.roughness) * 128.0).max(0.0);
 
                 color += diffuse + specular;
             }
