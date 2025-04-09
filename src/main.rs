@@ -7,16 +7,17 @@ use minifb::{Window, WindowOptions, Key, KeyRepeat};
 
 use raytracer::{Image, render_scene, scene::Scene};
 
-const WINDOW_WIDTH: u32 = 1280;
-const WINDOW_HEIGHT: u32 = 720;
+const WINDOW_WIDTH: u32 = 1920;
+const WINDOW_HEIGHT: u32 = 1080;
 
 static SCENES_PATH: &str = "scenes/";
 static OUT_PATH: &str = "out/image.png";
 
 fn main() {
-    let scene = pick_scene();
-
     let now = Instant::now();
+    let scene = pick_scene();
+    println!("Triangles amount: {}", scene.bvh.triangles_amount());
+
     let image = render_scene(scene);
     println!("Elapsed: {:.2?}", now.elapsed());
 

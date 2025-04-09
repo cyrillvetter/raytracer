@@ -11,6 +11,10 @@ pub struct Image {
 }
 
 impl Image {
+    pub fn new(width: u32, height: u32, bytes: Vec<u32>) -> Self {
+        Self { width, height, bytes }
+    }
+
     pub fn blank(width: u32, height: u32) -> Self {
         Self { width, height, bytes: vec![0; (width * height) as usize] }
     }

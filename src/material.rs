@@ -41,17 +41,7 @@ impl Scatterable for Phong {
             let light_intensity = light.intensity / (scene.lights.len() as f32);
 
             let shadow_ray = Ray::new(hit_record.point + light_dir * 1e-4, light_dir);
-            let mut in_shadow = false;
-
-            for triangle in scene.triangles.iter() {
-                match triangle.hit(&shadow_ray) {
-                    Some(obstacle_hit) if obstacle_hit.t < light_distance => {
-                        in_shadow = true;
-                        break;
-                    },
-                    _ => ()
-                }
-            }
+            let in_shadow = scene.bvh.intersects(&shadow_ray).is_some();
 
             if !in_shadow {
                 let s = (light.origin - hit_record.point).normalize();

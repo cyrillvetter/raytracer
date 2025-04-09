@@ -1,5 +1,6 @@
 use std::path::Path;
 
+use crate::bvh::Bvh;
 use crate::primitive::Color;
 use crate::triangle::{Triangle, Vertex};
 use crate::material::{Material, Phong, Metal};
@@ -17,7 +18,7 @@ use glam::{Vec3, Quat, Affine3A};
 pub struct Scene {
     pub camera: Camera,
     pub lights: Vec<Light>,
-    pub triangles: Vec<Triangle>,
+    pub bvh: Bvh,
     pub materials: Vec<Material>
 }
 
@@ -28,7 +29,7 @@ impl Scene {
         Scene {
             camera: import_camera(&gltf),
             lights: import_lights(&gltf),
-            triangles: import_triangles(&gltf, &buffers),
+            bvh: import_triangles(&gltf, &buffers),
             materials: import_materials(&gltf),
         }
     }
@@ -70,7 +71,7 @@ fn import_camera(gltf: &Document) -> Camera {
         .unwrap_or(Camera::new((IMAGE_WIDTH as f32) / (IMAGE_HEIGHT as f32), 0.4, Affine3A::ZERO))
 }
 
-fn import_triangles(gltf: &Document, buffers: &Vec<Data>) -> Vec<Triangle> {
+fn import_triangles(gltf: &Document, buffers: &Vec<Data>) -> Bvh {
     let mut triangles: Vec<Triangle> = Vec::new();
 
     for mesh in gltf.meshes() {
@@ -93,19 +94,19 @@ fn import_triangles(gltf: &Document, buffers: &Vec<Data>) -> Vec<Triangle> {
             let material_index = primitive.material().index();
 
             for i in (0..indices.len()).step_by(3) {
-                let triangle = Triangle {
-                    v1: Vertex::new(positions[indices[i]], normals[indices[i]]),
-                    v2: Vertex::new(positions[indices[i + 1]], normals[indices[i + 1]]),
-                    v3: Vertex::new(positions[indices[i + 2]], normals[indices[i + 2]]),
+                let triangle = Triangle::new(
+                    Vertex::new(positions[indices[i]], normals[indices[i]]),
+                    Vertex::new(positions[indices[i + 1]], normals[indices[i + 1]]),
+                    Vertex::new(positions[indices[i + 2]], normals[indices[i + 2]]),
                     material_index,
-                };
+                );
 
                 triangles.push(triangle);
             }
         }
     }
 
-    triangles
+    Bvh::new(triangles)
 }
 
 fn import_materials(gltf: &Document) -> Vec<Material> {

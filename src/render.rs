@@ -1,33 +1,42 @@
 use crate::{IMAGE_WIDTH, IMAGE_HEIGHT, AA_SIZE};
 use crate::primitive::*;
-use crate::triangle::HitRecord;
 use crate::scene::Scene;
 use crate::Image;
 use crate::material::Scatterable;
+
+use rayon::prelude::*;
 
 const FALLBACK_COLOR: Color = Color::rgb(1.0, 0.0, 1.0);
 const MAX_DEPTH: f32 = 5.0;
 const BACKGROUND: Color = Color::BLACK;
 
 pub fn render_scene(scene: Scene) -> Image {
-    let mut image = Image::blank(IMAGE_WIDTH, IMAGE_HEIGHT);
+    let mut pixels = vec![0; (IMAGE_WIDTH * IMAGE_HEIGHT) as usize];
+    let bands: Vec<(usize, &mut [u32])> = pixels.chunks_mut(IMAGE_WIDTH as usize).enumerate().collect();
 
-    for x in 0..IMAGE_WIDTH {
-        for y in 0..IMAGE_HEIGHT {
-            let mut color = Color::BLACK;
+    bands
+        .into_par_iter()
+        .for_each(|(y, band)| {
+            render_line(band, y as u32, &scene);
+        });
 
-            for x_offset in 0..AA_SIZE {
-                for y_offset in 0..AA_SIZE {
-                    let ray = scene.camera.ray_from((x * AA_SIZE) + x_offset, (y * AA_SIZE) + y_offset);
-                    color += trace_ray(ray, MAX_DEPTH, &scene);
-                }
+    Image::new(IMAGE_WIDTH as u32, IMAGE_HEIGHT as u32, pixels)
+}
+
+fn render_line(pixels: &mut [u32], y: u32, scene: &Scene) {
+    for x in 0..pixels.len() {
+        let mut color = Color::BLACK;
+
+        for x_offset in 0..AA_SIZE {
+            for y_offset in 0..AA_SIZE {
+                let ray = scene.camera.ray_from(((x as u32) * AA_SIZE) + x_offset, (y * AA_SIZE) + y_offset);
+                color += trace_ray(ray, MAX_DEPTH, &scene);
             }
-
-            image.set_pixel(x, y, (color / (AA_SIZE * AA_SIZE) as f32).gamma_correct());
         }
-    }
 
-    image
+        color = (color / (AA_SIZE * AA_SIZE) as f32).gamma_correct();
+        pixels[x] = ((color.r * 255.0) as u32) << 16 | ((color.g * 255.0) as u32) << 8 | ((color.b * 255.0) as u32);
+    }
 }
 
 fn trace_ray(ray: Ray, depth: f32, scene: &Scene) -> Color {
@@ -35,20 +44,7 @@ fn trace_ray(ray: Ray, depth: f32, scene: &Scene) -> Color {
         return Color::BLACK;
     }
 
-    let mut nearest_dist = f32::INFINITY;
-    let mut nearest_hit: Option<HitRecord> = None;
-
-    for triangle in scene.triangles.iter() {
-        match triangle.hit(&ray) {
-            Some(hit_record) if hit_record.t < nearest_dist => {
-                nearest_dist = hit_record.t;
-                nearest_hit = Some(hit_record);
-            },
-            _ => ()
-        }
-    }
-
-    match nearest_hit {
+    match scene.bvh.intersects(&ray) {
         Some(hit_record) => match hit_record.material_index {
             Some(index) => match scene.materials[index].scatter(&ray, &hit_record, scene) {
                 (Some(reflective_ray), color) => color * (0.9f32).powf(MAX_DEPTH - depth) * trace_ray(reflective_ray, depth - 1.0, scene),

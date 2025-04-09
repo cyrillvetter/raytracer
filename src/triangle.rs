@@ -7,6 +7,7 @@ pub struct Triangle {
     pub v1: Vertex,
     pub v2: Vertex,
     pub v3: Vertex,
+    pub centroid: Vec3,
     pub material_index: Option<usize>,
 }
 
@@ -25,6 +26,17 @@ pub struct HitRecord {
 }
 
 impl Triangle {
+    pub fn new(v1: Vertex, v2: Vertex, v3: Vertex, material_index: Option<usize>) -> Self {
+        let centroid = (v1.position + v2.position + v3.position) * 0.3333333;
+        Self {
+            v1,
+            v2,
+            v3,
+            centroid,
+            material_index
+        }
+    }
+
     pub fn hit(&self, ray: &Ray) -> Option<HitRecord> {
         let e1 = self.v2.position - self.v1.position;
         let e2 = self.v3.position - self.v1.position;

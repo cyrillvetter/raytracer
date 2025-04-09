@@ -8,6 +8,7 @@ glam = "0.30.0"
 gltf = { version = "1.4.1", features = ["KHR_lights_punctual"] }
 minifb = "0.28.0"
 png = "0.17.16"
+rayon = "1.10.0"
 
 [profile.dev]
 opt-level = 1
