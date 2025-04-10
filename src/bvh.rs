@@ -99,6 +99,7 @@ impl Bvh {
         self.traverse(ray, ROOT_IDX)
     }
 
+    // TODO: Change this to a iterative implementation.
     fn traverse(&self, ray: &Ray, node_idx: usize) -> Option<HitRecord> {
         let node = &self.nodes[node_idx];
 
