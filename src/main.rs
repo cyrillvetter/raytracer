@@ -14,17 +14,19 @@ static SCENES_PATH: &str = "scenes/";
 static OUT_PATH: &str = "out/image.png";
 
 fn main() {
+    let scene_path = pick_scene_path();
     let now = Instant::now();
-    let scene = pick_scene();
+
+    let scene = Scene::import(&scene_path);
     println!("Triangles amount: {}", scene.bvh.triangles_amount());
 
     let image = render_scene(scene);
-    println!("Elapsed: {:.2?}", now.elapsed());
+    println!("Scene rendered in {:.2?}", now.elapsed());
 
     show_image(&image);
 }
 
-fn pick_scene() -> Scene {
+fn pick_scene_path() -> PathBuf {
     let paths = read_dir(SCENES_PATH).expect("No scenes found");
     let scene_paths: Vec<PathBuf> = paths
         .filter_map(|res| res.ok())
@@ -40,7 +42,7 @@ fn pick_scene() -> Scene {
     }
 
     if scene_paths.len() == 1 {
-        return Scene::import(&scene_paths[0]);
+        return scene_paths[0].clone();
     }
 
     println!("Pick a scene:");
@@ -57,7 +59,7 @@ fn pick_scene() -> Scene {
         panic!("Scene number out of range");
     }
 
-    Scene::import(&scene_paths[i - 1])
+    scene_paths[i - 1].clone()
 }
 
 fn show_image(image: &Image) {
