@@ -23,6 +23,6 @@ pub use light::Light;
 
 pub mod util;
 
-const IMAGE_WIDTH: u32 = 1920;
-const IMAGE_HEIGHT: u32 = 1080;
-const AA_SIZE: u32 = 1;
+pub const IMAGE_WIDTH: u32 = 1920;
+pub const IMAGE_HEIGHT: u32 = 1080;
+pub const AA_SIZE: u32 = 1;

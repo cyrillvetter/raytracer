@@ -5,7 +5,7 @@ use std::path::{Path, PathBuf};
 
 use minifb::{Window, WindowOptions, Key, KeyRepeat};
 
-use raytracer::{Image, render_scene, scene::Scene, util::Statistics};
+use raytracer::{IMAGE_HEIGHT, IMAGE_WIDTH, Image, render_scene, scene::Scene, util::Statistics};
 
 const WINDOW_WIDTH: u32 = 1920;
 const WINDOW_HEIGHT: u32 = 1080;
@@ -15,6 +15,7 @@ static OUT_PATH: &str = "out/image.png";
 
 fn main() {
     let mut statistics = Statistics::new();
+    statistics.add_str("Resolution", format!("{}x{}", IMAGE_WIDTH, IMAGE_HEIGHT));
 
     let scene_path = pick_scene_path();
     let mut now = Instant::now();
@@ -22,8 +23,8 @@ fn main() {
     let scene = Scene::import(&scene_path);
     let bvh_elapsed = now.elapsed();
     statistics.add("Triangles", &scene.bvh.triangles.len());
-    statistics.add("Bvh nodes", &scene.bvh.nodes_used);
-    statistics.add_str("Bvh construction time", format!("{:.2?}", bvh_elapsed));
+    statistics.add("BVH nodes", &scene.bvh.nodes_used);
+    statistics.add_str("BVH construction time", format!("{:.2?}", bvh_elapsed));
 
     now = Instant::now();
     let image = render_scene(scene);
