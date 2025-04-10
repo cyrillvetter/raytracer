@@ -6,13 +6,13 @@ use glam::Vec3;
 pub const ROOT_IDX: usize = 0;
 
 // Higher amount leads to better BVH at longer construction time.
-const SPACES: usize = 5;
+const SPACES: usize = 10;
 
 #[derive(Debug)]
 pub struct Bvh {
     nodes: Vec<BvhNode>,
-    triangles: Vec<Triangle>,
-    nodes_used: usize
+    pub triangles: Vec<Triangle>,
+    pub nodes_used: usize
 }
 
 #[derive(Debug, Clone)]
@@ -92,12 +92,7 @@ impl Bvh {
         };
 
         bvh.subdivide(ROOT_IDX);
-        println!("Used {} bvh nodes.", bvh.nodes_used);
         bvh
-    }
-
-    pub fn triangles_amount(&self) -> usize {
-        self.triangles.len()
     }
 
     pub fn intersects(&self, ray: &Ray) -> Option<HitRecord> {

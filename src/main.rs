@@ -5,7 +5,7 @@ use std::path::{Path, PathBuf};
 
 use minifb::{Window, WindowOptions, Key, KeyRepeat};
 
-use raytracer::{Image, render_scene, scene::Scene};
+use raytracer::{Image, render_scene, scene::Scene, util::Statistics};
 
 const WINDOW_WIDTH: u32 = 1920;
 const WINDOW_HEIGHT: u32 = 1080;
@@ -14,16 +14,24 @@ static SCENES_PATH: &str = "scenes/";
 static OUT_PATH: &str = "out/image.png";
 
 fn main() {
+    let mut statistics = Statistics::new();
+
     let scene_path = pick_scene_path();
     let mut now = Instant::now();
 
     let scene = Scene::import(&scene_path);
-    println!("Bvh built in {:.2?}, triangles: {}", now.elapsed(), scene.bvh.triangles_amount());
+    let bvh_elapsed = now.elapsed();
+    statistics.add("Triangles", &scene.bvh.triangles.len());
+    statistics.add("Bvh nodes", &scene.bvh.nodes_used);
+    statistics.add_str("Bvh construction time", format!("{:.2?}", bvh_elapsed));
 
     now = Instant::now();
     let image = render_scene(scene);
-    println!("Scene rendered in {:.2?}", now.elapsed());
+    let render_elapsed = now.elapsed();
+    statistics.add_str("Render time", format!("{:.2?}", render_elapsed));
+    statistics.add_str("Total time", format!("{:.2?}", bvh_elapsed + render_elapsed));
 
+    statistics.print();
     show_image(&image);
 }
 
