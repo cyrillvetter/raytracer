@@ -5,6 +5,9 @@ use glam::Vec3;
 
 pub const ROOT_IDX: usize = 0;
 
+// Higher amount leads to better BVH at longer construction time.
+const SPACES: usize = 20;
+
 #[derive(Debug)]
 pub struct Bvh {
     nodes: Vec<BvhNode>,
@@ -147,9 +150,16 @@ impl Bvh {
         let mut best_cost = f32::INFINITY;
 
         for axis in 0..3 {
-            for i in node.first_prim..node.first_prim+node.prim_count {
-                let triangle = &self.triangles[i];
-                let candidate_pos = triangle.centroid[axis];
+            let bounds_min = node.aabb.minimum[axis];
+            let bounds_max = node.aabb.maximum[axis];
+
+            if bounds_min == bounds_max {
+                continue;
+            }
+
+            let scale = (bounds_max - bounds_min) / (SPACES as f32);
+            for i in 1..SPACES {
+                let candidate_pos = bounds_min + (i as f32) * scale;
                 let cost = node.evaluate_sh(axis, candidate_pos, &self.triangles);
                 if cost < best_cost {
                     best_pos = candidate_pos;
