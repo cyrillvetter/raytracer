@@ -45,6 +45,36 @@ impl BvhNode {
     pub fn is_leaf(&self) -> bool {
         self.prim_count > 0
     }
+
+    pub fn evaluate_sh(&self, axis: usize, pos: f32, triangles: &Vec<Triangle>) -> f32 {
+        let mut left_box = Aabb::MAX;
+        let mut right_box = Aabb::MAX;
+
+        let mut left_count = 0;
+        let mut right_count = 0;
+
+        for i in self.first_prim..self.first_prim+self.prim_count {
+            let triangle = &triangles[i];
+            if triangle.centroid[axis] < pos {
+                left_count += 1;
+                left_box.grow(triangle.v1.position);
+                left_box.grow(triangle.v2.position);
+                left_box.grow(triangle.v3.position);
+            } else {
+                right_count += 1;
+                right_box.grow(triangle.v1.position);
+                right_box.grow(triangle.v2.position);
+                right_box.grow(triangle.v3.position);
+            }
+        }
+
+        let cost = (left_count as f32) * left_box.area() + (right_count as f32) * right_box.area();
+        if cost > 0.0 {
+            cost
+        } else {
+            f32::INFINITY
+        }
+    }
 }
 
 impl Bvh {
@@ -59,6 +89,7 @@ impl Bvh {
         };
 
         bvh.subdivide(ROOT_IDX);
+        println!("Used {} bvh nodes.", bvh.nodes_used);
         bvh
     }
 
@@ -111,22 +142,33 @@ impl Bvh {
     fn subdivide(&mut self, node_idx: usize) {
         let node = &mut self.nodes[node_idx];
 
-        // TODO: Experiment with this value.
-        if node.prim_count <= 4 {
-            return;
+        let mut best_axis = 5;
+        let mut best_pos = 0.0;
+        let mut best_cost = f32::INFINITY;
+
+        for axis in 0..3 {
+            for i in node.first_prim..node.first_prim+node.prim_count {
+                let triangle = &self.triangles[i];
+                let candidate_pos = triangle.centroid[axis];
+                let cost = node.evaluate_sh(axis, candidate_pos, &self.triangles);
+                if cost < best_cost {
+                    best_pos = candidate_pos;
+                    best_axis = axis;
+                    best_cost = cost;
+                }
+            }
         }
 
         let extent = node.aabb.maximum - node.aabb.minimum;
-        let mut axis = 0;
-        if extent.y > extent.x {
-            axis = 1;
+        let parent_area = extent.x * extent.y + extent.y * extent.z + extent.z * extent.x;
+        let parent_cost = (node.prim_count as f32) * parent_area;
+
+        if best_cost >= parent_cost {
+            return;
         }
 
-        if extent.z > extent[axis] {
-            axis = 2;
-        }
-
-        let split_pos = node.aabb.minimum[axis] + extent[axis] * 0.5;
+        let axis = best_axis;
+        let split_pos = best_pos;
 
         let mut i = node.first_prim;
         let mut j = i + node.prim_count - 1;
@@ -141,7 +183,6 @@ impl Bvh {
         }
 
         let left_count = i - node.first_prim;
-
         if left_count == 0 || left_count == node.prim_count {
             return;
         }

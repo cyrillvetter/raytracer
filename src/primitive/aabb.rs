@@ -9,6 +9,8 @@ pub struct Aabb {
 }
 
 impl Aabb {
+    pub const MAX: Self = Aabb::new(Vec3::INFINITY, Vec3::NEG_INFINITY);
+
     pub const fn new(minimum: Vec3, maximum: Vec3) -> Self {
         Self { minimum, maximum }
     }
@@ -29,5 +31,15 @@ impl Aabb {
         }
 
         tmax >= tmin.max(0.0)
+    }
+
+    pub fn grow(&mut self, v: Vec3) {
+        self.minimum = self.minimum.min(v);
+        self.maximum = self.maximum.max(v);
+    }
+
+    pub fn area(&self) -> f32 {
+        let extent = self.maximum - self.minimum; // Box extent.
+        extent.x * extent.y + extent.y * extent.z + extent.z * extent.x
     }
 }

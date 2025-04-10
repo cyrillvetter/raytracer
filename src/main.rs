@@ -15,11 +15,12 @@ static OUT_PATH: &str = "out/image.png";
 
 fn main() {
     let scene_path = pick_scene_path();
-    let now = Instant::now();
+    let mut now = Instant::now();
 
     let scene = Scene::import(&scene_path);
-    println!("Triangles amount: {}", scene.bvh.triangles_amount());
+    println!("Bvh built in {:.2?}, triangles: {}", now.elapsed(), scene.bvh.triangles_amount());
 
+    now = Instant::now();
     let image = render_scene(scene);
     println!("Scene rendered in {:.2?}", now.elapsed());
 
