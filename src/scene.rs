@@ -12,7 +12,7 @@ use super::{IMAGE_HEIGHT, IMAGE_WIDTH};
 use gltf::Document;
 use gltf::buffer::Data;
 use gltf::camera::Projection::Perspective;
-use glam::{Vec3, Quat, Affine3A};
+use glam::{Vec3A, Vec3, Quat, Affine3A};
 
 #[derive(Debug)]
 pub struct Scene {
@@ -78,8 +78,8 @@ fn import_triangles(gltf: &Document, buffers: &Vec<Data>) -> Vec<Triangle> {
     for mesh in gltf.meshes() {
         for primitive in mesh.primitives() {
             let reader = primitive.reader(|buffer| Some(&buffers[buffer.index()]));
-            let positions: Vec<Vec3> = reader.read_positions().unwrap().map(|a| a.into()).collect();
-            let normals: Vec<Vec3> = reader.read_normals().unwrap().map(|a| a.into()).collect();
+            let positions: Vec<Vec3A> = reader.read_positions().unwrap().map(|a| a.into()).collect();
+            let normals: Vec<Vec3A> = reader.read_normals().unwrap().map(|a| a.into()).collect();
 
             // TODO: Remove into_32 to avoid casting twice.
             let indices: Vec<usize> = reader

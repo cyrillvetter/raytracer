@@ -1,7 +1,7 @@
 use crate::primitive::{Aabb, Ray};
 use crate::triangle::{Triangle, HitRecord};
 
-use glam::Vec3;
+use glam::Vec3A;
 
 pub const ROOT_IDX: usize = 0;
 
@@ -25,7 +25,7 @@ pub struct BvhNode {
 
 impl BvhNode {
     pub fn new(first_prim: usize, prim_count: usize, triangles: &Vec<Triangle>) -> Self {
-        let mut aabb = Aabb::new(Vec3::INFINITY, Vec3::NEG_INFINITY);
+        let mut aabb = Aabb::new(Vec3A::INFINITY, Vec3A::NEG_INFINITY);
 
         for i in first_prim..first_prim+prim_count {
             let tri = &triangles[i];

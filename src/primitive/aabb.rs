@@ -1,17 +1,17 @@
 use crate::primitive::Ray;
 
-use glam::Vec3;
+use glam::Vec3A;
 
 #[derive(Debug, Clone)]
 pub struct Aabb {
-    pub minimum: Vec3,
-    pub maximum: Vec3
+    pub minimum: Vec3A,
+    pub maximum: Vec3A
 }
 
 impl Aabb {
-    pub const MAX: Self = Aabb::new(Vec3::INFINITY, Vec3::NEG_INFINITY);
+    pub const MAX: Self = Aabb::new(Vec3A::INFINITY, Vec3A::NEG_INFINITY);
 
-    pub const fn new(minimum: Vec3, maximum: Vec3) -> Self {
+    pub const fn new(minimum: Vec3A, maximum: Vec3A) -> Self {
         Self { minimum, maximum }
     }
 
@@ -33,7 +33,7 @@ impl Aabb {
         tmax >= tmin.max(0.0)
     }
 
-    pub fn grow(&mut self, v: Vec3) {
+    pub fn grow(&mut self, v: Vec3A) {
         self.minimum = self.minimum.min(v);
         self.maximum = self.maximum.max(v);
     }

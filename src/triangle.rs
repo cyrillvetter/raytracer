@@ -1,27 +1,27 @@
 use crate::primitive::*;
 
-use glam::Vec3;
+use glam::Vec3A;
 
 #[derive(Debug, Clone)]
 pub struct Triangle {
     pub v1: Vertex,
     pub v2: Vertex,
     pub v3: Vertex,
-    pub centroid: Vec3,
+    pub centroid: Vec3A,
     pub material_index: Option<usize>,
 }
 
 #[derive(Debug, Clone)]
 pub struct Vertex {
-    pub position: Vec3,
-    pub normal: Vec3,
+    pub position: Vec3A,
+    pub normal: Vec3A,
 }
 
 #[derive(Debug, Clone)]
 pub struct HitRecord {
     pub t: f32,
-    pub point: Vec3,
-    pub normal: Vec3,
+    pub point: Vec3A,
+    pub normal: Vec3A,
     pub material_index: Option<usize>,
 }
 
@@ -75,7 +75,7 @@ impl Triangle {
 }
 
 impl Vertex {
-    pub const fn new(position: Vec3, normal: Vec3) -> Self {
+    pub const fn new(position: Vec3A, normal: Vec3A) -> Self {
         Self { position, normal }
     }
 }

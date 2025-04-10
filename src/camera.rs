@@ -1,7 +1,7 @@
 use crate::primitive::Ray;
 use crate::{IMAGE_WIDTH, IMAGE_HEIGHT, AA_SIZE};
 
-use glam::{Vec3, Affine3A};
+use glam::{Vec3A, Affine3A};
 
 #[derive(Debug, Clone)]
 pub struct Camera {
@@ -33,8 +33,8 @@ impl Camera {
         let plane_x = ((x as f32) - self.half_width) * self.meter_per_pixel;
         let plane_y = (self.half_height - (y as f32)) * self.meter_per_pixel;
         Ray::new(
-            self.transform.translation.into(),
-            self.transform.transform_vector3(Vec3::new(plane_x, plane_y, -self.focal_length).normalize())
+            self.transform.translation,
+            self.transform.transform_vector3a(Vec3A::new(plane_x, plane_y, -self.focal_length).normalize())
         )
     }
 }
