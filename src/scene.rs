@@ -25,11 +25,12 @@ pub struct Scene {
 impl Scene {
     pub fn import(path: &Path) -> Self {
         let (gltf, buffers, _) = gltf::import(path).unwrap();
+        let triangles = import_triangles(&gltf, &buffers);
 
         Scene {
             camera: import_camera(&gltf),
             lights: import_lights(&gltf),
-            bvh: import_triangles(&gltf, &buffers),
+            bvh: Bvh::new(triangles),
             materials: import_materials(&gltf),
         }
     }
@@ -71,7 +72,7 @@ fn import_camera(gltf: &Document) -> Camera {
         .unwrap_or(Camera::new((IMAGE_WIDTH as f32) / (IMAGE_HEIGHT as f32), 0.4, Affine3A::ZERO))
 }
 
-fn import_triangles(gltf: &Document, buffers: &Vec<Data>) -> Bvh {
+fn import_triangles(gltf: &Document, buffers: &Vec<Data>) -> Vec<Triangle> {
     let mut triangles: Vec<Triangle> = Vec::new();
 
     for mesh in gltf.meshes() {
@@ -106,7 +107,7 @@ fn import_triangles(gltf: &Document, buffers: &Vec<Data>) -> Bvh {
         }
     }
 
-    Bvh::new(triangles)
+    triangles
 }
 
 fn import_materials(gltf: &Document) -> Vec<Material> {

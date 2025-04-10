@@ -2,8 +2,6 @@ use std::path::Path;
 use std::fs::File;
 use std::io::BufWriter;
 
-use crate::primitive::Color;
-
 pub struct Image {
     pub width: u32,
     pub height: u32,
@@ -13,27 +11,6 @@ pub struct Image {
 impl Image {
     pub fn new(width: u32, height: u32, bytes: Vec<u32>) -> Self {
         Self { width, height, bytes }
-    }
-
-    pub fn blank(width: u32, height: u32) -> Self {
-        Self { width, height, bytes: vec![0; (width * height) as usize] }
-    }
-
-    #[allow(dead_code)]
-    pub fn get_pixel(&self, x: u32, y: u32) -> Color {
-        let pos = ((y * self.width) + x) as usize;
-
-        let pixel = &self.bytes[pos];
-        let r = ((pixel >> 16 & 0xFF) as f32) / 255.0;
-        let g = ((pixel >> 8 & 0xFF) as f32) / 255.0;
-        let b = ((pixel & 0xFF) as f32) / 255.0;
-
-        Color::rgb(r, g, b)
-    }
-
-    pub fn set_pixel(&mut self, x: u32, y: u32, color: Color) {
-        let pos = ((y * self.width) + x) as usize;
-        self.bytes[pos] = ((color.r * 255.0) as u32) << 16 | ((color.g * 255.0) as u32) << 8 | ((color.b * 255.0) as u32);
     }
 
     pub fn save_png(&self, out_path: &Path) {
