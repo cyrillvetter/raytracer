@@ -96,47 +96,68 @@ impl Bvh {
     }
 
     pub fn intersects(&self, ray: &Ray) -> Option<HitRecord> {
-        self.traverse(ray, ROOT_IDX)
-    }
+        let mut node = &self.nodes[ROOT_IDX];
+        let mut stack = [node; 64];
+        let mut stack_pointer = 0;
 
-    // TODO: Change this to a iterative implementation.
-    fn traverse(&self, ray: &Ray, node_idx: usize) -> Option<HitRecord> {
-        let node = &self.nodes[node_idx];
+        let mut nearest_dist = f32::INFINITY;
+        let mut nearest_hit: Option<HitRecord> = None;
 
-        if !node.aabb.hit(ray) {
-            return None;
-        }
+        loop {
+            if node.is_leaf() {
+                for i in node.first_prim..node.first_prim+node.prim_count {
+                    let triangle = &self.triangles[i];
 
-        if node.is_leaf() {
-            let mut nearest_dist = f32::INFINITY;
-            let mut nearest_hit: Option<HitRecord> = None;
-
-            for i in node.first_prim..node.first_prim+node.prim_count {
-                let triangle = &self.triangles[i];
-
-                match triangle.hit(&ray) {
-                    Some(hit_record) if hit_record.t < nearest_dist => {
-                        nearest_dist = hit_record.t;
-                        nearest_hit = Some(hit_record);
-                    },
-                    _ => ()
+                    match triangle.hit(&ray) {
+                        Some(hit_record) if hit_record.t < nearest_dist => {
+                            nearest_dist = hit_record.t;
+                            nearest_hit = Some(hit_record);
+                        },
+                        _ => ()
+                    }
                 }
+
+                if stack_pointer == 0 {
+                    break;
+                } else {
+                    stack_pointer -= 1;
+                    node = stack[stack_pointer];
+                }
+
+                continue;
             }
 
-            return nearest_hit;
+            let mut child1 = &self.nodes[node.left_child];
+            let mut child2 = &self.nodes[node.left_child + 1];
+
+            let mut dist1 = child1.aabb.hit(ray).map_or(None, |d| (d < nearest_dist).then_some(d));
+            let mut dist2 = child2.aabb.hit(ray).map_or(None, |d| (d < nearest_dist).then_some(d));
+
+            // TODO: Remove swapping.
+            if dist1.unwrap_or(f32::INFINITY) > dist2.unwrap_or(f32::INFINITY) {
+                std::mem::swap(&mut dist1, &mut dist2);
+                std::mem::swap(&mut child1, &mut child2);
+            }
+
+            if dist1.is_none() {
+                if stack_pointer == 0 {
+                    break;
+                } else {
+                    stack_pointer -= 1;
+                    node = stack[stack_pointer];
+                }
+            } else {
+                node = child1;
+                if dist2.is_some() {
+                    stack[stack_pointer] = child2;
+                    stack_pointer += 1;
+                }
+            }
         }
 
-        let left_hit = self.traverse(ray, node.left_child);
-        let right_hit = self.traverse(ray, node.left_child + 1);
-
-        match (left_hit, right_hit) {
-            (Some(t1), Some(t2)) if t1.t <= t2.t => Some(t1),
-            (Some(_), Some(t2)) => Some(t2),
-            (Some(t1), None) => Some(t1),
-            (None, Some(t2)) => Some(t2),
-            (None, None) => None
-        }
+        return nearest_hit;
     }
+
 
     fn subdivide(&mut self, node_idx: usize) {
         let node = &mut self.nodes[node_idx];

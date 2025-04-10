@@ -15,7 +15,7 @@ impl Aabb {
         Self { minimum, maximum }
     }
 
-    pub fn hit(&self, ray: &Ray) -> bool {
+    pub fn hit(&self, ray: &Ray) -> Option<f32> {
         let mut t1 = (self.minimum.x - ray.origin.x) * ray.dir_inv.x;
         let mut t2 = (self.maximum.x - ray.origin.x) * ray.dir_inv.x;
 
@@ -30,7 +30,7 @@ impl Aabb {
             tmax = tmax.min(t1.max(t2));
         }
 
-        tmax >= tmin.max(0.0)
+        (tmax >= tmin.max(0.0)).then_some(tmin)
     }
 
     pub fn grow(&mut self, v: Vec3A) {
