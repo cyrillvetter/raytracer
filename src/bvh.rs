@@ -1,12 +1,10 @@
 use crate::primitive::{Aabb, Ray};
 use crate::triangle::{Triangle, HitRecord};
 
-use glam::Vec3A;
-
 pub const ROOT_IDX: usize = 0;
 
 // Higher amount leads to better BVH at longer construction time.
-const SPACES: usize = 5;
+const SPACES: usize = 10;
 
 #[derive(Debug)]
 pub struct Bvh {
@@ -19,16 +17,15 @@ pub struct Bvh {
 pub struct BvhNode {
     aabb: Aabb,
     left_child: usize,
-    first_prim: usize,
-    prim_count: usize
+    first_tri: usize,
+    tri_count: usize
 }
 
 impl BvhNode {
     pub fn new(first_prim: usize, prim_count: usize, triangles: &Vec<Triangle>) -> Self {
-        let mut aabb = Aabb::new(Vec3A::INFINITY, Vec3A::NEG_INFINITY);
+        let mut aabb = Aabb::MAX;
 
-        for i in first_prim..first_prim+prim_count {
-            let tri = &triangles[i];
+        for tri in &triangles[first_prim..first_prim+prim_count] {
             aabb.minimum = aabb.minimum.min(tri.v1.position);
             aabb.minimum = aabb.minimum.min(tri.v2.position);
             aabb.minimum = aabb.minimum.min(tri.v3.position);
@@ -40,13 +37,13 @@ impl BvhNode {
         Self {
             aabb,
             left_child: 0,
-            first_prim,
-            prim_count
+            first_tri: first_prim,
+            tri_count: prim_count
         }
     }
 
     pub fn is_leaf(&self) -> bool {
-        self.prim_count > 0
+        self.tri_count > 0
     }
 
     pub fn evaluate_sh(&self, axis: usize, pos: f32, triangles: &Vec<Triangle>) -> f32 {
@@ -56,18 +53,17 @@ impl BvhNode {
         let mut left_count = 0;
         let mut right_count = 0;
 
-        for i in self.first_prim..self.first_prim+self.prim_count {
-            let triangle = &triangles[i];
-            if triangle.centroid[axis] < pos {
+        for tri in &triangles[self.first_tri..self.first_tri+self.tri_count] {
+            if tri.centroid[axis] < pos {
                 left_count += 1;
-                left_box.grow(triangle.v1.position);
-                left_box.grow(triangle.v2.position);
-                left_box.grow(triangle.v3.position);
+                left_box.grow(tri.v1.position);
+                left_box.grow(tri.v2.position);
+                left_box.grow(tri.v3.position);
             } else {
                 right_count += 1;
-                right_box.grow(triangle.v1.position);
-                right_box.grow(triangle.v2.position);
-                right_box.grow(triangle.v3.position);
+                right_box.grow(tri.v1.position);
+                right_box.grow(tri.v2.position);
+                right_box.grow(tri.v3.position);
             }
         }
 
@@ -105,9 +101,7 @@ impl Bvh {
 
         loop {
             if node.is_leaf() {
-                for i in node.first_prim..node.first_prim+node.prim_count {
-                    let triangle = &self.triangles[i];
-
+                for triangle in &self.triangles[node.first_tri..node.first_tri+node.tri_count] {
                     match triangle.hit(&ray) {
                         Some(hit_record) if hit_record.t < nearest_dist => {
                             nearest_dist = hit_record.t;
@@ -127,19 +121,19 @@ impl Bvh {
                 continue;
             }
 
-            let mut child1 = &self.nodes[node.left_child];
-            let mut child2 = &self.nodes[node.left_child + 1];
+            let child1 = &self.nodes[node.left_child];
+            let child2 = &self.nodes[node.left_child + 1];
 
-            let mut dist1 = child1.aabb.hit(ray).map_or(None, |d| (d < nearest_dist).then_some(d));
-            let mut dist2 = child2.aabb.hit(ray).map_or(None, |d| (d < nearest_dist).then_some(d));
+            let dist1 = child1.aabb.hit(ray).and_then(|d| (d < nearest_dist).then_some(d));
+            let dist2 = child2.aabb.hit(ray).and_then(|d| (d < nearest_dist).then_some(d));
 
-            // TODO: Remove swapping.
-            if dist1.unwrap_or(f32::INFINITY) > dist2.unwrap_or(f32::INFINITY) {
-                std::mem::swap(&mut dist1, &mut dist2);
-                std::mem::swap(&mut child1, &mut child2);
-            }
+            let ((near_dist, near_child), (far_dist, far_child)) = if dist1.unwrap_or(f32::INFINITY) > dist2.unwrap_or(f32::INFINITY) {
+                ((dist2, child2), (dist1, child1))
+            } else {
+                ((dist1, child1), (dist2, child2))
+            };
 
-            if dist1.is_none() {
+            if near_dist.is_none() {
                 if stack_pointer == 0 {
                     break;
                 } else {
@@ -147,9 +141,9 @@ impl Bvh {
                     node = stack[stack_pointer];
                 }
             } else {
-                node = child1;
-                if dist2.is_some() {
-                    stack[stack_pointer] = child2;
+                node = near_child;
+                if far_dist.is_some() {
+                    stack[stack_pointer] = far_child;
                     stack_pointer += 1;
                 }
             }
@@ -188,7 +182,7 @@ impl Bvh {
 
         let extent = node.aabb.maximum - node.aabb.minimum;
         let parent_area = extent.x * extent.y + extent.y * extent.z + extent.z * extent.x;
-        let parent_cost = (node.prim_count as f32) * parent_area;
+        let parent_cost = (node.tri_count as f32) * parent_area;
 
         if best_cost >= parent_cost {
             return;
@@ -197,8 +191,8 @@ impl Bvh {
         let axis = best_axis;
         let split_pos = best_pos;
 
-        let mut i = node.first_prim;
-        let mut j = i + node.prim_count - 1;
+        let mut i = node.first_tri;
+        let mut j = i + node.tri_count - 1;
 
         while i <= j {
             if self.triangles[i].centroid[axis] < split_pos {
@@ -209,8 +203,8 @@ impl Bvh {
             }
         }
 
-        let left_count = i - node.first_prim;
-        if left_count == 0 || left_count == node.prim_count {
+        let left_count = i - node.first_tri;
+        if left_count == 0 || left_count == node.tri_count {
             return;
         }
 
@@ -218,11 +212,11 @@ impl Bvh {
         let right_child_idx = self.nodes_used + 1;
         self.nodes_used += 2;
 
-        let node_first_prim = node.first_prim;
-        let node_prim_count = node.prim_count;
+        let node_first_prim = node.first_tri;
+        let node_prim_count = node.tri_count;
 
         node.left_child = left_child_idx;
-        node.prim_count = 0;
+        node.tri_count = 0;
 
         self.nodes.push(BvhNode::new(node_first_prim, left_count, &self.triangles));
         self.nodes.push(BvhNode::new(i, node_prim_count - left_count, &self.triangles));
