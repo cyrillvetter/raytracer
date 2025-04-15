@@ -10,7 +10,7 @@ impl Statistics {
         Self { header: "|".to_owned(), values: "|".to_owned() }
     }
 
-    pub fn add_str(&mut self, key: &'static str, value: String) {
+    pub fn add_str(&mut self, key: &str, value: String) {
         let key_len = key.chars().count();
         let value_len = value.chars().count();
         let max_len = key_len.max(value_len);
@@ -19,7 +19,7 @@ impl Statistics {
         self.values.push_str(&format!(" {}{} |", value, " ".repeat(max_len - value_len)));
     }
 
-    pub fn add(&mut self, key: &'static str, value: &dyn Display) {
+    pub fn add(&mut self, key: &str, value: &dyn Display) {
         self.add_str(key, format!("{}", value));
     }
 
