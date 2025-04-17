@@ -3,7 +3,7 @@ use std::path::Path;
 use crate::bvh::Bvh;
 use crate::primitive::Color;
 use crate::triangle::{Triangle, Vertex};
-use crate::material::{Material, Phong, Metal};
+use crate::material::{Material, Phong, Metal, Glass};
 use crate::Camera;
 use crate::Light;
 
@@ -119,7 +119,12 @@ fn import_materials(gltf: &Document) -> Vec<Material> {
             let color = Color::rgb(base_color_factor[0], base_color_factor[1], base_color_factor[2]);
             let metallic = pbr.metallic_factor();
 
-            if metallic < 1.0 {
+            if let Some(_) = material.transmission() {
+                Material::Glass(Glass {
+                    color
+                })
+            }
+            else if metallic < 1.0 {
                 Material::Phong(Phong {
                     color,
                     roughness: pbr.roughness_factor()

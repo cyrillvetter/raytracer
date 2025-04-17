@@ -39,7 +39,7 @@ impl Aabb {
     }
 
     pub fn area(&self) -> f32 {
-        let extent = self.maximum - self.minimum; // Box extent.
+        let extent = self.maximum - self.minimum;
         extent.x * extent.y + extent.y * extent.z + extent.z * extent.x
     }
 }

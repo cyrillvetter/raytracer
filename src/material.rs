@@ -12,6 +12,7 @@ pub trait Scatterable {
 pub enum Material {
     Phong(Phong),
     Metal(Metal),
+    Glass(Glass),
 }
 
 impl Scatterable for Material {
@@ -19,6 +20,7 @@ impl Scatterable for Material {
         match self {
             Material::Phong(phong) => phong.scatter(ray, hit_record, scene),
             Material::Metal(metal) => metal.scatter(ray, hit_record, scene),
+            Material::Glass(glass) => glass.scatter(ray, hit_record, scene),
         }
     }
 }
@@ -40,7 +42,7 @@ impl Scatterable for Phong {
             let light_dir = light_vec / light_distance;
             let light_intensity = light.intensity / (scene.lights.len() as f32);
 
-            let shadow_ray = Ray::new(hit_record.point + light_dir * 1e-4, light_dir);
+            let shadow_ray = Ray::new(hit_record.point + light_dir * 1e-5, light_dir);
 
             // TODO: Maybe add another function that finds intersections between the surface and a lightsource.
             let in_shadow = scene.bvh.intersects(&shadow_ray).map_or(f32::INFINITY, |h| h.t) < light_distance;
@@ -73,5 +75,18 @@ impl Scatterable for Metal {
     fn scatter(&self, ray: &Ray, hit_record: &HitRecord, _scene: &Scene) -> (Option<Ray>, Color) {
         let reflection_dir = ray.direction.reflect(hit_record.normal).normalize();
         (Some(Ray::new(hit_record.point + reflection_dir * 1e-5, reflection_dir)), self.color)
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct Glass {
+    pub color: Color
+}
+
+impl Scatterable for Glass {
+    fn scatter(&self, ray: &Ray, hit_record: &HitRecord, _scene: &Scene) -> (Option<Ray>, Color) {
+        let eta = if hit_record.front_face { 1.5f32.recip() } else { 1.5f32 };
+        let refraction_dir = ray.direction.refract(hit_record.normal, eta);
+        (Some(Ray::new(hit_record.point + refraction_dir * 1e-5, refraction_dir)), self.color)
     }
 }

@@ -22,6 +22,7 @@ pub struct HitRecord {
     pub t: f32,
     pub point: Vec3A,
     pub normal: Vec3A,
+    pub front_face: bool,
     pub material_index: Option<usize>,
 }
 
@@ -62,10 +63,20 @@ impl Triangle {
 
         let t = inv_det * e2.dot(s_cross_e1);
         if t > f32::EPSILON {
+            let mut front_face = true;
+            let mut normal = self.v1.normal;
+
+            // Hits back face.
+            if ray.direction.dot(normal) > 0.0 {
+                normal = -normal;
+                front_face = false;
+            }
+
             Some(HitRecord {
                 t,
                 point: ray.at(t),
-                normal: self.v1.normal,
+                normal,
+                front_face,
                 material_index: self.material_index
             })
         } else {
