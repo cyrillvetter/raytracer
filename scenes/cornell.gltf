@@ -37,12 +37,17 @@
 			],
 			"translation":[
 				0,
+<<<<<<< HEAD
 				0.7101238369941711,
+=======
+				0.47947007417678833,
+>>>>>>> 7f1de11 (add first path tracing prototype)
 				4.3245158195495605
 			]
 		},
 		{
 			"mesh":1,
+<<<<<<< HEAD
 			"name":"Mirror",
 			"translation":[
 				-0.04300222173333168,
@@ -67,6 +72,17 @@
 				0,
 				0
 			]
+=======
+			"name":"Mirror"
+		},
+		{
+			"mesh":2,
+			"name":"Cube"
+		},
+		{
+			"mesh":3,
+			"name":"Icosphere"
+>>>>>>> 7f1de11 (add first path tracing prototype)
 		}
 	],
 	"cameras":[
@@ -97,12 +113,21 @@
 		},
 		{
 			"doubleSided":true,
+<<<<<<< HEAD
 			"name":"Silver",
 			"pbrMetallicRoughness":{
 				"baseColorFactor":[
 					0.5520077347755432,
 					0.5520118474960327,
 					0.5520116090774536,
+=======
+			"name":"Mirror",
+			"pbrMetallicRoughness":{
+				"baseColorFactor":[
+					0.7119865417480469,
+					0.7119865417480469,
+					0.7119865417480469,
+>>>>>>> 7f1de11 (add first path tracing prototype)
 					1
 				],
 				"roughnessFactor":0
@@ -197,6 +222,7 @@
 		{
 			"bufferView":0,
 			"componentType":5126,
+<<<<<<< HEAD
 			"count":24,
 			"max":[
 				1.4451245069503784,
@@ -207,25 +233,49 @@
 				-1.3584955930709839,
 				-0.09999999403953552,
 				-1.0499999523162842
+=======
+			"count":48,
+			"max":[
+				0.8779975175857544,
+				0.770723819732666,
+				2.2046804428100586
+			],
+			"min":[
+				-0.8779975175857544,
+				-0.09999999403953552,
+				-1.100000023841858
+>>>>>>> 7f1de11 (add first path tracing prototype)
 			],
 			"type":"VEC3"
 		},
 		{
 			"bufferView":1,
 			"componentType":5126,
+<<<<<<< HEAD
 			"count":24,
+=======
+			"count":48,
+>>>>>>> 7f1de11 (add first path tracing prototype)
 			"type":"VEC3"
 		},
 		{
 			"bufferView":2,
 			"componentType":5126,
+<<<<<<< HEAD
 			"count":24,
+=======
+			"count":48,
+>>>>>>> 7f1de11 (add first path tracing prototype)
 			"type":"VEC2"
 		},
 		{
 			"bufferView":3,
 			"componentType":5123,
+<<<<<<< HEAD
 			"count":36,
+=======
+			"count":84,
+>>>>>>> 7f1de11 (add first path tracing prototype)
 			"type":"SCALAR"
 		},
 		{
@@ -334,48 +384,106 @@
 	"bufferViews":[
 		{
 			"buffer":0,
+<<<<<<< HEAD
 			"byteLength":288,
+=======
+			"byteLength":576,
+>>>>>>> 7f1de11 (add first path tracing prototype)
 			"byteOffset":0,
 			"target":34962
 		},
 		{
 			"buffer":0,
+<<<<<<< HEAD
 			"byteLength":288,
 			"byteOffset":288,
-			"target":34962
-		},
-		{
-			"buffer":0,
-			"byteLength":192,
+=======
+			"byteLength":576,
 			"byteOffset":576,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":72,
-			"byteOffset":768,
+			"byteLength":384,
+			"byteOffset":1152,
+>>>>>>> 7f1de11 (add first path tracing prototype)
+			"target":34962
+		},
+		{
+			"buffer":0,
+<<<<<<< HEAD
+			"byteLength":192,
+			"byteOffset":576,
+=======
+			"byteLength":168,
+			"byteOffset":1536,
 			"target":34963
 		},
 		{
 			"buffer":0,
 			"byteLength":288,
-			"byteOffset":840,
+			"byteOffset":1704,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":288,
-			"byteOffset":1128,
+			"byteOffset":1992,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":192,
-			"byteOffset":1416,
+			"byteOffset":2280,
+>>>>>>> 7f1de11 (add first path tracing prototype)
 			"target":34962
 		},
 		{
 			"buffer":0,
+			"byteLength":72,
+<<<<<<< HEAD
+			"byteOffset":768,
+=======
+			"byteOffset":2472,
+>>>>>>> 7f1de11 (add first path tracing prototype)
+			"target":34963
+		},
+		{
+			"buffer":0,
+<<<<<<< HEAD
+			"byteLength":288,
+			"byteOffset":840,
+=======
+			"byteLength":10368,
+			"byteOffset":2544,
+>>>>>>> 7f1de11 (add first path tracing prototype)
+			"target":34962
+		},
+		{
+			"buffer":0,
+<<<<<<< HEAD
+			"byteLength":288,
+			"byteOffset":1128,
+=======
+			"byteLength":10368,
+			"byteOffset":12912,
+>>>>>>> 7f1de11 (add first path tracing prototype)
+			"target":34962
+		},
+		{
+			"buffer":0,
+<<<<<<< HEAD
+			"byteLength":192,
+			"byteOffset":1416,
+=======
+			"byteLength":6912,
+			"byteOffset":23280,
+>>>>>>> 7f1de11 (add first path tracing prototype)
+			"target":34962
+		},
+		{
+			"buffer":0,
+<<<<<<< HEAD
 			"byteLength":72,
 			"byteOffset":1608,
 			"target":34963
@@ -402,36 +510,60 @@
 			"buffer":0,
 			"byteLength":2568,
 			"byteOffset":29328,
+=======
+			"byteLength":2568,
+			"byteOffset":30192,
+>>>>>>> 7f1de11 (add first path tracing prototype)
 			"target":34963
 		},
 		{
 			"buffer":0,
 			"byteLength":2949120,
+<<<<<<< HEAD
 			"byteOffset":31896,
+=======
+			"byteOffset":32760,
+>>>>>>> 7f1de11 (add first path tracing prototype)
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":2949120,
+<<<<<<< HEAD
 			"byteOffset":2981016,
+=======
+			"byteOffset":2981880,
+>>>>>>> 7f1de11 (add first path tracing prototype)
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":1966080,
+<<<<<<< HEAD
 			"byteOffset":5930136,
+=======
+			"byteOffset":5931000,
+>>>>>>> 7f1de11 (add first path tracing prototype)
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":983040,
+<<<<<<< HEAD
 			"byteOffset":7896216,
+=======
+			"byteOffset":7897080,
+>>>>>>> 7f1de11 (add first path tracing prototype)
 			"target":34963
 		}
 	],
 	"buffers":[
 		{
+<<<<<<< HEAD
 			"byteLength":8879256,
+=======
+			"byteLength":8880120,
+>>>>>>> 7f1de11 (add first path tracing prototype)
 			"uri":"cornell.bin"
 		}
 	]

@@ -5,6 +5,8 @@ use crate::scene::Scene;
 use glam::Vec3A;
 use fastrand::f32;
 use gltf::image::Format;
+use glam::Vec3A;
+use fastrand::f32;
 
 pub trait Scatterable {
     fn scatter(&self, ray: &Ray, hit_record: &HitRecord, scene: &Scene) -> (Option<Ray>, Color, f32);
@@ -96,7 +98,7 @@ pub struct Texture {
 }
 
 impl Scatterable for Texture {
-    fn scatter(&self, ray: &Ray, hit_record: &HitRecord, scene: &Scene) -> (Option<Ray>, Color) {
+    fn scatter(&self, ray: &Ray, hit_record: &HitRecord, scene: &Scene) -> (Option<Ray>, Color, f32) {
         let image = &scene.images[self.index];
         let x = (hit_record.uv.x.clamp(0.0, 1.0) * (image.width - 1) as f32).round() as usize;
         let y = ((hit_record.uv.y).clamp(0.0, 1.0) * (image.height - 1) as f32).round() as usize;
@@ -135,7 +137,7 @@ impl Scatterable for Texture {
             }
         }
 
-        (None, color.clamp())
+        (None, color.clamp(), 0.5)
     }
 }
 
