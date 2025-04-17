@@ -1,7 +1,8 @@
 use crate::primitive::Ray;
-use crate::{IMAGE_WIDTH, IMAGE_HEIGHT, AA_SIZE};
+use crate::{IMAGE_WIDTH, IMAGE_HEIGHT};
 
 use glam::{Vec3A, Affine3A};
+use fastrand::f32;
 
 #[derive(Debug, Clone)]
 pub struct Camera {
@@ -17,8 +18,8 @@ impl Camera {
     pub fn new(aspect_ratio: f32, y_fov: f32, transform: Affine3A) -> Self {
         let h = aspect_ratio.recip();
 
-        let pixel_height = (IMAGE_HEIGHT * AA_SIZE) as f32;
-        let pixel_width = (IMAGE_WIDTH * AA_SIZE) as f32;
+        let pixel_height = IMAGE_HEIGHT as f32;
+        let pixel_width = IMAGE_WIDTH as f32;
 
         Camera {
             half_width: pixel_width / 2.0,
@@ -30,8 +31,12 @@ impl Camera {
     }
 
     pub fn ray_from(&self, x: u32, y: u32) -> Ray {
-        let plane_x = ((x as f32) - self.half_width) * self.meter_per_pixel;
-        let plane_y = (self.half_height - (y as f32)) * self.meter_per_pixel;
+        let x_offset = f32() - 0.5;
+        let y_offset = f32() - 0.5;
+
+        let plane_x = ((x as f32) + x_offset - self.half_width) * self.meter_per_pixel;
+        let plane_y = (self.half_height - (y as f32) + y_offset) * self.meter_per_pixel;
+
         Ray::new(
             self.transform.translation,
             self.transform.transform_vector3a(Vec3A::new(plane_x, plane_y, -self.focal_length).normalize())

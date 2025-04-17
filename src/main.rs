@@ -3,12 +3,7 @@ use std::fs::read_dir;
 use std::io::stdin;
 use std::path::{Path, PathBuf};
 
-use minifb::{Window, WindowOptions, Key, KeyRepeat};
-
 use raytracer::{IMAGE_HEIGHT, IMAGE_WIDTH, Image, render_scene, scene::Scene, util::Statistics};
-
-const WINDOW_WIDTH: u32 = 1920;
-const WINDOW_HEIGHT: u32 = 1080;
 
 static SCENES_PATH: &str = "scenes/";
 static OUT_PATH: &str = "out/image.png";
@@ -25,15 +20,9 @@ fn main() {
     statistics.add("Triangles", &scene.bvh.triangles.len());
     statistics.add("BVH nodes", &scene.bvh.nodes_used);
     statistics.add_str("BVH construction time", format!("{:.2?}", bvh_elapsed));
-
-    now = Instant::now();
-    let image = render_scene(scene);
-    let render_elapsed = now.elapsed();
-    statistics.add_str("Render time", format!("{:.2?}", render_elapsed));
-    statistics.add_str("Total time", format!("{:.2?}", bvh_elapsed + render_elapsed));
-
     statistics.print();
-    show_image(&image);
+
+    render_scene(scene);
 }
 
 fn pick_scene_path() -> PathBuf {
@@ -70,28 +59,4 @@ fn pick_scene_path() -> PathBuf {
     }
 
     scene_paths[i - 1].clone()
-}
-
-fn show_image(image: &Image) {
-    let mut window = Window::new(
-        "Raytracer",
-        WINDOW_WIDTH as usize,
-        WINDOW_HEIGHT as usize,
-        WindowOptions::default()
-    ).expect("Failed to create window");
-
-    window.set_target_fps(30);
-    let mut image_saved = false;
-
-    while window.is_open() && !window.is_key_pressed(Key::Escape, KeyRepeat::No) {
-        if !image_saved && window.is_key_pressed(Key::Enter, KeyRepeat::No) {
-            image_saved = true;
-            image.save_png(Path::new(OUT_PATH));
-            println!("Image saved to: {}", OUT_PATH);
-        }
-
-        window
-            .update_with_buffer(&image.bytes, image.width as usize, image.height as usize)
-            .expect("Failed to set buffer");
-    }
 }

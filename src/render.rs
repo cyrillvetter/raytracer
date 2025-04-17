@@ -1,41 +1,57 @@
-use crate::{IMAGE_WIDTH, IMAGE_HEIGHT, AA_SIZE};
+use crate::{IMAGE_WIDTH, IMAGE_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, SAMPLES};
 use crate::primitive::*;
 use crate::scene::Scene;
 use crate::Image;
 use crate::material::Scatterable;
 
+use minifb::{Window, WindowOptions, Key, KeyRepeat};
 use rayon::prelude::*;
 
 const FALLBACK_COLOR: Color = Color::rgb(1.0, 0.0, 1.0);
 const MAX_DEPTH: f32 = 5.0;
-const BACKGROUND: Color = Color::BLACK;
 
-pub fn render_scene(scene: Scene) -> Image {
-    let mut pixels = vec![0; (IMAGE_WIDTH * IMAGE_HEIGHT) as usize];
-    let bands: Vec<(usize, &mut [u32])> = pixels.chunks_mut(IMAGE_WIDTH as usize).enumerate().collect();
+pub fn render_scene(scene: Scene) {
+    let mut window = Window::new(
+        "Raytracer",
+        WINDOW_WIDTH as usize,
+        WINDOW_HEIGHT as usize,
+        WindowOptions::default()
+    ).expect("Failed to create window");
 
-    bands
-        .into_par_iter()
-        .for_each(|(y, band)| {
-            render_line(band, y as u32, &scene);
-        });
+    window.set_target_fps(60);
 
-    Image::new(IMAGE_WIDTH as u32, IMAGE_HEIGHT as u32, pixels)
+    let mut pixels = vec![Color::BLACK; (IMAGE_WIDTH * IMAGE_HEIGHT) as usize];
+    let mut samples = 0;
+
+    loop {
+        samples += 5;
+        let bands: Vec<(usize, &mut [Color])> = pixels.chunks_mut(IMAGE_WIDTH as usize).enumerate().collect();
+
+        bands
+            .into_par_iter()
+            .for_each(|(y, band)| {
+                render_line(band, y as u32, &scene, 5);
+            });
+
+        let buffer: Vec<u32> = pixels.iter().map(|color| {
+            let c = (*color / (samples as f32)).gamma_correct();
+            ((c.r * 255.0) as u32) << 16 | ((c.g * 255.0) as u32) << 8 | ((c.b * 255.0) as u32)
+        }).collect();
+
+        window.update_with_buffer(&buffer, IMAGE_WIDTH as usize, IMAGE_HEIGHT as usize).unwrap();
+    }
 }
 
-fn render_line(pixels: &mut [u32], y: u32, scene: &Scene) {
+fn render_line(pixels: &mut [Color], y: u32, scene: &Scene, samples: usize) {
     for x in 0..pixels.len() {
         let mut color = Color::BLACK;
 
-        for x_offset in 0..AA_SIZE {
-            for y_offset in 0..AA_SIZE {
-                let ray = scene.camera.ray_from(((x as u32) * AA_SIZE) + x_offset, (y * AA_SIZE) + y_offset);
-                color += trace_ray(ray, MAX_DEPTH, &scene);
-            }
+        for _ in 0..samples {
+            let ray = scene.camera.ray_from(x as u32, y as u32);
+            color += trace_ray(ray, MAX_DEPTH, &scene);
         }
 
-        color = (color / (AA_SIZE * AA_SIZE) as f32).gamma_correct();
-        pixels[x] = ((color.r * 255.0) as u32) << 16 | ((color.g * 255.0) as u32) << 8 | ((color.b * 255.0) as u32);
+        pixels[x] += color;
     }
 }
 
@@ -47,11 +63,28 @@ fn trace_ray(ray: Ray, depth: f32, scene: &Scene) -> Color {
     match scene.bvh.intersects(&ray) {
         Some(hit_record) => match hit_record.material_index {
             Some(index) => match scene.materials[index].scatter(&ray, &hit_record, scene) {
-                (Some(reflective_ray), color) => color * (0.9f32).powf(MAX_DEPTH - depth) * trace_ray(reflective_ray, depth - 1.0, scene),
-                (None, color) => color,
+                (Some(reflective_ray), color, att) => att * color * trace_ray(reflective_ray, depth - 1.0, scene),
+                (None, color, _) => color,
             },
             _ => FALLBACK_COLOR
         },
-        _ => BACKGROUND
+        _ => {
+            let a = 0.5 * (ray.direction.y + 1.0);
+            (1.0 - a) * Color::WHITE + a * Color::rgb(0.5, 0.7, 1.0)
+        }
     }
 }
+
+fn show_image(image: &Image) {
+    let mut window = Window::new(
+        "Raytracer",
+        WINDOW_WIDTH as usize,
+        WINDOW_HEIGHT as usize,
+        WindowOptions::default()
+    ).expect("Failed to create window");
+
+    window.set_target_fps(30);
+    let mut image_saved = false;
+
+}
+

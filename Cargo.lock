@@ -582,6 +582,7 @@ dependencies = [
 name = "raytracer"
 version = "0.1.0"
 dependencies = [
+ "fastrand",
  "glam",
  "gltf",
  "minifb",
