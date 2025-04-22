@@ -24,13 +24,14 @@ pub fn render_scene(scene: Scene) {
     let mut samples = 0;
 
     loop {
-        samples += 5;
+        println!("{}", samples);
+        samples += 10;
         let bands: Vec<(usize, &mut [Color])> = pixels.chunks_mut(IMAGE_WIDTH as usize).enumerate().collect();
 
         bands
             .into_par_iter()
             .for_each(|(y, band)| {
-                render_line(band, y as u32, &scene, 5);
+                render_line(band, y as u32, &scene, 10);
             });
 
         let buffer: Vec<u32> = pixels.iter().map(|color| {
