@@ -1,9 +1,9 @@
 use std::time::Instant;
 use std::fs::read_dir;
 use std::io::stdin;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
-use raytracer::{IMAGE_HEIGHT, IMAGE_WIDTH, Image, render_scene, scene::Scene, util::Statistics};
+use raytracer::{IMAGE_HEIGHT, IMAGE_WIDTH, render_scene, scene::Scene, util::Statistics};
 
 static SCENES_PATH: &str = "scenes/";
 
@@ -12,7 +12,7 @@ fn main() {
     statistics.add_str("Resolution", format!("{}x{}", IMAGE_WIDTH, IMAGE_HEIGHT));
 
     let scene_path = pick_scene_path();
-    let mut now = Instant::now();
+    let now = Instant::now();
 
     let scene = Scene::import(&scene_path);
     let bvh_elapsed = now.elapsed();

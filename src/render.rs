@@ -1,4 +1,4 @@
-use crate::{IMAGE_WIDTH, IMAGE_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, SAMPLES};
+use crate::{IMAGE_WIDTH, IMAGE_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT};
 use crate::primitive::*;
 use crate::scene::Scene;
 use crate::Image;
@@ -6,7 +6,7 @@ use crate::material::Scatterable;
 
 use std::path::Path;
 
-use minifb::{Window, WindowOptions, Key, KeyRepeat};
+use minifb::{Window, WindowOptions};
 use rayon::prelude::*;
 
 const FALLBACK_COLOR: Color = Color::rgb(1.0, 0.0, 1.0);
@@ -76,23 +76,10 @@ fn trace_ray(ray: Ray, depth: f32, scene: &Scene) -> Color {
             _ => FALLBACK_COLOR
         },
         _ => {
-            let a = 0.5 * (ray.direction.y + 1.0);
-            Color::WHITE
+            // Uncomment to enable sky gradient.
+            //let a = 0.5 * (ray.direction.y + 1.0);
             //(1.0 - a) * Color::WHITE + a * Color::rgb(0.5, 0.7, 1.0)
+            Color::WHITE
         }
     }
 }
-
-fn show_image(image: &Image) {
-    let mut window = Window::new(
-        "Raytracer",
-        WINDOW_WIDTH as usize,
-        WINDOW_HEIGHT as usize,
-        WindowOptions::default()
-    ).expect("Failed to create window");
-
-    window.set_target_fps(30);
-    let mut image_saved = false;
-
-}
-

@@ -36,7 +36,7 @@ pub struct Phong {
 }
 
 impl Scatterable for Phong {
-    fn scatter(&self, ray: &Ray, hit_record: &HitRecord, scene: &Scene) -> (Option<Ray>, Color, f32) {
+    fn scatter(&self, _ray: &Ray, hit_record: &HitRecord, _scene: &Scene) -> (Option<Ray>, Color, f32) {
         let ray_direction = random_on_hemisphere(hit_record.normal);
         (Some(Ray::new(hit_record.point + ray_direction * 1e-5, ray_direction)), self.color, 0.7)
     }
@@ -96,7 +96,7 @@ pub struct Texture {
 }
 
 impl Scatterable for Texture {
-    fn scatter(&self, ray: &Ray, hit_record: &HitRecord, scene: &Scene) -> (Option<Ray>, Color, f32) {
+    fn scatter(&self, _ray: &Ray, hit_record: &HitRecord, scene: &Scene) -> (Option<Ray>, Color, f32) {
         let image = &scene.images[self.index];
         let x = (hit_record.uv.x.clamp(0.0, 1.0) * (image.width - 1) as f32).round() as usize;
         let y = (hit_record.uv.y.clamp(0.0, 1.0) * (image.height - 1) as f32).round() as usize;
