@@ -3,7 +3,7 @@ use std::path::Path;
 use crate::bvh::Bvh;
 use crate::primitive::Color;
 use crate::triangle::{Triangle, Vertex};
-use crate::material::{Material, Phong, Metal, Glass};
+use crate::material::{Material, Phong, Metal, Glass, Texture};
 use crate::Camera;
 use crate::Light;
 
@@ -12,19 +12,20 @@ use super::{IMAGE_HEIGHT, IMAGE_WIDTH};
 use gltf::Document;
 use gltf::buffer::Data;
 use gltf::camera::Projection::Perspective;
-use glam::{Vec3A, Vec3, Quat, Affine3A};
+use glam::{Vec3A, Vec3, Vec2, Quat, Affine3A};
 
 #[derive(Debug)]
 pub struct Scene {
     pub camera: Camera,
     pub lights: Vec<Light>,
     pub bvh: Bvh,
-    pub materials: Vec<Material>
+    pub materials: Vec<Material>,
+    pub images: Vec<gltf::image::Data>,
 }
 
 impl Scene {
     pub fn import(path: &Path) -> Self {
-        let (gltf, buffers, _) = gltf::import(path).unwrap();
+        let (gltf, buffers, images) = gltf::import(path).unwrap();
         let triangles = import_triangles(&gltf, &buffers);
 
         Scene {
@@ -32,6 +33,7 @@ impl Scene {
             lights: import_lights(&gltf),
             bvh: Bvh::new(triangles),
             materials: import_materials(&gltf),
+            images
         }
     }
 }
@@ -80,6 +82,7 @@ fn import_triangles(gltf: &Document, buffers: &Vec<Data>) -> Vec<Triangle> {
             let reader = primitive.reader(|buffer| Some(&buffers[buffer.index()]));
             let positions: Vec<Vec3A> = reader.read_positions().unwrap().map(|a| a.into()).collect();
             let normals: Vec<Vec3A> = reader.read_normals().unwrap().map(|a| a.into()).collect();
+            let uvs: Vec<Vec2> = reader.read_tex_coords(0).unwrap().into_f32().map(|a| a.into()).collect();
 
             // TODO: Remove into_32 to avoid casting twice.
             let indices: Vec<usize> = reader
@@ -94,11 +97,16 @@ fn import_triangles(gltf: &Document, buffers: &Vec<Data>) -> Vec<Triangle> {
 
             let material_index = primitive.material().index();
 
+            let load_vertex = |i: usize| {
+                let idx = indices[i];
+                Vertex::new(positions[idx], normals[idx], uvs[idx])
+            };
+
             for i in (0..indices.len()).step_by(3) {
                 let triangle = Triangle::new(
-                    Vertex::new(positions[indices[i]], normals[indices[i]]),
-                    Vertex::new(positions[indices[i + 1]], normals[indices[i + 1]]),
-                    Vertex::new(positions[indices[i + 2]], normals[indices[i + 2]]),
+                    load_vertex(i),
+                    load_vertex(i + 1),
+                    load_vertex(i + 2),
                     material_index,
                 );
 
@@ -115,6 +123,13 @@ fn import_materials(gltf: &Document) -> Vec<Material> {
         .materials()
         .map(|material| {
             let pbr = material.pbr_metallic_roughness();
+
+            if let Some(texture_info) = pbr.base_color_texture() {
+                return Material::Texture( Texture {
+                    index: texture_info.texture().index(),
+                });
+            }
+
             let base_color_factor = pbr.base_color_factor();
             let color = Color::rgb(base_color_factor[0], base_color_factor[1], base_color_factor[2]);
             let metallic = pbr.metallic_factor();
