@@ -65,8 +65,12 @@ impl Triangle {
 
         let t = inv_det * e2.dot(s_cross_e1);
         if t > f32::EPSILON {
+            let point = ray.at(t);
+            let barycentric = self.get_barycentric_coordinates(point);
+            let uv = self.v1.uv * barycentric.x + self.v2.uv * barycentric.y + self.v3.uv * barycentric.z;
+            let mut normal = self.v1.normal * barycentric.x + self.v2.normal * barycentric.y + self.v3.normal * barycentric.z;
+
             let mut front_face = true;
-            let mut normal = self.v1.normal;
 
             // Hits back face.
             if ray.direction.dot(normal) > 0.0 {
@@ -74,14 +78,12 @@ impl Triangle {
                 front_face = false;
             }
 
-            let point = ray.at(t);
-
             Some(HitRecord {
                 t,
                 point,
                 normal,
                 front_face,
-                uv: self.interpolate_uv(point),
+                uv,
                 material_index: self.material_index
             })
         } else {
@@ -89,7 +91,7 @@ impl Triangle {
         }
     }
 
-    fn interpolate_uv(&self, p: Vec3A) -> Vec2 {
+    fn get_barycentric_coordinates(&self, p: Vec3A) -> Vec3A {
         let v1v2 = self.v2.position - self.v1.position;
         let v1v3 = self.v3.position - self.v1.position;
         let v0p = p - self.v1.position;
@@ -105,7 +107,7 @@ impl Triangle {
         let w = (d11 * d32 - d12 * d31) / denom;
         let u = 1.0 - v - w;
 
-        self.v1.uv * u + self.v2.uv * v + self.v3.uv * w
+        Vec3A::new(u, v, w)
     }
 }
 

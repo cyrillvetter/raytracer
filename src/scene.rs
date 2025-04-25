@@ -5,7 +5,6 @@ use crate::primitive::Color;
 use crate::triangle::{Triangle, Vertex};
 use crate::material::{Material, Phong, Metal, Glass, Texture, Emissive};
 use crate::Camera;
-use crate::Light;
 
 use super::{IMAGE_HEIGHT, IMAGE_WIDTH};
 
@@ -17,7 +16,6 @@ use glam::{Vec3A, Vec3, Vec2, Quat, Affine3A};
 #[derive(Debug)]
 pub struct Scene {
     pub camera: Camera,
-    pub lights: Vec<Light>,
     pub bvh: Bvh,
     pub materials: Vec<Material>,
     pub images: Vec<gltf::image::Data>,
@@ -30,26 +28,11 @@ impl Scene {
 
         Scene {
             camera: import_camera(&gltf),
-            lights: import_lights(&gltf),
             bvh: Bvh::new(triangles),
             materials: import_materials(&gltf),
             images
         }
     }
-}
-
-fn import_lights(gltf: &Document) -> Vec<Light> {
-    gltf.nodes()
-        .filter_map(|node| {
-            node.light().map(|light| {
-                Light::new(
-                    node.transform().decomposed().0.into(),
-                    light.color().into(),
-                    light.intensity() / 1000.0
-                )
-            })
-        })
-        .collect()
 }
 
 fn import_camera(gltf: &Document) -> Camera {
@@ -149,7 +132,7 @@ fn import_materials(gltf: &Document) -> Vec<Material> {
                 })
             } else {
                 Material::Metal(Metal {
-                    color
+                    color,
                 })
             }
         })

@@ -69,7 +69,7 @@ fn random_on_hemisphere(normal: Vec3A) -> Vec3A {
 
 #[derive(Debug, Clone)]
 pub struct Metal {
-    pub color: Color
+    pub color: Color,
 }
 
 impl Scatterable for Metal {
