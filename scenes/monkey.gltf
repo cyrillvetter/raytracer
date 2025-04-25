@@ -232,7 +232,6 @@
 		{
 			"bufferView":0,
 			"componentType":5126,
-<<<<<<< HEAD
 			"count":16,
 			"max":[
 				1.5,
@@ -243,49 +242,25 @@
 				-1.5707106590270996,
 				-0.10000000149011612,
 				-1.3627701997756958
-=======
-			"count":42,
-			"max":[
-				1.5,
-				0.8686257600784302,
-				3.4780077934265137
-			],
-			"min":[
-				-1.600000023841858,
-				-0.10000000149011612,
-				-1.392059564590454
->>>>>>> 7f1de11 (add first path tracing prototype)
 			],
 			"type":"VEC3"
 		},
 		{
 			"bufferView":1,
 			"componentType":5126,
-<<<<<<< HEAD
 			"count":16,
-=======
-			"count":42,
->>>>>>> 7f1de11 (add first path tracing prototype)
 			"type":"VEC3"
 		},
 		{
 			"bufferView":2,
 			"componentType":5126,
-<<<<<<< HEAD
 			"count":16,
-=======
-			"count":42,
->>>>>>> 7f1de11 (add first path tracing prototype)
 			"type":"VEC2"
 		},
 		{
 			"bufferView":3,
 			"componentType":5123,
-<<<<<<< HEAD
 			"count":24,
-=======
-			"count":72,
->>>>>>> 7f1de11 (add first path tracing prototype)
 			"type":"SCALAR"
 		},
 		{
@@ -496,295 +471,176 @@
 	"bufferViews":[
 		{
 			"buffer":0,
-<<<<<<< HEAD
 			"byteLength":192,
-=======
-			"byteLength":504,
->>>>>>> 7f1de11 (add first path tracing prototype)
 			"byteOffset":0,
 			"target":34962
 		},
 		{
 			"buffer":0,
-<<<<<<< HEAD
 			"byteLength":192,
 			"byteOffset":192,
-=======
-			"byteLength":504,
-			"byteOffset":504,
->>>>>>> 7f1de11 (add first path tracing prototype)
 			"target":34962
 		},
 		{
 			"buffer":0,
-<<<<<<< HEAD
 			"byteLength":128,
 			"byteOffset":384,
-=======
-			"byteLength":336,
-			"byteOffset":1008,
->>>>>>> 7f1de11 (add first path tracing prototype)
 			"target":34962
 		},
 		{
 			"buffer":0,
-<<<<<<< HEAD
 			"byteLength":48,
 			"byteOffset":512,
-=======
-			"byteLength":144,
-			"byteOffset":1344,
->>>>>>> 7f1de11 (add first path tracing prototype)
 			"target":34963
 		},
 		{
 			"buffer":0,
 			"byteLength":576,
-<<<<<<< HEAD
 			"byteOffset":560,
-=======
-			"byteOffset":1488,
->>>>>>> 7f1de11 (add first path tracing prototype)
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":576,
-<<<<<<< HEAD
 			"byteOffset":1136,
-=======
-			"byteOffset":2064,
->>>>>>> 7f1de11 (add first path tracing prototype)
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":384,
-<<<<<<< HEAD
 			"byteOffset":1712,
-=======
-			"byteOffset":2640,
->>>>>>> 7f1de11 (add first path tracing prototype)
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":96,
-<<<<<<< HEAD
 			"byteOffset":2096,
-=======
-			"byteOffset":3024,
->>>>>>> 7f1de11 (add first path tracing prototype)
 			"target":34963
 		},
 		{
 			"buffer":0,
 			"byteLength":768,
-<<<<<<< HEAD
 			"byteOffset":2192,
-=======
-			"byteOffset":3120,
->>>>>>> 7f1de11 (add first path tracing prototype)
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":768,
-<<<<<<< HEAD
 			"byteOffset":2960,
-=======
-			"byteOffset":3888,
->>>>>>> 7f1de11 (add first path tracing prototype)
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":512,
-<<<<<<< HEAD
 			"byteOffset":3728,
-=======
-			"byteOffset":4656,
->>>>>>> 7f1de11 (add first path tracing prototype)
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":192,
-<<<<<<< HEAD
 			"byteOffset":4240,
-=======
-			"byteOffset":5168,
->>>>>>> 7f1de11 (add first path tracing prototype)
 			"target":34963
 		},
 		{
 			"buffer":0,
 			"byteLength":21696,
-<<<<<<< HEAD
 			"byteOffset":4432,
-=======
-			"byteOffset":5360,
->>>>>>> 7f1de11 (add first path tracing prototype)
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":21696,
-<<<<<<< HEAD
 			"byteOffset":26128,
-=======
-			"byteOffset":27056,
->>>>>>> 7f1de11 (add first path tracing prototype)
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":14464,
-<<<<<<< HEAD
 			"byteOffset":47824,
-=======
-			"byteOffset":48752,
->>>>>>> 7f1de11 (add first path tracing prototype)
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":5388,
-<<<<<<< HEAD
 			"byteOffset":62288,
-=======
-			"byteOffset":63216,
->>>>>>> 7f1de11 (add first path tracing prototype)
 			"target":34963
 		},
 		{
 			"buffer":0,
 			"byteLength":552,
-<<<<<<< HEAD
 			"byteOffset":67676,
-=======
-			"byteOffset":68604,
->>>>>>> 7f1de11 (add first path tracing prototype)
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":552,
-<<<<<<< HEAD
 			"byteOffset":68228,
-=======
-			"byteOffset":69156,
->>>>>>> 7f1de11 (add first path tracing prototype)
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":368,
-<<<<<<< HEAD
 			"byteOffset":68780,
-=======
-			"byteOffset":69708,
->>>>>>> 7f1de11 (add first path tracing prototype)
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":132,
-<<<<<<< HEAD
 			"byteOffset":69148,
-=======
-			"byteOffset":70076,
->>>>>>> 7f1de11 (add first path tracing prototype)
 			"target":34963
 		},
 		{
 			"buffer":0,
 			"byteLength":4656,
-<<<<<<< HEAD
 			"byteOffset":69280,
-=======
-			"byteOffset":70208,
->>>>>>> 7f1de11 (add first path tracing prototype)
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":4656,
-<<<<<<< HEAD
 			"byteOffset":73936,
-=======
-			"byteOffset":74864,
->>>>>>> 7f1de11 (add first path tracing prototype)
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":3104,
-<<<<<<< HEAD
 			"byteOffset":78592,
-=======
-			"byteOffset":79520,
->>>>>>> 7f1de11 (add first path tracing prototype)
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":1164,
-<<<<<<< HEAD
 			"byteOffset":81696,
-=======
-			"byteOffset":82624,
->>>>>>> 7f1de11 (add first path tracing prototype)
 			"target":34963
 		},
 		{
 			"buffer":0,
 			"byteLength":48,
-<<<<<<< HEAD
 			"byteOffset":82860,
-=======
-			"byteOffset":83788,
->>>>>>> 7f1de11 (add first path tracing prototype)
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":48,
-<<<<<<< HEAD
 			"byteOffset":82908,
-=======
-			"byteOffset":83836,
->>>>>>> 7f1de11 (add first path tracing prototype)
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":32,
-<<<<<<< HEAD
 			"byteOffset":82956,
-=======
-			"byteOffset":83884,
->>>>>>> 7f1de11 (add first path tracing prototype)
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":12,
-<<<<<<< HEAD
 			"byteOffset":82988,
-=======
-			"byteOffset":83916,
->>>>>>> 7f1de11 (add first path tracing prototype)
 			"target":34963
 		}
 	],
 	"buffers":[
 		{
-<<<<<<< HEAD
 			"byteLength":83000,
-=======
-			"byteLength":83928,
->>>>>>> 7f1de11 (add first path tracing prototype)
 			"uri":"monkey.bin"
 		}
 	]
