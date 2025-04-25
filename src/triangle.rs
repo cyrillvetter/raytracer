@@ -1,6 +1,6 @@
 use crate::primitive::*;
 
-use glam::Vec3A;
+use glam::{Vec3A, Vec2};
 
 #[derive(Debug, Clone)]
 pub struct Triangle {
@@ -15,6 +15,7 @@ pub struct Triangle {
 pub struct Vertex {
     pub position: Vec3A,
     pub normal: Vec3A,
+    pub uv: Vec2,
 }
 
 #[derive(Debug, Clone)]
@@ -22,6 +23,7 @@ pub struct HitRecord {
     pub t: f32,
     pub point: Vec3A,
     pub normal: Vec3A,
+    pub uv: Vec2,
     pub front_face: bool,
     pub material_index: Option<usize>,
 }
@@ -72,21 +74,43 @@ impl Triangle {
                 front_face = false;
             }
 
+            let point = ray.at(t);
+
             Some(HitRecord {
                 t,
-                point: ray.at(t),
+                point,
                 normal,
                 front_face,
+                uv: self.interpolate_uv(point),
                 material_index: self.material_index
             })
         } else {
             None
         }
     }
+
+    fn interpolate_uv(&self, p: Vec3A) -> Vec2 {
+        let v1v2 = self.v2.position - self.v1.position;
+        let v1v3 = self.v3.position - self.v1.position;
+        let v0p = p - self.v1.position;
+
+        let d11 = v1v2.dot(v1v2);
+        let d12 = v1v2.dot(v1v3);
+        let d22 = v1v3.dot(v1v3);
+        let d31 = v0p.dot(v1v2);
+        let d32 = v0p.dot(v1v3);
+
+        let denom = d11 * d22 - d12 * d12;
+        let v = (d22 * d31 - d12 * d32) / denom;
+        let w = (d11 * d32 - d12 * d31) / denom;
+        let u = 1.0 - v - w;
+
+        self.v1.uv * u + self.v2.uv * v + self.v3.uv * w
+    }
 }
 
 impl Vertex {
-    pub const fn new(position: Vec3A, normal: Vec3A) -> Self {
-        Self { position, normal }
+    pub const fn new(position: Vec3A, normal: Vec3A, uv: Vec2) -> Self {
+        Self { position, normal, uv }
     }
 }
