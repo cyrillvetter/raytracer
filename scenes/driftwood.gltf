@@ -37,14 +37,14 @@
 			"camera":0,
 			"name":"Camera",
 			"rotation":[
-				-0.1070793941617012,
-				0.6989520788192749,
-				0.1070794090628624,
-				0.6989521384239197
+				-0.0967923030257225,
+				0.7004507184028625,
+				0.0967923179268837,
+				0.7004508376121521
 			],
 			"translation":[
-				4.883706092834473,
-				2.2298059463500977,
+				5.860189437866211,
+				2.4289157390594482,
 				0
 			]
 		}
@@ -187,15 +187,15 @@
 		{
 			"bufferView":4,
 			"componentType":5126,
-			"count":48,
+			"count":52,
 			"max":[
-				1.4766438007354736,
-				1.6082594394683838,
+				3.7796874046325684,
+				1.981144905090332,
 				2.4601376056671143
 			],
 			"min":[
 				-3.2736313343048096,
-				-0.17000003159046173,
+				-0.17000001668930054,
 				-2.4601376056671143
 			],
 			"type":"VEC3"
@@ -203,13 +203,13 @@
 		{
 			"bufferView":5,
 			"componentType":5126,
-			"count":48,
+			"count":52,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":6,
 			"componentType":5126,
-			"count":48,
+			"count":52,
 			"type":"VEC2"
 		},
 		{
@@ -280,50 +280,50 @@
 		},
 		{
 			"buffer":0,
-			"byteLength":576,
+			"byteLength":624,
 			"byteOffset":3884940,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":576,
-			"byteOffset":3885516,
+			"byteLength":624,
+			"byteOffset":3885564,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":384,
-			"byteOffset":3886092,
+			"byteLength":416,
+			"byteOffset":3886188,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":168,
-			"byteOffset":3886476,
+			"byteOffset":3886604,
 			"target":34963
 		},
 		{
 			"buffer":0,
 			"byteLength":23328,
-			"byteOffset":3886644,
+			"byteOffset":3886772,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":23328,
-			"byteOffset":3909972,
+			"byteOffset":3910100,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":15552,
-			"byteOffset":3933300,
+			"byteOffset":3933428,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":5832,
-			"byteOffset":3948852,
+			"byteOffset":3948980,
 			"target":34963
 		}
 	],
@@ -335,7 +335,7 @@
 	],
 	"buffers":[
 		{
-			"byteLength":3954684,
+			"byteLength":3954812,
 			"uri":"driftwood.bin"
 		}
 	]

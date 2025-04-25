@@ -38,7 +38,7 @@ pub struct Phong {
 impl Scatterable for Phong {
     fn scatter(&self, _ray: &Ray, hit_record: &HitRecord, _scene: &Scene) -> (Option<Ray>, Color, f32) {
         let ray_direction = random_on_hemisphere(hit_record.normal);
-        (Some(Ray::new(hit_record.point + ray_direction * 1e-5, ray_direction)), self.color, 0.7)
+        (Some(Ray::new(hit_record.point + ray_direction * 1e-5, ray_direction)), self.color, 0.8)
     }
 }
 
@@ -98,8 +98,8 @@ pub struct Texture {
 impl Scatterable for Texture {
     fn scatter(&self, _ray: &Ray, hit_record: &HitRecord, scene: &Scene) -> (Option<Ray>, Color, f32) {
         let image = &scene.images[self.index];
-        let x = (hit_record.uv.x.clamp(0.0, 1.0) * (image.width - 1) as f32).round() as usize;
-        let y = (hit_record.uv.y.clamp(0.0, 1.0) * (image.height - 1) as f32).round() as usize;
+        let x = (hit_record.uv.x.fract() * (image.width - 1) as f32).round() as usize;
+        let y = (hit_record.uv.y.fract() * (image.height - 1) as f32).round() as usize;
 
         let index = (y * image.width as usize + x) * get_image_components(image.format);
         let pixels = &image.pixels;
@@ -111,7 +111,7 @@ impl Scatterable for Texture {
         ).gamma_uncorrect();
 
         let ray_direction = random_on_hemisphere(hit_record.normal);
-        (Some(Ray::new(hit_record.point + ray_direction * 1e-5, ray_direction)), color, 0.9)
+        (Some(Ray::new(hit_record.point + ray_direction * 1e-5, ray_direction)), color, 1.0)
     }
 }
 
