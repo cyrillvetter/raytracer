@@ -121,7 +121,7 @@ fn import_materials(gltf: &Document) -> Vec<Material> {
                 Material::Glass(Glass {
                     color
                 })
-            } else if material.emissive_factor() == [1.0, 1.0, 1.0] {
+            } else if Into::<Vec3>::into(material.emissive_factor()).length_squared() > 0.0 {
                 Material::Emissive(Emissive {
                     color: material.emissive_factor().into()
                 })
