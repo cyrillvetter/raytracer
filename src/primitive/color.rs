@@ -62,6 +62,22 @@ impl Color {
             b: convert(self.b),
         }
     }
+
+    pub fn gamma_uncorrect(self) -> Self {
+        let convert = |c: f32| {
+            if c <= 0.04045 {
+                c / 12.92
+            } else {
+                ((c + 0.055) / 1.055).powf(2.4)
+            }
+        };
+
+        Self {
+            r: convert(self.r),
+            g: convert(self.g),
+            b: convert(self.b),
+        }
+    }
 }
 
 impl Default for Color {

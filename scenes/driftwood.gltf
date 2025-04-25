@@ -3,28 +3,6 @@
 		"generator":"Khronos glTF Blender I/O v4.3.47",
 		"version":"2.0"
 	},
-	"extensionsUsed":[
-		"KHR_lights_punctual"
-	],
-	"extensionsRequired":[
-		"KHR_lights_punctual"
-	],
-	"extensions":{
-		"KHR_lights_punctual":{
-			"lights":[
-				{
-					"color":[
-						1,
-						1,
-						1
-					],
-					"intensity":10870.28261317645,
-					"type":"point",
-					"name":"Point"
-				}
-			]
-		}
-	},
 	"scene":0,
 	"scenes":[
 		{
@@ -33,15 +11,19 @@
 				0,
 				1,
 				2,
-				3,
-				4
+				3
 			]
 		}
 	],
 	"nodes":[
 		{
 			"mesh":0,
-			"name":"Driftwood"
+			"name":"Driftwood",
+			"translation":[
+				0,
+				-0.002917072270065546,
+				0
+			]
 		},
 		{
 			"mesh":1,
@@ -55,34 +37,15 @@
 			"camera":0,
 			"name":"Camera",
 			"rotation":[
-				-0.09602779895067215,
-				0.7005559206008911,
-				0.09602781385183334,
-				0.7005560398101807
+				-0.1070793941617012,
+				0.6989520788192749,
+				0.1070794090628624,
+				0.6989521384239197
 			],
 			"translation":[
-				4.173695087432861,
-				1.8058271408081055,
+				4.883706092834473,
+				2.2298059463500977,
 				0
-			]
-		},
-		{
-			"extensions":{
-				"KHR_lights_punctual":{
-					"light":0
-				}
-			},
-			"name":"Point",
-			"rotation":[
-				-0.7071068286895752,
-				0,
-				0,
-				0.7071068286895752
-			],
-			"translation":[
-				0.9109300971031189,
-				2.0486717224121094,
-				-1.364527702331543
 			]
 		}
 	],
@@ -115,12 +78,6 @@
 			"doubleSided":true,
 			"name":"White",
 			"pbrMetallicRoughness":{
-				"baseColorFactor":[
-					0.6938673257827759,
-					0.6938724517822266,
-					0.6938721537590027,
-					1
-				],
 				"metallicFactor":0,
 				"roughnessFactor":0.5
 			}
@@ -196,15 +153,15 @@
 		{
 			"bufferView":0,
 			"componentType":5126,
-			"count":107915,
+			"count":107913,
 			"max":[
 				0.36150363087654114,
-				1.271558403968811,
+				1.332836389541626,
 				1.1404775381088257
 			],
 			"min":[
 				-0.37414494156837463,
-				0.8913687467575073,
+				0.9526467323303223,
 				-0.7702566385269165
 			],
 			"type":"VEC3"
@@ -212,13 +169,13 @@
 		{
 			"bufferView":1,
 			"componentType":5126,
-			"count":107915,
+			"count":107913,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":2,
 			"componentType":5126,
-			"count":107915,
+			"count":107913,
 			"type":"VEC2"
 		},
 		{
@@ -230,44 +187,44 @@
 		{
 			"bufferView":4,
 			"componentType":5126,
-			"count":24,
+			"count":48,
 			"max":[
-				2.290137529373169,
-				0,
-				2.290137529373169
+				1.4766438007354736,
+				1.6082594394683838,
+				2.4601376056671143
 			],
 			"min":[
-				-2.290137529373169,
-				-0.23923099040985107,
-				-2.290137529373169
+				-3.2736313343048096,
+				-0.17000003159046173,
+				-2.4601376056671143
 			],
 			"type":"VEC3"
 		},
 		{
 			"bufferView":5,
 			"componentType":5126,
-			"count":24,
+			"count":48,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":6,
 			"componentType":5126,
-			"count":24,
+			"count":48,
 			"type":"VEC2"
 		},
 		{
 			"bufferView":7,
 			"componentType":5123,
-			"count":36,
+			"count":84,
 			"type":"SCALAR"
 		},
 		{
 			"bufferView":8,
 			"componentType":5126,
-			"count":384,
+			"count":1944,
 			"max":[
 				0.40116479992866516,
-				0.9206011891365051,
+				0.9818791151046753,
 				0.40116479992866516
 			],
 			"min":[
@@ -280,93 +237,93 @@
 		{
 			"bufferView":9,
 			"componentType":5126,
-			"count":384,
+			"count":1944,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":10,
 			"componentType":5126,
-			"count":384,
+			"count":1944,
 			"type":"VEC2"
 		},
 		{
 			"bufferView":11,
 			"componentType":5123,
-			"count":564,
+			"count":2916,
 			"type":"SCALAR"
 		}
 	],
 	"bufferViews":[
 		{
 			"buffer":0,
-			"byteLength":1294980,
+			"byteLength":1294956,
 			"byteOffset":0,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":1294980,
-			"byteOffset":1294980,
+			"byteLength":1294956,
+			"byteOffset":1294956,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":863320,
-			"byteOffset":2589960,
+			"byteLength":863304,
+			"byteOffset":2589912,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":431724,
-			"byteOffset":3453280,
+			"byteOffset":3453216,
 			"target":34963
 		},
 		{
 			"buffer":0,
-			"byteLength":288,
-			"byteOffset":3885004,
+			"byteLength":576,
+			"byteOffset":3884940,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":288,
-			"byteOffset":3885292,
+			"byteLength":576,
+			"byteOffset":3885516,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":192,
-			"byteOffset":3885580,
+			"byteLength":384,
+			"byteOffset":3886092,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":72,
-			"byteOffset":3885772,
+			"byteLength":168,
+			"byteOffset":3886476,
 			"target":34963
 		},
 		{
 			"buffer":0,
-			"byteLength":4608,
-			"byteOffset":3885844,
+			"byteLength":23328,
+			"byteOffset":3886644,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":4608,
-			"byteOffset":3890452,
+			"byteLength":23328,
+			"byteOffset":3909972,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":3072,
-			"byteOffset":3895060,
+			"byteLength":15552,
+			"byteOffset":3933300,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":1128,
-			"byteOffset":3898132,
+			"byteLength":5832,
+			"byteOffset":3948852,
 			"target":34963
 		}
 	],
@@ -378,7 +335,7 @@
 	],
 	"buffers":[
 		{
-			"byteLength":3899260,
+			"byteLength":3954684,
 			"uri":"driftwood.bin"
 		}
 	]

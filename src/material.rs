@@ -40,7 +40,7 @@ pub struct Phong {
 impl Scatterable for Phong {
     fn scatter(&self, ray: &Ray, hit_record: &HitRecord, scene: &Scene) -> (Option<Ray>, Color, f32) {
         let ray_direction = random_on_hemisphere(hit_record.normal);
-        (Some(Ray::new(hit_record.point + ray_direction * 1e-5, ray_direction)), self.color, 0.5)
+        (Some(Ray::new(hit_record.point + ray_direction * 1e-5, ray_direction)), self.color, 0.7)
     }
 }
 
@@ -106,38 +106,14 @@ impl Scatterable for Texture {
         let index = (y * image.width as usize + x) * get_image_components(image.format);
         let pixels = &image.pixels;
 
-        let base_color = Color::rgb_u8(
+        let color = Color::rgb_u8(
             pixels[index],
             pixels[index + 1],
             pixels[index + 2],
-        );
+        ).gamma_uncorrect();
 
-        let mut color = base_color * AMBIENT_FACTOR;
-
-        for light in scene.lights.iter() {
-            let light_vec = light.origin - hit_record.point;
-            let light_distance = light_vec.length();
-            let light_dir = light_vec / light_distance;
-            let light_intensity = light.intensity / (scene.lights.len() as f32);
-
-            let shadow_ray = Ray::new(hit_record.point + light_dir * 1e-5, light_dir);
-
-            // TODO: Maybe add another function that finds intersections between the surface and a lightsource.
-            let in_shadow = scene.bvh.intersects(&shadow_ray).map_or(f32::INFINITY, |h| h.t) < light_distance;
-
-            if !in_shadow {
-                let s = (light.origin - hit_record.point).normalize();
-                let diffuse = base_color *
-                    s.dot(hit_record.normal).max(0.0) *
-                    light_distance.powf(2.0).recip() *
-                    light.color *
-                    light_intensity;
-
-                color += diffuse;
-            }
-        }
-
-        (None, color.clamp(), 0.5)
+        let ray_direction = random_on_hemisphere(hit_record.normal);
+        (Some(Ray::new(hit_record.point + ray_direction * 1e-5, ray_direction)), color, 0.9)
     }
 }
 

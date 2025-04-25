@@ -4,13 +4,18 @@ use crate::scene::Scene;
 use crate::Image;
 use crate::material::Scatterable;
 
+use std::path::Path;
+
 use minifb::{Window, WindowOptions, Key, KeyRepeat};
 use rayon::prelude::*;
 
 const FALLBACK_COLOR: Color = Color::rgb(1.0, 0.0, 1.0);
 const MAX_DEPTH: f32 = 5.0;
 
+static OUT_PATH: &str = "out/image.png";
+
 pub fn render_scene(scene: Scene) {
+    let out_path = Path::new(OUT_PATH);
     let mut window = Window::new(
         "Raytracer",
         WINDOW_WIDTH as usize,
@@ -40,6 +45,7 @@ pub fn render_scene(scene: Scene) {
         }).collect();
 
         window.update_with_buffer(&buffer, IMAGE_WIDTH as usize, IMAGE_HEIGHT as usize).unwrap();
+        Image::new(IMAGE_WIDTH, IMAGE_HEIGHT, buffer).save_png(out_path);
     }
 }
 
@@ -64,14 +70,15 @@ fn trace_ray(ray: Ray, depth: f32, scene: &Scene) -> Color {
     match scene.bvh.intersects(&ray) {
         Some(hit_record) => match hit_record.material_index {
             Some(index) => match scene.materials[index].scatter(&ray, &hit_record, scene) {
-                (Some(reflective_ray), color, att) => att * color * trace_ray(reflective_ray, depth - 1.0, scene),
+                (Some(reflective_ray), color, att) => (color * (att * trace_ray(reflective_ray, depth - 1.0, scene))).clamp(),
                 (None, color, _) => color,
             },
             _ => FALLBACK_COLOR
         },
         _ => {
             let a = 0.5 * (ray.direction.y + 1.0);
-            (1.0 - a) * Color::WHITE + a * Color::rgb(0.5, 0.7, 1.0)
+            Color::WHITE
+            //(1.0 - a) * Color::WHITE + a * Color::rgb(0.5, 0.7, 1.0)
         }
     }
 }

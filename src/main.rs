@@ -6,7 +6,6 @@ use std::path::{Path, PathBuf};
 use raytracer::{IMAGE_HEIGHT, IMAGE_WIDTH, Image, render_scene, scene::Scene, util::Statistics};
 
 static SCENES_PATH: &str = "scenes/";
-static OUT_PATH: &str = "out/image.png";
 
 fn main() {
     let mut statistics = Statistics::new();
