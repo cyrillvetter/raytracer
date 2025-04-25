@@ -3,7 +3,7 @@ use std::path::Path;
 use crate::bvh::Bvh;
 use crate::primitive::Color;
 use crate::triangle::{Triangle, Vertex};
-use crate::material::{Material, Phong, Metal, Glass, Texture};
+use crate::material::{Material, Phong, Metal, Glass, Texture, Emissive};
 use crate::Camera;
 use crate::Light;
 
@@ -138,8 +138,11 @@ fn import_materials(gltf: &Document) -> Vec<Material> {
                 Material::Glass(Glass {
                     color
                 })
-            }
-            else if metallic < 1.0 {
+            } else if material.emissive_factor() == [1.0, 1.0, 1.0] {
+                Material::Emissive(Emissive {
+                    color: material.emissive_factor().into()
+                })
+            } else if metallic < 1.0 {
                 Material::Phong(Phong {
                     color,
                     roughness: pbr.roughness_factor()

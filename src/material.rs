@@ -15,7 +15,8 @@ pub enum Material {
     Phong(Phong),
     Metal(Metal),
     Glass(Glass),
-    Texture(Texture)
+    Texture(Texture),
+    Emissive(Emissive),
 }
 
 impl Scatterable for Material {
@@ -25,6 +26,7 @@ impl Scatterable for Material {
             Material::Metal(metal) => metal.scatter(ray, hit_record, scene),
             Material::Glass(glass) => glass.scatter(ray, hit_record, scene),
             Material::Texture(texture) => texture.scatter(ray, hit_record, scene),
+            Material::Emissive(emissive) => emissive.scatter(ray, hit_record, scene),
         }
     }
 }
@@ -120,5 +122,16 @@ fn get_image_components(format: Format) -> usize {
     match format {
         R8G8B8A8 | R16G16B16A16 | R32G32B32A32FLOAT => 4,
         _ => 3
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct Emissive {
+    pub color: Color
+}
+
+impl Scatterable for Emissive {
+    fn scatter(&self, _ray: &Ray, _hit_record: &HitRecord, _scene: &Scene) -> (Option<Ray>, Color) {
+        (None, self.color)
     }
 }
