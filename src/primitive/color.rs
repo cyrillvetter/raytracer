@@ -47,6 +47,10 @@ impl Color {
         }
     }
 
+    pub fn into_u32(self) -> u32 {
+        ((self.r * 255.0) as u32) << 16 | ((self.g * 255.0) as u32) << 8 | ((self.b * 255.0) as u32)
+    }
+
     pub fn gamma_correct(self) -> Self {
         let convert = |c: f32| {
             if c <= 0.0031308 {

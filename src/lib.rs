@@ -26,5 +26,8 @@ pub mod util;
 pub const IMAGE_WIDTH: u32 = 1920;
 pub const IMAGE_HEIGHT: u32 = 1080;
 
-const WINDOW_WIDTH: u32 = 1920;
-const WINDOW_HEIGHT: u32 = 1080;
+#[cfg(debug_assertions)]
+pub const SAMPLES: usize = 32;
+
+#[cfg(not(debug_assertions))]
+pub const SAMPLES: usize = 4096;

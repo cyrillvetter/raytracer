@@ -3,25 +3,38 @@ use std::fs::read_dir;
 use std::io::stdin;
 use std::path::PathBuf;
 
-use raytracer::{IMAGE_HEIGHT, IMAGE_WIDTH, render_scene, scene::Scene, util::Statistics};
+use raytracer::{
+    IMAGE_HEIGHT,
+    IMAGE_WIDTH,
+    SAMPLES,
+    render_scene,
+    scene::Scene, 
+    util::Statistics
+};
 
 static SCENES_PATH: &str = "scenes/";
 
 fn main() {
     let mut statistics = Statistics::new();
     statistics.add_str("Resolution", format!("{}x{}", IMAGE_WIDTH, IMAGE_HEIGHT));
+    statistics.add("Samples", &SAMPLES);
 
     let scene_path = pick_scene_path();
-    let now = Instant::now();
+    let mut now = Instant::now();
 
     let scene = Scene::import(&scene_path);
     let bvh_elapsed = now.elapsed();
     statistics.add("Triangles", &scene.bvh.triangles.len());
     statistics.add("BVH nodes", &scene.bvh.nodes_used);
     statistics.add_str("BVH construction time", format!("{:.2?}", bvh_elapsed));
-    statistics.print();
 
+    now = Instant::now();
     render_scene(scene);
+    let render_elapsed = now.elapsed();
+    statistics.add_str("Render time", format!("{:.2?}", render_elapsed));
+    statistics.add_str("Total time", format!("{:.2?}", bvh_elapsed + render_elapsed));
+
+    statistics.print();
 }
 
 fn pick_scene_path() -> PathBuf {
@@ -53,9 +66,5 @@ fn pick_scene_path() -> PathBuf {
     let i = input.trim().parse::<usize>().expect("Cannot parse input");
     println!("");
 
-    if i < 1 || i > scene_paths.len() {
-        panic!("Scene number out of range");
-    }
-
-    scene_paths[i - 1].clone()
+    scene_paths.get(i - 1).expect("Scene number out of range").clone()
 }

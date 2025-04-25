@@ -7,7 +7,7 @@ use fastrand::f32;
 use gltf::image::Format;
 
 pub trait Scatterable {
-    fn scatter(&self, ray: &Ray, hit_record: &HitRecord, scene: &Scene) -> (Option<Ray>, Color, f32);
+    fn scatter(&self, ray: &Ray, hit_record: &HitRecord, scene: &Scene) -> (Option<Ray>, Color);
 }
 
 #[derive(Debug, Clone)]
@@ -19,7 +19,7 @@ pub enum Material {
 }
 
 impl Scatterable for Material {
-    fn scatter(&self, ray: &Ray, hit_record: &HitRecord, scene: &Scene) -> (Option<Ray>, Color, f32) {
+    fn scatter(&self, ray: &Ray, hit_record: &HitRecord, scene: &Scene) -> (Option<Ray>, Color) {
         match self {
             Material::Phong(phong) => phong.scatter(ray, hit_record, scene),
             Material::Metal(metal) => metal.scatter(ray, hit_record, scene),
@@ -36,9 +36,9 @@ pub struct Phong {
 }
 
 impl Scatterable for Phong {
-    fn scatter(&self, _ray: &Ray, hit_record: &HitRecord, _scene: &Scene) -> (Option<Ray>, Color, f32) {
+    fn scatter(&self, _ray: &Ray, hit_record: &HitRecord, _scene: &Scene) -> (Option<Ray>, Color) {
         let ray_direction = random_on_hemisphere(hit_record.normal);
-        (Some(Ray::new(hit_record.point + ray_direction * 1e-5, ray_direction)), self.color, 0.8)
+        (Some(Ray::new(hit_record.point + ray_direction * 1e-5, ray_direction)), self.color * 0.8)
     }
 }
 
@@ -71,9 +71,9 @@ pub struct Metal {
 }
 
 impl Scatterable for Metal {
-    fn scatter(&self, ray: &Ray, hit_record: &HitRecord, _scene: &Scene) -> (Option<Ray>, Color, f32) {
+    fn scatter(&self, ray: &Ray, hit_record: &HitRecord, _scene: &Scene) -> (Option<Ray>, Color) {
         let reflection_dir = ray.direction.reflect(hit_record.normal).normalize();
-        (Some(Ray::new(hit_record.point + reflection_dir * 1e-5, reflection_dir)), self.color, 1.0)
+        (Some(Ray::new(hit_record.point + reflection_dir * 1e-5, reflection_dir)), self.color)
     }
 }
 
@@ -83,10 +83,10 @@ pub struct Glass {
 }
 
 impl Scatterable for Glass {
-    fn scatter(&self, ray: &Ray, hit_record: &HitRecord, _scene: &Scene) -> (Option<Ray>, Color, f32) {
+    fn scatter(&self, ray: &Ray, hit_record: &HitRecord, _scene: &Scene) -> (Option<Ray>, Color) {
         let eta = if hit_record.front_face { 1.45f32.recip() } else { 1.45f32 };
         let refraction_dir = ray.direction.refract(hit_record.normal, eta);
-        (Some(Ray::new(hit_record.point + refraction_dir * 1e-5, refraction_dir)), self.color, 1.0)
+        (Some(Ray::new(hit_record.point + refraction_dir * 1e-5, refraction_dir)), self.color)
     }
 }
 
@@ -96,7 +96,7 @@ pub struct Texture {
 }
 
 impl Scatterable for Texture {
-    fn scatter(&self, _ray: &Ray, hit_record: &HitRecord, scene: &Scene) -> (Option<Ray>, Color, f32) {
+    fn scatter(&self, _ray: &Ray, hit_record: &HitRecord, scene: &Scene) -> (Option<Ray>, Color) {
         let image = &scene.images[self.index];
         let x = (hit_record.uv.x.fract() * (image.width - 1) as f32).round() as usize;
         let y = (hit_record.uv.y.fract() * (image.height - 1) as f32).round() as usize;
@@ -111,7 +111,7 @@ impl Scatterable for Texture {
         ).gamma_uncorrect();
 
         let ray_direction = random_on_hemisphere(hit_record.normal);
-        (Some(Ray::new(hit_record.point + ray_direction * 1e-5, ray_direction)), color, 1.0)
+        (Some(Ray::new(hit_record.point + ray_direction * 1e-5, ray_direction)), color)
     }
 }
 
