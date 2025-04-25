@@ -45,7 +45,7 @@ fn import_lights(gltf: &Document) -> Vec<Light> {
                 Light::new(
                     node.transform().decomposed().0.into(),
                     light.color().into(),
-                    light.intensity() / 1000.0
+                    light.intensity() / 2000.0
                 )
             })
         })
