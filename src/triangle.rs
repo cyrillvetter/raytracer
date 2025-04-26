@@ -68,7 +68,7 @@ impl Triangle {
             let point = ray.at(t);
             let barycentric = self.get_barycentric_coordinates(point);
             let uv = self.v1.uv * barycentric.x + self.v2.uv * barycentric.y + self.v3.uv * barycentric.z;
-            let mut normal = self.v1.normal * barycentric.x + self.v2.normal * barycentric.y + self.v3.normal * barycentric.z;
+            let mut normal = (self.v1.normal * barycentric.x + self.v2.normal * barycentric.y + self.v3.normal * barycentric.z).normalize();
 
             let mut front_face = true;
 
