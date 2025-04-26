@@ -1,6 +1,8 @@
-use crate::primitive::{Color, Ray};
-use crate::triangle::HitRecord;
-use crate::scene::Scene;
+use crate::{
+    primitive::{Color, Ray},
+    triangle::HitRecord,
+    Scene
+};
 
 use glam::Vec3A;
 use fastrand::f32;

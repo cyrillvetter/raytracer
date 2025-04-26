@@ -12,8 +12,10 @@ mod image;
 pub use image::Image;
 
 pub mod scene;
+pub use scene::Scene;
 
 pub mod bvh;
+pub use bvh::Bvh;
 
 mod camera;
 pub use camera::Camera;

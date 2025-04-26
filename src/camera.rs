@@ -1,5 +1,7 @@
-use crate::primitive::Ray;
-use crate::{IMAGE_WIDTH, IMAGE_HEIGHT};
+use crate::{
+    IMAGE_WIDTH, IMAGE_HEIGHT,
+    primitive::Ray,
+};
 
 use glam::{Vec3A, Affine3A};
 use fastrand::f32;

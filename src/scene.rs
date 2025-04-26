@@ -1,15 +1,18 @@
-use crate::bvh::Bvh;
-use crate::primitive::Color;
-use crate::triangle::{Triangle, Vertex};
-use crate::material::{Material, Diffuse, Metal, Glass, Texture, Emissive};
-use crate::Camera;
-use super::{IMAGE_HEIGHT, IMAGE_WIDTH};
+use crate::{
+    IMAGE_WIDTH, IMAGE_HEIGHT,
+    primitive::Color,
+    triangle::{Triangle, Vertex},
+    material::*,
+    Camera,
+    Bvh
+};
 
 use std::path::Path;
-
-use gltf::Document;
-use gltf::buffer::Data;
-use gltf::camera::Projection::Perspective;
+use gltf::{
+    Document,
+    buffer::Data,
+    camera::Projection::Perspective,
+};
 use glam::{Vec3A, Vec3, Vec2, Quat, Affine3A};
 
 #[derive(Debug)]

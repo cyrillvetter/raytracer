@@ -1,5 +1,7 @@
-use crate::primitive::{Aabb, Ray};
-use crate::triangle::{Triangle, HitRecord};
+use crate::{
+    primitive::{Aabb, Ray},
+    triangle::{Triangle, HitRecord}
+};
 
 pub const ROOT_IDX: usize = 0;
 

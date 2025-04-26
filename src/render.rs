@@ -1,9 +1,11 @@
-use crate::{IMAGE_WIDTH, IMAGE_HEIGHT, SAMPLES};
-use crate::util::ProgressBar;
-use crate::primitive::*;
-use crate::scene::Scene;
-use crate::Image;
-use crate::material::Scatterable;
+use crate::{
+    IMAGE_WIDTH, IMAGE_HEIGHT, SAMPLES,
+    primitive::*,
+    util::ProgressBar,
+    Image,
+    Scene,
+    material::Scatterable
+};
 
 use std::path::Path;
 use rayon::prelude::*;
