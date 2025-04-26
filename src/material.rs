@@ -12,7 +12,7 @@ pub trait Scatterable {
 
 #[derive(Debug, Clone)]
 pub enum Material {
-    Phong(Phong),
+    Diffuse(Diffuse),
     Metal(Metal),
     Glass(Glass),
     Texture(Texture),
@@ -22,7 +22,7 @@ pub enum Material {
 impl Scatterable for Material {
     fn scatter(&self, ray: &Ray, hit_record: &HitRecord, scene: &Scene) -> (Option<Ray>, Color) {
         match self {
-            Material::Phong(phong) => phong.scatter(ray, hit_record, scene),
+            Material::Diffuse(diffuse) => diffuse.scatter(ray, hit_record, scene),
             Material::Metal(metal) => metal.scatter(ray, hit_record, scene),
             Material::Glass(glass) => glass.scatter(ray, hit_record, scene),
             Material::Texture(texture) => texture.scatter(ray, hit_record, scene),
@@ -32,12 +32,12 @@ impl Scatterable for Material {
 }
 
 #[derive(Debug, Clone)]
-pub struct Phong {
+pub struct Diffuse {
     pub color: Color,
     pub roughness: f32,
 }
 
-impl Scatterable for Phong {
+impl Scatterable for Diffuse {
     fn scatter(&self, _ray: &Ray, hit_record: &HitRecord, _scene: &Scene) -> (Option<Ray>, Color) {
         let ray_direction = random_on_hemisphere(hit_record.normal);
         (Some(Ray::new(hit_record.point + ray_direction * 1e-5, ray_direction)), self.color * 0.8)

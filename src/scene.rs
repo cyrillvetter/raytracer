@@ -1,12 +1,11 @@
-use std::path::Path;
-
 use crate::bvh::Bvh;
 use crate::primitive::Color;
 use crate::triangle::{Triangle, Vertex};
-use crate::material::{Material, Phong, Metal, Glass, Texture, Emissive};
+use crate::material::{Material, Diffuse, Metal, Glass, Texture, Emissive};
 use crate::Camera;
-
 use super::{IMAGE_HEIGHT, IMAGE_WIDTH};
+
+use std::path::Path;
 
 use gltf::Document;
 use gltf::buffer::Data;
@@ -126,7 +125,7 @@ fn import_materials(gltf: &Document) -> Vec<Material> {
                     color: material.emissive_factor().into()
                 })
             } else if metallic < 1.0 {
-                Material::Phong(Phong {
+                Material::Diffuse(Diffuse {
                     color,
                     roughness: pbr.roughness_factor()
                 })

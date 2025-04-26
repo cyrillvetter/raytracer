@@ -181,7 +181,7 @@
 		{
 			"bufferView":0,
 			"componentType":5126,
-			"count":107913,
+			"count":21140,
 			"max":[
 				0.36150363087654114,
 				1.332836389541626,
@@ -197,18 +197,18 @@
 		{
 			"bufferView":1,
 			"componentType":5126,
-			"count":107913,
+			"count":21140,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":2,
 			"componentType":5126,
-			"count":107913,
+			"count":21140,
 			"type":"VEC2"
 		},
 		{
 			"bufferView":3,
-			"componentType":5125,
+			"componentType":5123,
 			"count":107931,
 			"type":"SCALAR"
 		},
@@ -283,7 +283,7 @@
 		{
 			"bufferView":12,
 			"componentType":5126,
-			"count":1944,
+			"count":566,
 			"max":[
 				0.40116479992866516,
 				0.9818791151046753,
@@ -299,13 +299,13 @@
 		{
 			"bufferView":13,
 			"componentType":5126,
-			"count":1944,
+			"count":566,
 			"type":"VEC3"
 		},
 		{
 			"bufferView":14,
 			"componentType":5126,
-			"count":1944,
+			"count":566,
 			"type":"VEC2"
 		},
 		{
@@ -318,98 +318,98 @@
 	"bufferViews":[
 		{
 			"buffer":0,
-			"byteLength":1294956,
+			"byteLength":253680,
 			"byteOffset":0,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":1294956,
-			"byteOffset":1294956,
+			"byteLength":253680,
+			"byteOffset":253680,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":863304,
-			"byteOffset":2589912,
+			"byteLength":169120,
+			"byteOffset":507360,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":431724,
-			"byteOffset":3453216,
+			"byteLength":215862,
+			"byteOffset":676480,
 			"target":34963
 		},
 		{
 			"buffer":0,
 			"byteLength":744,
-			"byteOffset":3884940,
+			"byteOffset":892344,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":744,
-			"byteOffset":3885684,
+			"byteOffset":893088,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":496,
-			"byteOffset":3886428,
+			"byteOffset":893832,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":216,
-			"byteOffset":3886924,
+			"byteOffset":894328,
 			"target":34963
 		},
 		{
 			"buffer":0,
 			"byteLength":96,
-			"byteOffset":3887140,
+			"byteOffset":894544,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":96,
-			"byteOffset":3887236,
+			"byteOffset":894640,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":64,
-			"byteOffset":3887332,
+			"byteOffset":894736,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":24,
-			"byteOffset":3887396,
+			"byteOffset":894800,
 			"target":34963
 		},
 		{
 			"buffer":0,
-			"byteLength":23328,
-			"byteOffset":3887420,
+			"byteLength":6792,
+			"byteOffset":894824,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":23328,
-			"byteOffset":3910748,
+			"byteLength":6792,
+			"byteOffset":901616,
 			"target":34962
 		},
 		{
 			"buffer":0,
-			"byteLength":15552,
-			"byteOffset":3934076,
+			"byteLength":4528,
+			"byteOffset":908408,
 			"target":34962
 		},
 		{
 			"buffer":0,
 			"byteLength":5832,
-			"byteOffset":3949628,
+			"byteOffset":912936,
 			"target":34963
 		}
 	],
@@ -421,7 +421,7 @@
 	],
 	"buffers":[
 		{
-			"byteLength":3955460,
+			"byteLength":918768,
 			"uri":"driftwood.bin"
 		}
 	]

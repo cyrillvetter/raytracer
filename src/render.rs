@@ -34,7 +34,7 @@ fn render_line(pixels: &mut [u32], y: u32, scene: &Scene, samples: usize) {
         let mut color = Color::BLACK;
 
         for _ in 0..samples {
-            let ray = scene.camera.ray_from(x as u32, y as u32);
+            let ray = scene.camera.ray_from(x as u32, y);
             color += trace_ray(ray, MAX_DEPTH, &scene);
         }
 
