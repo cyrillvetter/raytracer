@@ -85,9 +85,11 @@ pub struct Glass {
     pub color: Color
 }
 
+const GLASS_IOR: f32 = 1.52;
+
 impl Scatterable for Glass {
     fn scatter(&self, ray: &Ray, hit_record: &HitRecord, _scene: &Scene) -> (Option<Ray>, Color) {
-        let eta = if hit_record.front_face { 1.45f32.recip() } else { 1.45f32 };
+        let eta = if hit_record.front_face { GLASS_IOR.recip() } else { GLASS_IOR };
         let refraction_dir = ray.direction.refract(hit_record.normal, eta);
         (Some(Ray::new(hit_record.point + refraction_dir * 1e-5, refraction_dir)), self.color)
     }
