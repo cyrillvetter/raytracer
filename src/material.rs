@@ -1,10 +1,10 @@
 use crate::{
     primitive::{Color, Ray},
+    util::random_on_hemisphere,
     triangle::HitRecord,
     Scene
 };
 
-use glam::Vec3A;
 use fastrand::f32;
 
 pub trait Scatterable {
@@ -104,29 +104,6 @@ impl Scatterable for Texture {
         let texture_color = scene.textures[self.texture_index].sample(hit_record.uv);
         let ray_direction = random_on_hemisphere(hit_record.normal);
         (Some(Ray::new(hit_record.point + ray_direction * 1e-5, ray_direction)), texture_color * ATTENUATION)
-    }
-}
-
-fn rand() -> f32 {
-    f32() * 2.0 - 1.0
-}
-
-fn random_unit_vector() -> Vec3A {
-    loop {
-        let p = Vec3A::new(rand(), rand(), rand());
-        let lensq = p.length_squared();
-        if 1e-30 < lensq && lensq <= 1.0 {
-            return p / lensq.sqrt();
-        }
-    }
-}
-
-fn random_on_hemisphere(normal: Vec3A) -> Vec3A {
-    let on_unit_sphere = random_unit_vector();
-    if on_unit_sphere.dot(normal) > 0.0 {
-        return on_unit_sphere;
-    } else {
-        return -on_unit_sphere;
     }
 }
 
