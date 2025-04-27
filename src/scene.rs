@@ -69,7 +69,12 @@ fn import_triangles(gltf: &Document, buffers: &Vec<Data>) -> Vec<Triangle> {
             let reader = primitive.reader(|buffer| Some(&buffers[buffer.index()]));
             let positions: Vec<Vec3A> = reader.read_positions().unwrap().map(|a| a.into()).collect();
             let normals: Vec<Vec3A> = reader.read_normals().unwrap().map(|a| a.into()).collect();
-            let uvs: Vec<Vec2> = reader.read_tex_coords(0).unwrap().into_f32().map(|a| a.into()).collect();
+            let uvs: Vec<Vec2> = reader
+                .read_tex_coords(0)
+                .expect(&format!("No uv coordinates found on mesh '{}'", mesh.name().unwrap()))
+                .into_f32()
+                .map(|a| a.into())
+                .collect();
 
             // TODO: Remove into_32 to avoid casting twice.
             let indices: Vec<usize> = reader
