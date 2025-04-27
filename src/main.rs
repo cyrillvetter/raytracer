@@ -44,7 +44,7 @@ fn pick_scene_path() -> PathBuf {
         .map(|dir_entry| dir_entry.path())
         .filter_map(|path| path
             .extension()
-            .map_or(false, |ext| ext == "gltf")
+            .map_or(false, |ext| ext == "glb")
             .then_some(path))
         .collect();
 
