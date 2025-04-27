@@ -22,61 +22,44 @@ pub enum Material {
 
 impl Scatterable for Material {
     fn scatter(&self, ray: &Ray, hit_record: &HitRecord, scene: &Scene) -> (Option<Ray>, Color) {
+        use Material::*;
         match self {
-            Material::Diffuse(diffuse) => diffuse.scatter(ray, hit_record, scene),
-            Material::Metal(metal) => metal.scatter(ray, hit_record, scene),
-            Material::Glass(glass) => glass.scatter(ray, hit_record, scene),
-            Material::Texture(texture) => texture.scatter(ray, hit_record, scene),
-            Material::Emissive(emissive) => emissive.scatter(ray, hit_record, scene),
+            Diffuse(diffuse) => diffuse.scatter(ray, hit_record, scene),
+            Metal(metal) => metal.scatter(ray, hit_record, scene),
+            Glass(glass) => glass.scatter(ray, hit_record, scene),
+            Texture(texture) => texture.scatter(ray, hit_record, scene),
+            Emissive(emissive) => emissive.scatter(ray, hit_record, scene),
         }
     }
 }
 
 #[derive(Debug, Clone)]
 pub struct Diffuse {
-    pub color: Color,
-    pub roughness: f32,
+    pub color: Color
 }
 
 impl Scatterable for Diffuse {
     fn scatter(&self, _ray: &Ray, hit_record: &HitRecord, _scene: &Scene) -> (Option<Ray>, Color) {
+        const ATTENUATION: f32 = 0.8;
         let ray_direction = random_on_hemisphere(hit_record.normal);
-        (Some(Ray::new(hit_record.point + ray_direction * 1e-5, ray_direction)), self.color * 0.8)
-    }
-}
-
-fn rand() -> f32 {
-    f32() * 2.0 - 1.0
-}
-
-fn random_unit_vector() -> Vec3A {
-    loop {
-        let p = Vec3A::new(rand(), rand(), rand());
-        let lensq = p.length_squared();
-        if 1e-30 < lensq && lensq <= 1.0 {
-            return p / lensq.sqrt();
-        }
-    }
-}
-
-fn random_on_hemisphere(normal: Vec3A) -> Vec3A {
-    let on_unit_sphere = random_unit_vector();
-    if on_unit_sphere.dot(normal) > 0.0 {
-        return on_unit_sphere;
-    } else {
-        return -on_unit_sphere;
+        (Some(Ray::new(hit_record.point + ray_direction * 1e-5, ray_direction)), self.color * ATTENUATION)
     }
 }
 
 #[derive(Debug, Clone)]
 pub struct Metal {
     pub color: Color,
+    pub roughness: f32
 }
 
 impl Scatterable for Metal {
     fn scatter(&self, ray: &Ray, hit_record: &HitRecord, _scene: &Scene) -> (Option<Ray>, Color) {
-        let reflection_dir = ray.direction.reflect(hit_record.normal).normalize();
-        (Some(Ray::new(hit_record.point + reflection_dir * 1e-5, reflection_dir)), self.color)
+        let reflection_dir = (ray.direction.reflect(hit_record.normal) + (self.roughness * random_on_hemisphere(hit_record.normal))).normalize();
+        if reflection_dir.dot(hit_record.normal) > 0.0 {
+            (Some(Ray::new(hit_record.point + reflection_dir * 1e-5, reflection_dir)), self.color)
+        } else {
+            (None, Color::BLACK)
+        }
     }
 }
 
@@ -85,10 +68,9 @@ pub struct Glass {
     pub color: Color
 }
 
-const GLASS_IOR: f32 = 1.52;
-
 impl Scatterable for Glass {
     fn scatter(&self, ray: &Ray, hit_record: &HitRecord, _scene: &Scene) -> (Option<Ray>, Color) {
+        const GLASS_IOR: f32 = 1.52;
         let eta = if hit_record.front_face { GLASS_IOR.recip() } else { GLASS_IOR };
 
         let cos_theta = (-ray.direction).dot(hit_record.normal).min(1.0);
@@ -118,9 +100,33 @@ pub struct Texture {
 
 impl Scatterable for Texture {
     fn scatter(&self, _ray: &Ray, hit_record: &HitRecord, scene: &Scene) -> (Option<Ray>, Color) {
+        const ATTENUATION: f32 = 1.0;
         let texture_color = scene.textures[self.texture_index].sample(hit_record.uv);
         let ray_direction = random_on_hemisphere(hit_record.normal);
-        (Some(Ray::new(hit_record.point + ray_direction * 1e-5, ray_direction)), texture_color)
+        (Some(Ray::new(hit_record.point + ray_direction * 1e-5, ray_direction)), texture_color * ATTENUATION)
+    }
+}
+
+fn rand() -> f32 {
+    f32() * 2.0 - 1.0
+}
+
+fn random_unit_vector() -> Vec3A {
+    loop {
+        let p = Vec3A::new(rand(), rand(), rand());
+        let lensq = p.length_squared();
+        if 1e-30 < lensq && lensq <= 1.0 {
+            return p / lensq.sqrt();
+        }
+    }
+}
+
+fn random_on_hemisphere(normal: Vec3A) -> Vec3A {
+    let on_unit_sphere = random_unit_vector();
+    if on_unit_sphere.dot(normal) > 0.0 {
+        return on_unit_sphere;
+    } else {
+        return -on_unit_sphere;
     }
 }
 

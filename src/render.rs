@@ -1,5 +1,5 @@
 use crate::{
-    IMAGE_WIDTH, IMAGE_HEIGHT, SAMPLES,
+    IMAGE_WIDTH, IMAGE_HEIGHT, SAMPLES, BOUNCES,
     primitive::*,
     util::ProgressBar,
     Image,
@@ -11,7 +11,6 @@ use std::path::Path;
 use rayon::prelude::*;
 
 const FALLBACK_COLOR: Color = Color::rgb(1.0, 0.0, 1.0);
-const MAX_DEPTH: f32 = 5.0;
 
 static OUT_PATH: &str = "out/image.png";
 
@@ -37,7 +36,7 @@ fn render_line(pixels: &mut [u32], y: u32, scene: &Scene, samples: usize) {
 
         for _ in 0..samples {
             let ray = scene.camera.ray_from(x as u32, y);
-            color += trace_ray(ray, MAX_DEPTH, &scene);
+            color += trace_ray(ray, BOUNCES, &scene);
         }
 
         pixels[x] = (color / SAMPLES as f32).gamma_correct().into_u32();
@@ -59,9 +58,8 @@ fn trace_ray(ray: Ray, depth: f32, scene: &Scene) -> Color {
         },
         _ => {
             // Sky gradient.
-            //let a = 0.5 * (ray.direction.y + 1.0);
-            //(1.0 - a) * Color::WHITE + a * Color::rgb(0.5, 0.7, 1.0)
-            Color::WHITE
+            let a = 0.5 * (ray.direction.y + 1.0);
+            (1.0 - a) * Color::WHITE + a * Color::rgb(0.5, 0.7, 1.0)
         }
     }
 }

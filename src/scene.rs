@@ -136,12 +136,12 @@ fn import_materials(gltf: &Document) -> Vec<Material> {
                 })
             } else if metallic < 1.0 {
                 Material::Diffuse(material::Diffuse {
-                    color,
-                    roughness: pbr.roughness_factor()
+                    color
                 })
             } else {
                 Material::Metal(material::Metal {
                     color,
+                    roughness: pbr.roughness_factor()
                 })
             }
         })

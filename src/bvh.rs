@@ -16,7 +16,7 @@ pub struct Bvh {
 }
 
 #[derive(Debug, Clone)]
-pub struct BvhNode {
+struct BvhNode {
     aabb: Aabb,
     left_child: usize,
     first_tri: usize,
@@ -24,7 +24,7 @@ pub struct BvhNode {
 }
 
 impl BvhNode {
-    pub fn new(first_prim: usize, prim_count: usize, triangles: &Vec<Triangle>) -> Self {
+    fn new(first_prim: usize, prim_count: usize, triangles: &Vec<Triangle>) -> Self {
         let mut aabb = Aabb::MAX;
 
         for tri in &triangles[first_prim..first_prim+prim_count] {
@@ -44,11 +44,11 @@ impl BvhNode {
         }
     }
 
-    pub fn is_leaf(&self) -> bool {
+    fn is_leaf(&self) -> bool {
         self.tri_count > 0
     }
 
-    pub fn evaluate_sh(&self, axis: usize, pos: f32, triangles: &Vec<Triangle>) -> f32 {
+    fn evaluate_sh(&self, axis: usize, pos: f32, triangles: &Vec<Triangle>) -> f32 {
         let mut left_box = Aabb::MAX;
         let mut right_box = Aabb::MAX;
 
