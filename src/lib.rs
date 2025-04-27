@@ -25,8 +25,8 @@ pub use camera::Camera;
 
 pub mod util;
 
-pub const IMAGE_WIDTH: u32 = 1920;
-pub const IMAGE_HEIGHT: u32 = 1080;
+pub const IMAGE_WIDTH: u32 = 1920 * 2;
+pub const IMAGE_HEIGHT: u32 = 1080 * 2;
 
 #[cfg(debug_assertions)]
 pub const SAMPLES: usize = 32;

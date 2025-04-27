@@ -90,9 +90,25 @@ const GLASS_IOR: f32 = 1.52;
 impl Scatterable for Glass {
     fn scatter(&self, ray: &Ray, hit_record: &HitRecord, _scene: &Scene) -> (Option<Ray>, Color) {
         let eta = if hit_record.front_face { GLASS_IOR.recip() } else { GLASS_IOR };
-        let refraction_dir = ray.direction.refract(hit_record.normal, eta);
-        (Some(Ray::new(hit_record.point + refraction_dir * 1e-5, refraction_dir)), self.color)
+
+        let cos_theta = (-ray.direction).dot(hit_record.normal).min(1.0);
+        let sin_theta = (1.0 - cos_theta * cos_theta).sqrt();
+        let cannot_refract = eta * sin_theta > 1.0;
+
+        let direction = if cannot_refract || reflectance(cos_theta, eta) > f32() {
+            ray.direction.reflect(hit_record.normal)
+        } else {
+            ray.direction.refract(hit_record.normal, eta)
+        };
+
+        (Some(Ray::new(hit_record.point + direction * 1e-5, direction)), self.color)
     }
+}
+
+// Schlick's approximation.
+fn reflectance(cosine: f32, ior: f32) -> f32 {
+    let r0 = (1.0 - ior) / (1.0 + ior).powf(2.0);
+    r0 + (1.0 - r0) * (1.0 - cosine).powf(5.0)
 }
 
 #[derive(Debug, Clone)]
