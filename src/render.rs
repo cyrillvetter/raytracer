@@ -58,7 +58,7 @@ fn trace_ray(ray: Ray, depth: f32, scene: &Scene) -> Color {
             _ => FALLBACK_COLOR
         },
         _ => {
-            // Uncomment to enable sky gradient.
+            // Sky gradient.
             //let a = 0.5 * (ray.direction.y + 1.0);
             //(1.0 - a) * Color::WHITE + a * Color::rgb(0.5, 0.7, 1.0)
             Color::WHITE

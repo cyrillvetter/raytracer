@@ -151,7 +151,7 @@ impl Bvh {
             }
         }
 
-        nearest_triangle.and_then(|tri| Some(tri.create_record(ray, nearest_dist)))
+        nearest_triangle.map(|tri| tri.create_record(ray, nearest_dist))
     }
 
 
