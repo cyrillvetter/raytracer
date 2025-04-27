@@ -48,28 +48,25 @@ impl Scatterable for Diffuse {
 
 #[derive(Debug)]
 pub struct Metal {
-    pub color: Color,
+    pub sampler: Sampler,
     pub roughness: f32
 }
 
 impl Scatterable for Metal {
-    fn scatter(&self, ray: &Ray, hit_record: &HitRecord, _scene: &Scene) -> (Option<Ray>, Color) {
+    fn scatter(&self, ray: &Ray, hit_record: &HitRecord, scene: &Scene) -> (Option<Ray>, Color) {
         let reflection_dir = (ray.direction.reflect(hit_record.normal) + (self.roughness * random_on_hemisphere(hit_record.normal))).normalize();
-        if reflection_dir.dot(hit_record.normal) > 0.0 {
-            (Some(Ray::new(hit_record.point + reflection_dir * 1e-5, reflection_dir)), self.color)
-        } else {
-            (None, Color::BLACK)
-        }
+        let color = self.sampler.sample(hit_record.uv, scene);
+        (Some(Ray::new(hit_record.point + reflection_dir * 1e-5, reflection_dir)), color)
     }
 }
 
 #[derive(Debug)]
 pub struct Glass {
-    pub color: Color
+    pub sampler: Sampler
 }
 
 impl Scatterable for Glass {
-    fn scatter(&self, ray: &Ray, hit_record: &HitRecord, _scene: &Scene) -> (Option<Ray>, Color) {
+    fn scatter(&self, ray: &Ray, hit_record: &HitRecord, scene: &Scene) -> (Option<Ray>, Color) {
         const GLASS_IOR: f32 = 1.52;
         let eta = if hit_record.front_face { GLASS_IOR.recip() } else { GLASS_IOR };
 
@@ -83,7 +80,8 @@ impl Scatterable for Glass {
             ray.direction.refract(hit_record.normal, eta)
         };
 
-        (Some(Ray::new(hit_record.point + direction * 1e-5, direction)), self.color)
+        let color = self.sampler.sample(hit_record.uv, scene);
+        (Some(Ray::new(hit_record.point + direction * 1e-5, direction)), color)
     }
 }
 

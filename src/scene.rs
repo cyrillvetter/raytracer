@@ -1,6 +1,5 @@
 use crate::{
     IMAGE_WIDTH, IMAGE_HEIGHT,
-    primitive::Color,
     triangle::{Triangle, Vertex},
     material, Material,
     Sampler,
@@ -116,32 +115,26 @@ fn import_materials(gltf: &Document) -> Vec<Material> {
         .materials()
         .map(|material| {
             let pbr = material.pbr_metallic_roughness();
-
-            if let Some(texture_info) = pbr.base_color_texture() {
-                return Material::Diffuse(material::Diffuse {
-                    sampler: Sampler::texture(texture_info.texture().index())
-                });
-            }
-
-            let base_color_factor = pbr.base_color_factor();
-            let color = Color::rgb(base_color_factor[0], base_color_factor[1], base_color_factor[2]);
-            let metallic = pbr.metallic_factor();
+            let sampler = match pbr.base_color_texture() {
+                Some(texture_info) => Sampler::texture(texture_info.texture().index()),
+                _ => Sampler::color(pbr.base_color_factor().into())
+            };
 
             if let Some(_) = material.transmission() {
                 Material::Glass(material::Glass {
-                    color
+                    sampler
                 })
             } else if Into::<Vec3>::into(material.emissive_factor()).length_squared() > 0.0 {
                 Material::Emissive(material::Emissive {
                     color: material.emissive_factor().into()
                 })
-            } else if metallic < 1.0 {
+            } else if pbr.metallic_factor() < 1.0 {
                 Material::Diffuse(material::Diffuse {
-                    sampler: Sampler::color(color)
+                    sampler
                 })
             } else {
                 Material::Metal(material::Metal {
-                    color,
+                    sampler,
                     roughness: pbr.roughness_factor()
                 })
             }

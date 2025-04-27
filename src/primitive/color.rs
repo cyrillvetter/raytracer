@@ -100,6 +100,12 @@ impl From<Vec3> for Color {
     }
 }
 
+impl From<[f32; 4]> for Color {
+    fn from(a: [f32; 4]) -> Self {
+        Color::rgb(a[0], a[1], a[2])
+    }
+}
+
 impl From<[f32; 3]> for Color {
     fn from(a: [f32; 3]) -> Self {
         Color::rgb(a[0], a[1], a[2])
