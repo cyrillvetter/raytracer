@@ -1,8 +1,7 @@
 use crate::{
     IMAGE_WIDTH, IMAGE_HEIGHT, SAMPLES, BOUNCES,
     primitive::*,
-    util::ProgressBar,
-    Image,
+    util::{ProgressBar, save_png},
     Scene,
     material::Scatterable
 };
@@ -27,7 +26,7 @@ pub fn render_scene(scene: Scene) {
         });
 
     progress_bar.end();
-    Image::new(IMAGE_WIDTH, IMAGE_HEIGHT, pixels).save_png(Path::new(OUT_PATH));
+    save_png(Path::new(OUT_PATH), IMAGE_WIDTH, IMAGE_HEIGHT, pixels);
 }
 
 fn render_line(pixels: &mut [u32], y: u32, scene: &Scene, samples: usize) {

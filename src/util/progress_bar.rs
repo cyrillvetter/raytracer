@@ -23,7 +23,14 @@ impl ProgressBar {
         let ratio = (curr as f32) / (self.max as f32);
         let bar_ratio = (ratio * (BAR_SIZE as f32)) as usize;
 
-        print!("\r[{}{}] | {}% | {}/{}", "#".repeat(bar_ratio), " ".repeat(BAR_SIZE - bar_ratio), (ratio * 100.0) as usize, curr, self.max);
+        print!(
+            "\r[{}{}] | {}% | {}/{}",
+            "#".repeat(bar_ratio),
+            " ".repeat(BAR_SIZE - bar_ratio),
+            (ratio * 100.0) as usize,
+            curr,
+            self.max
+        );
     }
 
     pub fn end(self) {

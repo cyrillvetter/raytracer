@@ -72,7 +72,7 @@ fn import_triangles(gltf: &Document, buffers: &Vec<Data>) -> Vec<Triangle> {
             let normals: Vec<Vec3A> = reader.read_normals().unwrap().map(|a| a.into()).collect();
             let uvs: Vec<Vec2> = reader
                 .read_tex_coords(0)
-                .expect(&format!("No uv coordinates found on mesh '{}'", mesh.name().unwrap()))
+                .expect(&format!("No uv coordinates found on mesh '{}'", mesh.name().unwrap_or("unknown")))
                 .into_f32()
                 .map(|a| a.into())
                 .collect();
@@ -117,8 +117,8 @@ fn import_materials(gltf: &Document) -> Vec<Material> {
         .map(|material| {
             let pbr = material.pbr_metallic_roughness();
             let color_sampler = match pbr.base_color_texture() {
-                Some(texture_info) => Sampler::texture(texture_info.texture().index()),
-                _ => Sampler::color(pbr.base_color_factor().into())
+                Some(texture_info) => Sampler::Texture(texture_info.texture().index()),
+                _ => Sampler::Color(pbr.base_color_factor().into())
             };
 
             if let Some(_) = material.transmission() {
@@ -136,8 +136,8 @@ fn import_materials(gltf: &Document) -> Vec<Material> {
             } else {
                 // Roughness values are samples from the G channel (https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html#_material_pbrmetallicroughness_metallicroughnesstexture).
                 let roughness_sampler = match pbr.metallic_roughness_texture() {
-                    Some(texture_info) => Sampler::texture(texture_info.texture().index()),
-                    _ => Sampler::color(Color::rgb(0.0, pbr.roughness_factor(), 0.0))
+                    Some(texture_info) => Sampler::Texture(texture_info.texture().index()),
+                    _ => Sampler::Color(Color::rgb(0.0, pbr.roughness_factor(), 0.0))
                 };
 
                 Material::Metal(material::Metal {
@@ -150,8 +150,5 @@ fn import_materials(gltf: &Document) -> Vec<Material> {
 }
 
 fn import_textures(images: Vec<gltf::image::Data>) -> Vec<Texture> {
-    images
-        .into_iter()
-        .map(|image_data| Texture::new(image_data))
-        .collect()
+    images.into_iter().map(|data| Texture::new(data)).collect()
 }

@@ -17,14 +17,6 @@ pub struct Texture {
 }
 
 impl Sampler {
-    pub fn color(color: Color) -> Self {
-        Self::Color(color)
-    }
-
-    pub fn texture(texture_index: usize) -> Self {
-        Self::Texture(texture_index)
-    }
-
     pub fn sample(&self, uv: Vec2, scene: &Scene) -> Color {
         match self {
             Sampler::Color(color) => *color,

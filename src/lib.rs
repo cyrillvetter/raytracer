@@ -24,9 +24,6 @@ mod triangle;
 mod material;
 use material::Material;
 
-mod image;
-use image::Image;
-
 mod sampler;
 use sampler::{Texture, Sampler};
 
