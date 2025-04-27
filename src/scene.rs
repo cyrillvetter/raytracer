@@ -1,5 +1,6 @@
 use crate::{
     IMAGE_WIDTH, IMAGE_HEIGHT,
+    primitive::Color,
     triangle::{Triangle, Vertex},
     material, Material,
     Sampler,
@@ -115,14 +116,14 @@ fn import_materials(gltf: &Document) -> Vec<Material> {
         .materials()
         .map(|material| {
             let pbr = material.pbr_metallic_roughness();
-            let sampler = match pbr.base_color_texture() {
+            let color_sampler = match pbr.base_color_texture() {
                 Some(texture_info) => Sampler::texture(texture_info.texture().index()),
                 _ => Sampler::color(pbr.base_color_factor().into())
             };
 
             if let Some(_) = material.transmission() {
                 Material::Glass(material::Glass {
-                    sampler
+                    color_sampler
                 })
             } else if Into::<Vec3>::into(material.emissive_factor()).length_squared() > 0.0 {
                 Material::Emissive(material::Emissive {
@@ -130,12 +131,18 @@ fn import_materials(gltf: &Document) -> Vec<Material> {
                 })
             } else if pbr.metallic_factor() < 1.0 {
                 Material::Diffuse(material::Diffuse {
-                    sampler
+                    color_sampler
                 })
             } else {
+                // Roughness values are samples from the G channel (https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html#_material_pbrmetallicroughness_metallicroughnesstexture).
+                let roughness_sampler = match pbr.metallic_roughness_texture() {
+                    Some(texture_info) => Sampler::texture(texture_info.texture().index()),
+                    _ => Sampler::color(Color::rgb(0.0, pbr.roughness_factor(), 0.0))
+                };
+
                 Material::Metal(material::Metal {
-                    sampler,
-                    roughness: pbr.roughness_factor()
+                    color_sampler,
+                    roughness_sampler
                 })
             }
         })

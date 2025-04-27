@@ -34,35 +34,37 @@ impl Scatterable for Material {
 
 #[derive(Debug)]
 pub struct Diffuse {
-    pub sampler: Sampler
+    pub color_sampler: Sampler
 }
 
 impl Scatterable for Diffuse {
     fn scatter(&self, _ray: &Ray, hit_record: &HitRecord, scene: &Scene) -> (Option<Ray>, Color) {
         const ATTENUATION: f32 = 0.8;
         let ray_direction = random_on_hemisphere(hit_record.normal);
-        let color = self.sampler.sample(hit_record.uv, scene);
+        let color = self.color_sampler.sample(hit_record.uv, scene);
         (Some(Ray::new(hit_record.point + ray_direction * 1e-5, ray_direction)), color * ATTENUATION)
     }
 }
 
 #[derive(Debug)]
 pub struct Metal {
-    pub sampler: Sampler,
-    pub roughness: f32
+    pub color_sampler: Sampler,
+    pub roughness_sampler: Sampler
 }
 
 impl Scatterable for Metal {
     fn scatter(&self, ray: &Ray, hit_record: &HitRecord, scene: &Scene) -> (Option<Ray>, Color) {
-        let reflection_dir = (ray.direction.reflect(hit_record.normal) + (self.roughness * random_on_hemisphere(hit_record.normal))).normalize();
-        let color = self.sampler.sample(hit_record.uv, scene);
+        // Roughness values are samples from the G channel (https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html#_material_pbrmetallicroughness_metallicroughnesstexture).
+        let roughness = self.roughness_sampler.sample(hit_record.uv, scene).g;
+        let reflection_dir = (ray.direction.reflect(hit_record.normal) + (roughness * random_on_hemisphere(hit_record.normal))).normalize();
+        let color = self.color_sampler.sample(hit_record.uv, scene);
         (Some(Ray::new(hit_record.point + reflection_dir * 1e-5, reflection_dir)), color)
     }
 }
 
 #[derive(Debug)]
 pub struct Glass {
-    pub sampler: Sampler
+    pub color_sampler: Sampler
 }
 
 impl Scatterable for Glass {
@@ -80,7 +82,7 @@ impl Scatterable for Glass {
             ray.direction.refract(hit_record.normal, eta)
         };
 
-        let color = self.sampler.sample(hit_record.uv, scene);
+        let color = self.color_sampler.sample(hit_record.uv, scene);
         (Some(Ray::new(hit_record.point + direction * 1e-5, direction)), color)
     }
 }
