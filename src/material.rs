@@ -6,7 +6,6 @@ use crate::{
 
 use glam::Vec3A;
 use fastrand::f32;
-use gltf::image::Format;
 
 pub trait Scatterable {
     fn scatter(&self, ray: &Ray, hit_record: &HitRecord, scene: &Scene) -> (Option<Ray>, Color);
@@ -96,34 +95,14 @@ impl Scatterable for Glass {
 
 #[derive(Debug, Clone)]
 pub struct Texture {
-    pub index: usize
+    pub texture_index: usize
 }
 
 impl Scatterable for Texture {
     fn scatter(&self, _ray: &Ray, hit_record: &HitRecord, scene: &Scene) -> (Option<Ray>, Color) {
-        let image = &scene.images[self.index];
-        let x = (hit_record.uv.x.fract() * (image.width - 1) as f32).round() as usize;
-        let y = (hit_record.uv.y.fract() * (image.height - 1) as f32).round() as usize;
-
-        let index = (y * image.width as usize + x) * get_image_components(image.format);
-        let pixels = &image.pixels;
-
-        let color = Color::rgb_u8(
-            pixels[index],
-            pixels[index + 1],
-            pixels[index + 2],
-        ).gamma_uncorrect();
-
+        let texture_color = scene.textures[self.texture_index].sample(hit_record.uv);
         let ray_direction = random_on_hemisphere(hit_record.normal);
-        (Some(Ray::new(hit_record.point + ray_direction * 1e-5, ray_direction)), color)
-    }
-}
-
-fn get_image_components(format: Format) -> usize {
-    use Format::*;
-    match format {
-        R8G8B8A8 | R16G16B16A16 | R32G32B32A32FLOAT => 4,
-        _ => 3
+        (Some(Ray::new(hit_record.point + ray_direction * 1e-5, ray_direction)), texture_color)
     }
 }
 

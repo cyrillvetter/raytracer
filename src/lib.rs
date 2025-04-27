@@ -14,6 +14,9 @@ pub use image::Image;
 pub mod scene;
 pub use scene::Scene;
 
+pub mod texture;
+pub use texture::Texture;
+
 pub mod bvh;
 pub use bvh::Bvh;
 

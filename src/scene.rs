@@ -2,9 +2,10 @@ use crate::{
     IMAGE_WIDTH, IMAGE_HEIGHT,
     primitive::Color,
     triangle::{Triangle, Vertex},
-    material::*,
+    material, Material,
     Camera,
-    Bvh
+    Bvh,
+    Texture
 };
 
 use std::path::Path;
@@ -20,7 +21,7 @@ pub struct Scene {
     pub camera: Camera,
     pub bvh: Bvh,
     pub materials: Vec<Material>,
-    pub images: Vec<gltf::image::Data>,
+    pub textures: Vec<Texture>
 }
 
 impl Scene {
@@ -32,17 +33,18 @@ impl Scene {
             camera: import_camera(&gltf),
             bvh: Bvh::new(triangles),
             materials: import_materials(&gltf),
-            images
+            textures: import_textures(images)
         }
     }
 }
 
 fn import_camera(gltf: &Document) -> Camera {
-    gltf.nodes()
+    gltf
+        .nodes()
         .find_map(|node| {
             node.camera().map(|cam| {
                 let Perspective(persp) = cam.projection() else {
-                    panic!("Orthographic camera not supported.");
+                    panic!("Orthographic camera not supported");
                 };
 
                 let aspect_ratio = persp.aspect_ratio().unwrap_or((IMAGE_WIDTH as f32) / (IMAGE_HEIGHT as f32));
@@ -56,7 +58,7 @@ fn import_camera(gltf: &Document) -> Camera {
                 )
             })
         })
-        .unwrap_or(Camera::new((IMAGE_WIDTH as f32) / (IMAGE_HEIGHT as f32), 0.4, Affine3A::ZERO))
+        .expect("Cannot import camera")
 }
 
 fn import_triangles(gltf: &Document, buffers: &Vec<Data>) -> Vec<Triangle> {
@@ -110,8 +112,8 @@ fn import_materials(gltf: &Document) -> Vec<Material> {
             let pbr = material.pbr_metallic_roughness();
 
             if let Some(texture_info) = pbr.base_color_texture() {
-                return Material::Texture( Texture {
-                    index: texture_info.texture().index(),
+                return Material::Texture(material::Texture {
+                    texture_index: texture_info.texture().index(),
                 });
             }
 
@@ -120,23 +122,30 @@ fn import_materials(gltf: &Document) -> Vec<Material> {
             let metallic = pbr.metallic_factor();
 
             if let Some(_) = material.transmission() {
-                Material::Glass(Glass {
+                Material::Glass(material::Glass {
                     color
                 })
             } else if Into::<Vec3>::into(material.emissive_factor()).length_squared() > 0.0 {
-                Material::Emissive(Emissive {
+                Material::Emissive(material::Emissive {
                     color: material.emissive_factor().into()
                 })
             } else if metallic < 1.0 {
-                Material::Diffuse(Diffuse {
+                Material::Diffuse(material::Diffuse {
                     color,
                     roughness: pbr.roughness_factor()
                 })
             } else {
-                Material::Metal(Metal {
+                Material::Metal(material::Metal {
                     color,
                 })
             }
         })
+        .collect()
+}
+
+fn import_textures(images: Vec<gltf::image::Data>) -> Vec<Texture> {
+    images
+        .into_iter()
+        .map(|image_data| Texture::new(image_data))
         .collect()
 }

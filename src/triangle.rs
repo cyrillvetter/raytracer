@@ -40,7 +40,7 @@ impl Triangle {
         }
     }
 
-    pub fn hit(&self, ray: &Ray) -> Option<HitRecord> {
+    pub fn hit(&self, ray: &Ray) -> Option<f32> {
         let e1 = self.v2.position - self.v1.position;
         let e2 = self.v3.position - self.v1.position;
 
@@ -65,29 +65,34 @@ impl Triangle {
 
         let t = inv_det * e2.dot(s_cross_e1);
         if t > f32::EPSILON {
-            let point = ray.at(t);
-            let barycentric = self.get_barycentric_coordinates(point);
-            let uv = self.v1.uv * barycentric.x + self.v2.uv * barycentric.y + self.v3.uv * barycentric.z;
-            let mut normal = (self.v1.normal * barycentric.x + self.v2.normal * barycentric.y + self.v3.normal * barycentric.z).normalize();
-
-            let mut front_face = true;
-
-            // Hits back face.
-            if ray.direction.dot(normal) > 0.0 {
-                normal = -normal;
-                front_face = false;
-            }
-
-            Some(HitRecord {
-                t,
-                point,
-                normal,
-                front_face,
-                uv,
-                material_index: self.material_index
-            })
+            Some(t)
         } else {
             None
+        }
+    }
+
+    pub fn create_record(&self, ray: &Ray, t: f32) -> HitRecord {
+        let point = ray.at(t);
+        let barycentric = self.get_barycentric_coordinates(point);
+
+        let uv = self.v1.uv * barycentric.x + self.v2.uv * barycentric.y + self.v3.uv * barycentric.z;
+        let mut normal = (self.v1.normal * barycentric.x + self.v2.normal * barycentric.y + self.v3.normal * barycentric.z).normalize();
+
+        let mut front_face = true;
+
+        // Hits back face.
+        if ray.direction.dot(normal) > 0.0 {
+            normal = -normal;
+            front_face = false;
+        }
+
+        HitRecord {
+            t,
+            point,
+            normal,
+            front_face,
+            uv,
+            material_index: self.material_index
         }
     }
 

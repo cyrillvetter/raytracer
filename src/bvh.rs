@@ -6,7 +6,7 @@ use crate::{
 pub const ROOT_IDX: usize = 0;
 
 // Higher amount leads to better BVH at longer construction time.
-const SPACES: usize = 10;
+const SPACES: usize = 50;
 
 #[derive(Debug)]
 pub struct Bvh {
@@ -99,15 +99,15 @@ impl Bvh {
         let mut stack_pointer = 0;
 
         let mut nearest_dist = f32::INFINITY;
-        let mut nearest_hit: Option<HitRecord> = None;
+        let mut nearest_triangle: Option<&Triangle> = None;
 
         loop {
             if node.is_leaf() {
                 for triangle in &self.triangles[node.first_tri..node.first_tri+node.tri_count] {
                     match triangle.hit(&ray) {
-                        Some(hit_record) if hit_record.t < nearest_dist => {
-                            nearest_dist = hit_record.t;
-                            nearest_hit = Some(hit_record);
+                        Some(dist) if dist < nearest_dist => {
+                            nearest_dist = dist;
+                            nearest_triangle = Some(triangle);
                         },
                         _ => ()
                     }
@@ -151,7 +151,7 @@ impl Bvh {
             }
         }
 
-        return nearest_hit;
+        nearest_triangle.and_then(|tri| Some(tri.create_record(ray, nearest_dist)))
     }
 
 
