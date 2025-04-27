@@ -2,6 +2,7 @@ use crate::{
     primitive::{Color, Ray},
     util::random_on_hemisphere,
     triangle::HitRecord,
+    Sampler,
     Scene
 };
 
@@ -11,12 +12,11 @@ pub trait Scatterable {
     fn scatter(&self, ray: &Ray, hit_record: &HitRecord, scene: &Scene) -> (Option<Ray>, Color);
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub enum Material {
     Diffuse(Diffuse),
     Metal(Metal),
     Glass(Glass),
-    Texture(Texture),
     Emissive(Emissive),
 }
 
@@ -27,26 +27,26 @@ impl Scatterable for Material {
             Diffuse(diffuse) => diffuse.scatter(ray, hit_record, scene),
             Metal(metal) => metal.scatter(ray, hit_record, scene),
             Glass(glass) => glass.scatter(ray, hit_record, scene),
-            Texture(texture) => texture.scatter(ray, hit_record, scene),
             Emissive(emissive) => emissive.scatter(ray, hit_record, scene),
         }
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub struct Diffuse {
-    pub color: Color
+    pub sampler: Sampler
 }
 
 impl Scatterable for Diffuse {
-    fn scatter(&self, _ray: &Ray, hit_record: &HitRecord, _scene: &Scene) -> (Option<Ray>, Color) {
+    fn scatter(&self, _ray: &Ray, hit_record: &HitRecord, scene: &Scene) -> (Option<Ray>, Color) {
         const ATTENUATION: f32 = 0.8;
         let ray_direction = random_on_hemisphere(hit_record.normal);
-        (Some(Ray::new(hit_record.point + ray_direction * 1e-5, ray_direction)), self.color * ATTENUATION)
+        let color = self.sampler.sample(hit_record.uv, scene);
+        (Some(Ray::new(hit_record.point + ray_direction * 1e-5, ray_direction)), color * ATTENUATION)
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub struct Metal {
     pub color: Color,
     pub roughness: f32
@@ -63,7 +63,7 @@ impl Scatterable for Metal {
     }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub struct Glass {
     pub color: Color
 }
@@ -93,21 +93,7 @@ fn reflectance(cosine: f32, ior: f32) -> f32 {
     r0 + (1.0 - r0) * (1.0 - cosine).powf(5.0)
 }
 
-#[derive(Debug, Clone)]
-pub struct Texture {
-    pub texture_index: usize
-}
-
-impl Scatterable for Texture {
-    fn scatter(&self, _ray: &Ray, hit_record: &HitRecord, scene: &Scene) -> (Option<Ray>, Color) {
-        const ATTENUATION: f32 = 1.0;
-        let texture_color = scene.textures[self.texture_index].sample(hit_record.uv);
-        let ray_direction = random_on_hemisphere(hit_record.normal);
-        (Some(Ray::new(hit_record.point + ray_direction * 1e-5, ray_direction)), texture_color * ATTENUATION)
-    }
-}
-
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub struct Emissive {
     pub color: Color
 }

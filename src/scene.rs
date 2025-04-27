@@ -3,6 +3,7 @@ use crate::{
     primitive::Color,
     triangle::{Triangle, Vertex},
     material, Material,
+    Sampler,
     Camera,
     Bvh,
     Texture
@@ -117,8 +118,8 @@ fn import_materials(gltf: &Document) -> Vec<Material> {
             let pbr = material.pbr_metallic_roughness();
 
             if let Some(texture_info) = pbr.base_color_texture() {
-                return Material::Texture(material::Texture {
-                    texture_index: texture_info.texture().index(),
+                return Material::Diffuse(material::Diffuse {
+                    sampler: Sampler::texture(texture_info.texture().index())
                 });
             }
 
@@ -136,7 +137,7 @@ fn import_materials(gltf: &Document) -> Vec<Material> {
                 })
             } else if metallic < 1.0 {
                 Material::Diffuse(material::Diffuse {
-                    color
+                    sampler: Sampler::color(color)
                 })
             } else {
                 Material::Metal(material::Metal {

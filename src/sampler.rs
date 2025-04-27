@@ -1,13 +1,36 @@
-use crate::primitive::Color;
+use crate::{primitive::Color, Scene};
 
 use glam::Vec2;
 use gltf::image::{Data, Format};
+
+#[derive(Debug)]
+pub enum Sampler {
+    Color(Color),
+    Texture(usize)
+}
 
 #[derive(Debug)]
 pub struct Texture {
     pub width: u32,
     pub height: u32,
     pub pixels: Vec<Color>
+}
+
+impl Sampler {
+    pub fn color(color: Color) -> Self {
+        Self::Color(color)
+    }
+
+    pub fn texture(texture_index: usize) -> Self {
+        Self::Texture(texture_index)
+    }
+
+    pub fn sample(&self, uv: Vec2, scene: &Scene) -> Color {
+        match self {
+            Sampler::Color(color) => *color,
+            Sampler::Texture(index) => scene.textures[*index].sample(uv),
+        }
+    }
 }
 
 impl Texture {
