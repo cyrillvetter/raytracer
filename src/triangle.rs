@@ -2,7 +2,7 @@ use crate::primitive::*;
 
 use glam::{Vec3A, Vec2};
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub struct Triangle {
     pub v1: Vertex,
     pub v2: Vertex,
@@ -11,14 +11,14 @@ pub struct Triangle {
     pub material_index: Option<usize>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub struct Vertex {
     pub position: Vec3A,
     pub normal: Vec3A,
     pub uv: Vec2,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub struct HitRecord {
     pub t: f32,
     pub point: Vec3A,

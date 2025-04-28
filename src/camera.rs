@@ -6,7 +6,7 @@ use crate::{
 use glam::{Vec3A, Affine3A};
 use fastrand::f32;
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub struct Camera {
     half_width: f32,
     half_height: f32,

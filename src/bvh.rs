@@ -15,7 +15,7 @@ pub struct Bvh {
     pub nodes_used: usize
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 struct BvhNode {
     aabb: Aabb,
     left_child: usize,
