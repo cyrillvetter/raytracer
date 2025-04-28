@@ -6,12 +6,9 @@ use crate::{
     material::Scatterable
 };
 
-use std::path::Path;
 use rayon::prelude::*;
 
 const FALLBACK_COLOR: Color = Color::rgb(1.0, 0.0, 1.0);
-
-static OUT_PATH: &str = "out/image.png";
 
 pub fn render_scene(scene: Scene) {
     let progress_bar = ProgressBar::new(IMAGE_HEIGHT as usize);
@@ -26,7 +23,7 @@ pub fn render_scene(scene: Scene) {
         });
 
     progress_bar.end();
-    save_png(Path::new(OUT_PATH), IMAGE_WIDTH, IMAGE_HEIGHT, pixels);
+    save_png(&scene.name, IMAGE_WIDTH, IMAGE_HEIGHT, pixels);
 }
 
 fn render_line(pixels: &mut [u32], y: u32, scene: &Scene, samples: usize) {

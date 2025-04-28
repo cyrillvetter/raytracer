@@ -1,10 +1,16 @@
 use std::{
-    path::Path,
+    path::PathBuf,
     fs::File,
     io::BufWriter
 };
 
-pub fn save_png(out_path: &Path, width: u32, height: u32, pixels: Vec<u32>) {
+static OUT_PATH: &str = "out/";
+
+pub fn save_png(image_name: &str, width: u32, height: u32, pixels: Vec<u32>) {
+    let mut out_path = PathBuf::new();
+    out_path.push(OUT_PATH);
+    out_path.push(format!("{}.png", image_name));
+
     let file = File::create(out_path).unwrap();
     let w = BufWriter::new(file);
 

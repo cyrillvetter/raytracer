@@ -19,6 +19,7 @@ use glam::{Vec3A, Vec3, Vec2, Quat, Affine3A};
 
 #[derive(Debug)]
 pub struct Scene {
+    pub name: String,
     pub camera: Camera,
     pub bvh: Bvh,
     pub materials: Vec<Material>,
@@ -31,6 +32,7 @@ impl Scene {
         let triangles = import_triangles(&gltf, &buffers);
 
         Scene {
+            name: path.file_stem().map_or("image", |s| s.to_str().unwrap()).to_owned(),
             camera: import_camera(&gltf),
             bvh: Bvh::new(triangles),
             materials: import_materials(&gltf),
