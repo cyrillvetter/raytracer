@@ -38,14 +38,13 @@ fn main() {
 
 fn pick_scene_path() -> PathBuf {
     let paths = read_dir(SCENES_PATH).expect("No scenes found");
-    let scene_paths: Vec<PathBuf> = paths
-        .filter_map(|res| res.ok())
-        .map(|dir_entry| dir_entry.path())
-        .filter_map(|path| path
+    let mut scene_paths: Vec<PathBuf> = paths
+        .filter_map(|res| res.ok().map(|dir| dir.path()))
+        .filter(|path| path
             .extension()
-            .map_or(false, |ext| ext == "glb")
-            .then_some(path))
+            .is_some_and(|ext| ext == "glb"))
         .collect();
+    scene_paths.sort_unstable();
 
     if scene_paths.is_empty() {
         panic!("No scenes found.");
