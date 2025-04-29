@@ -30,16 +30,16 @@ fn main() {
     now = Instant::now();
     render_scene(scene);
     let render_elapsed = now.elapsed();
+
     statistics.add_str("Render time", format!("{:.2?}", render_elapsed));
     statistics.add_str("Total time", format!("{:.2?}", bvh_elapsed + render_elapsed));
-
     statistics.print();
 }
 
 fn pick_scene_path() -> PathBuf {
     let paths = read_dir(SCENES_PATH).expect("No scenes found");
     let mut scene_paths: Vec<PathBuf> = paths
-        .filter_map(|res| res.ok().map(|dir| dir.path()))
+        .filter_map(|res| res.ok().map(|entry| entry.path()))
         .filter(|path| path
             .extension()
             .is_some_and(|ext| ext == "glb"))

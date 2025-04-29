@@ -15,7 +15,7 @@ pub struct Triangle {
 pub struct Vertex {
     pub position: Vec3A,
     pub normal: Vec3A,
-    pub uv: Vec2,
+    pub uv: Option<Vec2>,
 }
 
 #[derive(Debug)]
@@ -23,7 +23,7 @@ pub struct HitRecord {
     pub t: f32,
     pub point: Vec3A,
     pub normal: Vec3A,
-    pub uv: Vec2,
+    pub uv: Option<Vec2>,
     pub front_face: bool,
     pub material_index: Option<usize>,
 }
@@ -75,7 +75,7 @@ impl Triangle {
         let point = ray.at(t);
         let barycentric = self.get_barycentric_coordinates(point);
 
-        let uv = self.v1.uv * barycentric.x + self.v2.uv * barycentric.y + self.v3.uv * barycentric.z;
+        let uv = self.v1.uv.map(|uv1| uv1 * barycentric.x + self.v2.uv.unwrap() * barycentric.y + self.v3.uv.unwrap() * barycentric.z);
         let mut normal = (self.v1.normal * barycentric.x + self.v2.normal * barycentric.y + self.v3.normal * barycentric.z).normalize();
 
         let mut front_face = true;
@@ -117,7 +117,7 @@ impl Triangle {
 }
 
 impl Vertex {
-    pub const fn new(position: Vec3A, normal: Vec3A, uv: Vec2) -> Self {
+    pub const fn new(position: Vec3A, normal: Vec3A, uv: Option<Vec2>) -> Self {
         Self { position, normal, uv }
     }
 }
