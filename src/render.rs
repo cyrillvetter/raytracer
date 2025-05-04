@@ -11,14 +11,14 @@ use rayon::prelude::*;
 const FALLBACK_COLOR: Color = Color::rgb(1.0, 0.0, 1.0);
 
 pub fn render_scene(scene: Scene) {
-    let progress_bar = ProgressBar::new(IMAGE_HEIGHT as usize);
-    let mut pixels = vec![0; (IMAGE_WIDTH * IMAGE_HEIGHT) as usize];
-    let bands: Vec<(usize, &mut [u32])> = pixels.chunks_mut(IMAGE_WIDTH as usize).enumerate().collect();
+    let progress_bar = ProgressBar::new(IMAGE_HEIGHT);
+    let mut pixels = vec![0; IMAGE_WIDTH * IMAGE_HEIGHT];
+    let bands: Vec<(usize, &mut [u32])> = pixels.chunks_mut(IMAGE_WIDTH).enumerate().collect();
 
     bands
         .into_par_iter()
         .for_each(|(y, band)| {
-            render_line(band, y as u32, &scene, SAMPLES);
+            render_line(band, y, &scene, SAMPLES);
             progress_bar.update();
         });
 
@@ -26,12 +26,12 @@ pub fn render_scene(scene: Scene) {
     save_png(&scene.name, IMAGE_WIDTH, IMAGE_HEIGHT, pixels);
 }
 
-fn render_line(pixels: &mut [u32], y: u32, scene: &Scene, samples: usize) {
+fn render_line(pixels: &mut [u32], y: usize, scene: &Scene, samples: usize) {
     for x in 0..pixels.len() {
         let mut color = Color::BLACK;
 
         for _ in 0..samples {
-            let ray = scene.camera.ray_from(x as u32, y);
+            let ray = scene.camera.ray_from(x, y);
             color += trace_ray(ray, BOUNCES, &scene);
         }
 

@@ -1,5 +1,5 @@
-pub const IMAGE_WIDTH: u32 = 1920;
-pub const IMAGE_HEIGHT: u32 = 1080;
+pub const IMAGE_WIDTH: usize = 1920;
+pub const IMAGE_HEIGHT: usize = 1080;
 
 pub const BOUNCES: f32 = 5.0;
 

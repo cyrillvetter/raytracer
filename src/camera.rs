@@ -32,7 +32,7 @@ impl Camera {
         }
     }
 
-    pub fn ray_from(&self, x: u32, y: u32) -> Ray {
+    pub fn ray_from(&self, x: usize, y: usize) -> Ray {
         let x_offset = f32() - 0.5;
         let y_offset = f32() - 0.5;
 
