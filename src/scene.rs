@@ -15,7 +15,7 @@ use gltf::{
     buffer::Data,
     camera::Projection::Perspective,
 };
-use glam::{Vec3A, Vec3, Vec2, Quat, Affine3A};
+use glam::{Vec3A, Vec3, Vec2, Affine3A, Mat4};
 
 #[derive(Debug)]
 pub struct Scene {
@@ -36,7 +36,7 @@ impl Scene {
             camera: import_camera(&gltf),
             bvh: Bvh::new(triangles),
             materials: import_materials(&gltf),
-            textures: import_textures(images)
+            textures: import_textures(&images)
         }
     }
 }
@@ -44,30 +44,32 @@ impl Scene {
 fn import_camera(gltf: &Document) -> Camera {
     gltf
         .nodes()
-        .find_map(|node| {
-            node.camera().map(|cam| {
-                let Perspective(persp) = cam.projection() else {
-                    panic!("Orthographic camera not supported");
-                };
+        .find_map(|node| node.camera().map(|cam| {
+            let Perspective(persp) = cam.projection() else {
+                panic!("Orthographic camera not supported");
+            };
 
-                let aspect_ratio = persp.aspect_ratio().unwrap_or((IMAGE_WIDTH as f32) / (IMAGE_HEIGHT as f32));
-                let (trans, rot, _) = node.transform().decomposed();
-                let transform = Affine3A::from_rotation_translation(Quat::from_array(rot), Vec3::from_array(trans));
+            let aspect_ratio = persp.aspect_ratio().unwrap_or((IMAGE_WIDTH as f32) / (IMAGE_HEIGHT as f32));
+            let transform = get_node_transform(&node);
 
-                Camera::new(
-                    aspect_ratio,
-                    persp.yfov(),
-                    transform
-                )
-            })
-        })
+            Camera::new(
+                aspect_ratio,
+                persp.yfov(),
+                transform
+            )
+        }))
         .expect("Cannot import camera")
 }
 
 fn import_triangles(gltf: &Document, buffers: &Vec<Data>) -> Vec<Triangle> {
     let mut triangles: Vec<Triangle> = Vec::new();
 
-    for mesh in gltf.meshes() {
+    for node in gltf.nodes() {
+        let Some(mesh) = node.mesh() else {
+            continue;
+        };
+        let transform = get_node_transform(&node);
+
         for primitive in mesh.primitives() {
             let reader = primitive.reader(|buffer| Some(&buffers[buffer.index()]));
             let positions: Vec<Vec3A> = reader.read_positions().unwrap().map(|a| a.into()).collect();
@@ -94,7 +96,11 @@ fn import_triangles(gltf: &Document, buffers: &Vec<Data>) -> Vec<Triangle> {
 
             let load_vertex = |i: usize| {
                 let idx = indices[i];
-                Vertex::new(positions[idx], normals[idx], uvs.as_ref().map(|u| u[idx]))
+
+                let position = transform.transform_point3a(positions[idx]);
+                let normal = transform.transform_vector3a(normals[idx]).normalize();
+
+                Vertex::new(position, normal, uvs.as_ref().map(|uv| uv[idx]))
             };
 
             for i in (0..indices.len()).step_by(3) {
@@ -151,6 +157,11 @@ fn import_materials(gltf: &Document) -> Vec<Material> {
         .collect()
 }
 
-fn import_textures(images: Vec<gltf::image::Data>) -> Vec<Texture> {
-    images.into_iter().map(|data| Texture::new(data)).collect()
+fn import_textures(images: &Vec<gltf::image::Data>) -> Vec<Texture> {
+    images.iter().map(|data| Texture::new(data)).collect()
+}
+
+fn get_node_transform(node: &gltf::Node) -> Affine3A {
+    let transform_matrix = Mat4::from_cols_array_2d(&node.transform().matrix());
+    Affine3A::from_mat4(transform_matrix)
 }

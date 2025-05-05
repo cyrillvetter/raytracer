@@ -32,7 +32,7 @@ impl Sampler {
 }
 
 impl Texture {
-    pub fn new(image_data: Data) -> Self {
+    pub fn new(image_data: &Data) -> Self {
         let pixels = image_data.pixels
             .chunks(channels_amount(image_data.format))
             .map(|p| Color::rgb_u8(p[0], p[1], p[2]).gamma_uncorrect())
