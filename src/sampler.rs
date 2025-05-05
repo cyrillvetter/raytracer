@@ -11,8 +11,8 @@ pub enum Sampler {
 
 #[derive(Debug)]
 pub struct Texture {
-    pub width: u32,
-    pub height: u32,
+    pub width: usize,
+    pub height: usize,
     pub pixels: Vec<Color>
 }
 
@@ -39,8 +39,8 @@ impl Texture {
             .collect();
 
         Self {
-            width: image_data.width,
-            height: image_data.height,
+            width: image_data.width as usize,
+            height: image_data.height as usize,
             pixels
         }
     }
@@ -49,7 +49,7 @@ impl Texture {
         let x = (uv.x.fract() * (self.width - 1) as f32).round() as usize;
         let y = (uv.y.fract() * (self.height - 1) as f32).round() as usize;
 
-        self.pixels[y * self.width as usize + x]
+        self.pixels[y * self.width + x]
     }
 }
 

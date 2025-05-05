@@ -1,7 +1,7 @@
 pub const IMAGE_WIDTH: usize = 1920;
 pub const IMAGE_HEIGHT: usize = 1080;
 
-pub const BOUNCES: f32 = 5.0;
+pub const BOUNCES: usize = 5;
 
 #[cfg(debug_assertions)]
 pub const SAMPLES: usize = 32;
