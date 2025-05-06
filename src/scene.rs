@@ -29,14 +29,18 @@ pub struct Scene {
 impl Scene {
     pub fn import(path: &Path) -> Self {
         let (gltf, buffers, images) = gltf::import(path).unwrap();
+
+        let materials = import_materials(&gltf);
+        let textures = import_textures(&images, &materials);
+
         let triangles = import_triangles(&gltf, &buffers);
 
         Scene {
             name: path.file_stem().map_or("image", |s| s.to_str().unwrap()).to_owned(),
             camera: import_camera(&gltf),
             bvh: Bvh::new(triangles),
-            materials: import_materials(&gltf),
-            textures: import_textures(&images)
+            materials,
+            textures
         }
     }
 }
@@ -157,8 +161,17 @@ fn import_materials(gltf: &Document) -> Vec<Material> {
         .collect()
 }
 
-fn import_textures(images: &Vec<gltf::image::Data>) -> Vec<Texture> {
-    images.iter().map(|data| Texture::new(data)).collect()
+fn import_textures(images: &Vec<gltf::image::Data>, materials: &Vec<Material>) -> Vec<Texture> {
+    let color_texture_indices: Vec<usize> = materials
+        .iter()
+        .filter_map(|mat| mat.get_color_texture_index())
+        .collect();
+
+    images
+        .iter()
+        .enumerate()
+        .map(|(i, data)| Texture::new(&data, color_texture_indices.contains(&i)))
+        .collect()
 }
 
 fn get_node_transform(node: &gltf::Node) -> Affine3A {

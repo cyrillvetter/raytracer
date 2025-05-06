@@ -20,6 +20,18 @@ pub enum Material {
     Emissive(Emissive),
 }
 
+impl Material {
+    pub fn get_color_texture_index(&self) -> Option<usize> {
+        use Material::*;
+        match self {
+            Diffuse(diffuse) => diffuse.color_sampler.texture_index(),
+            Metal(metal) => metal.color_sampler.texture_index(),
+            Glass(glass) => glass.color_sampler.texture_index(),
+            _ => None
+        }
+    }
+}
+
 impl Scatterable for Material {
     fn scatter(&self, ray: &Ray, hit_record: &HitRecord, scene: &Scene) -> (Option<Ray>, Color) {
         use Material::*;
