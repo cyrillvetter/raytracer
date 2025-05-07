@@ -24,10 +24,10 @@ struct BvhNode {
 }
 
 impl BvhNode {
-    fn new(first_prim: usize, prim_count: usize, triangles: &Vec<Triangle>) -> Self {
+    fn new(first_tri: usize, tri_count: usize, triangles: &Vec<Triangle>) -> Self {
         let mut aabb = Aabb::MAX;
 
-        for tri in &triangles[first_prim..first_prim+prim_count] {
+        for tri in &triangles[first_tri..first_tri+tri_count] {
             aabb.minimum = aabb.minimum.min(tri.v1.position);
             aabb.minimum = aabb.minimum.min(tri.v2.position);
             aabb.minimum = aabb.minimum.min(tri.v3.position);
@@ -39,8 +39,8 @@ impl BvhNode {
         Self {
             aabb,
             left_child: 0,
-            first_tri: first_prim,
-            tri_count: prim_count
+            first_tri,
+            tri_count
         }
     }
 
@@ -48,7 +48,7 @@ impl BvhNode {
         self.tri_count > 0
     }
 
-    fn evaluate_sh(&self, axis: usize, pos: f32, triangles: &Vec<Triangle>) -> f32 {
+    fn evaluate_sah(&self, axis: usize, pos: f32, triangles: &Vec<Triangle>) -> f32 {
         let mut left_box = Aabb::MAX;
         let mut right_box = Aabb::MAX;
 
@@ -174,7 +174,7 @@ impl Bvh {
             let scale = (bounds_max - bounds_min) / (SPACES as f32);
             for i in 1..SPACES {
                 let candidate_pos = bounds_min + (i as f32) * scale;
-                let cost = node.evaluate_sh(axis, candidate_pos, &self.triangles);
+                let cost = node.evaluate_sah(axis, candidate_pos, &self.triangles);
                 if cost < best_cost {
                     best_pos = candidate_pos;
                     best_axis = axis;

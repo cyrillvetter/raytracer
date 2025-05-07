@@ -1,3 +1,4 @@
+use std::io::{stdout, Write};
 use std::sync::atomic::{AtomicUsize, Ordering::SeqCst};
 
 const BAR_SIZE: usize = 20;
@@ -15,6 +16,8 @@ impl ProgressBar {
         };
 
         pb.update();
+        stdout().flush().unwrap();
+
         pb
     }
 
