@@ -81,7 +81,8 @@ impl BvhNode {
 impl Bvh {
     pub fn new(triangles: Vec<Triangle>) -> Self {
         let root = BvhNode::new(0, triangles.len(), &triangles);
-        let nodes = vec![root];
+        let mut nodes = Vec::with_capacity(triangles.len() * 2 - 1);
+        nodes.push(root);
 
         let mut bvh = Bvh {
             nodes,
