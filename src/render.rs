@@ -10,7 +10,7 @@ use rayon::prelude::*;
 
 const FALLBACK_COLOR: Color = Color::rgb(1.0, 0.0, 1.0);
 
-pub fn render_scene(scene: Scene) {
+pub fn render_scene(scene: &Scene) {
     let progress_bar = ProgressBar::new(IMAGE_HEIGHT);
     let mut pixels = vec![0; IMAGE_WIDTH * IMAGE_HEIGHT];
     let bands: Vec<(usize, &mut [u32])> = pixels.chunks_mut(IMAGE_WIDTH).enumerate().collect();
@@ -18,7 +18,7 @@ pub fn render_scene(scene: Scene) {
     bands
         .into_par_iter()
         .for_each(|(y, band)| {
-            render_line(band, y, &scene);
+            render_line(band, y, scene);
             progress_bar.update();
         });
 

@@ -6,7 +6,7 @@ use crate::{
 pub const ROOT_IDX: usize = 0;
 
 // Higher amount leads to better BVH at longer construction time.
-const SPACES: usize = 50;
+const SPACES: usize = 20;
 
 #[derive(Debug)]
 pub struct Bvh {
@@ -154,7 +154,6 @@ impl Bvh {
 
         nearest_triangle.map(|tri| tri.create_record(ray, nearest_dist))
     }
-
 
     fn subdivide(&mut self, node_idx: usize) {
         let node = &mut self.nodes[node_idx];

@@ -31,10 +31,12 @@ impl Color {
     }
 
     pub fn rgb_u8(r: u8, g: u8, b: u8) -> Self {
+        const DENOM: f32 = 255.0f32.recip();
+
         Self {
-            r: (r as f32) / 255.0,
-            g: (g as f32) / 255.0,
-            b: (b as f32) / 255.0
+            r: (r as f32) * DENOM,
+            g: (g as f32) * DENOM,
+            b: (b as f32) * DENOM
         }
     }
 

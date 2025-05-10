@@ -2,7 +2,7 @@ use crate::primitive::Ray;
 
 use glam::Vec3A;
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub struct Aabb {
     pub minimum: Vec3A,
     pub maximum: Vec3A

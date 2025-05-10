@@ -28,7 +28,7 @@ fn main() {
     statistics.add_str("BVH construction time", format!("{:.2?}", bvh_elapsed));
 
     now = Instant::now();
-    render_scene(scene);
+    render_scene(&scene);
     let render_elapsed = now.elapsed();
 
     statistics.add_str("Render time", format!("{:.2?}", render_elapsed));
