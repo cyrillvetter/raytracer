@@ -9,6 +9,7 @@ use crate::{
 use rayon::prelude::*;
 
 const FALLBACK_COLOR: Color = Color::rgb(1.0, 0.0, 1.0);
+const SAMPLES: usize = 8;
 
 pub fn render_scene(scene: &Scene) {
     let mut pixels = vec![0; IMAGE_WIDTH * IMAGE_HEIGHT];
@@ -25,9 +26,14 @@ pub fn render_scene(scene: &Scene) {
 
 fn render_line(pixels: &mut [u32], y: usize, scene: &Scene) {
     for (x, pixel) in pixels.iter_mut().enumerate() {
-        let ray = scene.camera.ray_from(x, y);
-        let color = trace_ray(ray, BOUNCES, &scene);
-        *pixel = color.gamma_correct().into_u32();
+        let mut color = Color::BLACK;
+
+        for _ in 0..SAMPLES {
+            let ray = scene.camera.ray_from(x, y);
+            color += trace_ray(ray, BOUNCES, scene);
+        }
+
+        *pixel = (color / SAMPLES as f32).gamma_correct().into_u32();
     }
 }
 
