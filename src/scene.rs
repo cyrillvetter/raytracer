@@ -165,7 +165,7 @@ fn import_materials(gltf: &Document) -> Vec<Material> {
                     _ => Sampler::Color(Color::rgb(0.0, pbr.roughness_factor(), 0.0))
                 };
 
-                Material::Phong(material::Phong {
+                Material::Diffuse(material::Diffuse {
                     color_sampler,
                     roughness_sampler
                 })

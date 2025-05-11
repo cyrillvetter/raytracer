@@ -9,7 +9,7 @@ use crate::{
 use rayon::prelude::*;
 
 const FALLBACK_COLOR: Color = Color::rgb(1.0, 0.0, 1.0);
-const SAMPLES: usize = 16;
+const SAMPLES: usize = 32;
 
 pub fn render_scene(scene: &Scene) {
     let mut pixels = vec![0; IMAGE_WIDTH * IMAGE_HEIGHT];
