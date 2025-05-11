@@ -3,12 +3,6 @@ pub const IMAGE_HEIGHT: usize = 1080;
 
 pub const BOUNCES: usize = 6;
 
-#[cfg(debug_assertions)]
-pub const SAMPLES: usize = 32;
-
-#[cfg(not(debug_assertions))]
-pub const SAMPLES: usize = 4096;
-
 mod render;
 pub use render::render_scene;
 
@@ -32,3 +26,6 @@ use bvh::Bvh;
 
 mod camera;
 use camera::Camera;
+
+mod light;
+use light::Light;

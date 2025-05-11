@@ -47,7 +47,7 @@ impl Color {
     }
 
     pub fn gamma_correct(self) -> Self {
-        let convert = |c: f32| {
+        let correct = |c: f32| {
             if c <= 0.0031308 {
                 return 12.92 * c;
             } else {
@@ -56,14 +56,14 @@ impl Color {
         };
 
         Self {
-            r: convert(self.r),
-            g: convert(self.g),
-            b: convert(self.b),
+            r: correct(self.r),
+            g: correct(self.g),
+            b: correct(self.b),
         }
     }
 
     pub fn gamma_uncorrect(self) -> Self {
-        let convert = |c: f32| {
+        let uncorrect = |c: f32| {
             if c <= 0.04045 {
                 c / 12.92
             } else {
@@ -72,9 +72,17 @@ impl Color {
         };
 
         Self {
-            r: convert(self.r),
-            g: convert(self.g),
-            b: convert(self.b),
+            r: uncorrect(self.r),
+            g: uncorrect(self.g),
+            b: uncorrect(self.b),
+        }
+    }
+
+    pub fn clamp(self) -> Self {
+        Self {
+            r: self.r.clamp(0.0, 1.0),
+            g: self.g.clamp(0.0, 1.0),
+            b: self.b.clamp(0.0, 1.0)
         }
     }
 }

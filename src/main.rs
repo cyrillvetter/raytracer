@@ -4,7 +4,7 @@ use std::io::stdin;
 use std::path::PathBuf;
 
 use raytracer::{
-    IMAGE_HEIGHT, IMAGE_WIDTH, SAMPLES, BOUNCES,
+    IMAGE_HEIGHT, IMAGE_WIDTH, BOUNCES,
     render_scene,
     scene::Scene, 
     util::Statistics
@@ -15,7 +15,6 @@ static SCENES_PATH: &str = "scenes/";
 fn main() {
     let mut statistics = Statistics::new();
     statistics.add_str("Resolution", format!("{}x{}", IMAGE_WIDTH, IMAGE_HEIGHT));
-    statistics.add("Samples", &SAMPLES);
     statistics.add("Bounces", &BOUNCES);
 
     let scene_path = pick_scene_path();

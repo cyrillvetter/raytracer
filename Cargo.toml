@@ -4,9 +4,8 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-fastrand = "2.3.0"
 glam = "0.30.0"
-gltf = { version = "1.4.1", features = ["KHR_materials_transmission"] }
+gltf = { version = "1.4.1", features = ["KHR_materials_transmission", "KHR_lights_punctual"] }
 png = "0.17.16"
 rayon = "1.10.0"
 

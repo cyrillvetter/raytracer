@@ -6,6 +6,7 @@ use crate::{
     Sampler,
     Camera,
     Bvh,
+    Light,
     Texture
 };
 
@@ -22,6 +23,7 @@ pub struct Scene {
     pub name: String,
     pub camera: Camera,
     pub bvh: Bvh,
+    pub lights: Vec<Light>,
     pub materials: Vec<Material>,
     pub textures: Vec<Texture>
 }
@@ -39,6 +41,7 @@ impl Scene {
             name: path.file_stem().map_or("image", |s| s.to_str().unwrap()).to_owned(),
             camera: import_camera(&gltf),
             bvh: Bvh::new(triangles),
+            lights: import_lights(&gltf),
             materials,
             textures
         }
@@ -63,6 +66,20 @@ fn import_camera(gltf: &Document) -> Camera {
             )
         }))
         .expect("Cannot import camera")
+}
+
+fn import_lights(gltf: &Document) -> Vec<Light> {
+    gltf.nodes()
+        .filter_map(|node| {
+            node.light().map(|light| {
+                Light::new(
+                    node.transform().decomposed().0.into(),
+                    light.color().into(),
+                    light.intensity() / 2000.0
+                )
+            })
+        })
+        .collect()
 }
 
 fn import_triangles(gltf: &Document, buffers: &Vec<Data>) -> Vec<Triangle> {
@@ -142,19 +159,19 @@ fn import_materials(gltf: &Document) -> Vec<Material> {
                     color: material.emissive_factor().into()
                 })
             } else if pbr.metallic_factor() < 1.0 {
-                Material::Diffuse(material::Diffuse {
-                    color_sampler
-                })
-            } else {
                 // Roughness values are samples from the G channel (https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html#_material_pbrmetallicroughness_metallicroughnesstexture).
                 let roughness_sampler = match pbr.metallic_roughness_texture() {
                     Some(texture_info) => Sampler::Texture(texture_info.texture().index()),
                     _ => Sampler::Color(Color::rgb(0.0, pbr.roughness_factor(), 0.0))
                 };
 
-                Material::Metal(material::Metal {
+                Material::Phong(material::Phong {
                     color_sampler,
                     roughness_sampler
+                })
+            } else {
+                Material::Metal(material::Metal {
+                    color_sampler
                 })
             }
         })

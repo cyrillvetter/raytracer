@@ -1,12 +1,11 @@
 use crate::{
     IMAGE_WIDTH, IMAGE_HEIGHT,
-    primitive::Ray,
+    primitive::Ray
 };
 
 use glam::{Vec3A, Affine3A};
-use fastrand::f32;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Camera {
     half_width: f32,
     half_height: f32,
@@ -33,11 +32,8 @@ impl Camera {
     }
 
     pub fn ray_from(&self, x: usize, y: usize) -> Ray {
-        let x_offset = f32() - 0.5;
-        let y_offset = f32() - 0.5;
-
-        let plane_x = ((x as f32) + x_offset - self.half_width) * self.meter_per_pixel;
-        let plane_y = (self.half_height - (y as f32) + y_offset) * self.meter_per_pixel;
+        let plane_x = ((x as f32) - self.half_width) * self.meter_per_pixel;
+        let plane_y = (self.half_height - (y as f32)) * self.meter_per_pixel;
 
         Ray::new(
             self.transform.translation,
