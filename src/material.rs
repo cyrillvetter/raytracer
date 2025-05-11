@@ -51,10 +51,9 @@ pub struct Diffuse {
 
 impl Scatterable for Diffuse {
     fn scatter(&self, _ray: &Ray, hit_record: &HitRecord, scene: &Scene) -> (Option<Ray>, Color) {
-        const ATTENUATION: f32 = 0.8;
         let ray_direction = (hit_record.normal + random_unit_vector()).normalize();
         let color = self.color_sampler.sample(hit_record.uv, scene);
-        (Some(Ray::new(hit_record.point + ray_direction * 1e-5, ray_direction)), color * ATTENUATION)
+        (Some(Ray::new(hit_record.point + ray_direction * 1e-5, ray_direction)), color)
     }
 }
 
