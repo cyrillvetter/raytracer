@@ -3,6 +3,8 @@ use std::fmt;
 
 use glam::Vec3;
 
+const GAMMA: f32 = 2.2;
+
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct Color {
     pub r: f32,
@@ -49,7 +51,7 @@ impl Color {
             if c <= 0.0031308 {
                 return 12.92 * c;
             } else {
-                return 1.055 * (c.powf(1.0 / 2.4)) - 0.055;
+                return 1.055 * (c.powf(1.0 / GAMMA)) - 0.055;
             }
         };
 
@@ -65,7 +67,7 @@ impl Color {
             if c <= 0.04045 {
                 c / 12.92
             } else {
-                ((c + 0.055) / 1.055).powf(2.4)
+                ((c + 0.055) / 1.055).powf(GAMMA)
             }
         };
 
