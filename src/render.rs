@@ -1,5 +1,5 @@
 use crate::{
-    IMAGE_WIDTH, IMAGE_HEIGHT, BOUNCES,
+    IMAGE_WIDTH, IMAGE_HEIGHT, BOUNCES, AA_SIZE,
     primitive::*,
     util::save_png,
     Scene,
@@ -25,9 +25,16 @@ pub fn render_scene(scene: &Scene) {
 
 fn render_line(pixels: &mut [u32], y: usize, scene: &Scene) {
     for (x, pixel) in pixels.iter_mut().enumerate() {
-        let ray = scene.camera.ray_from(x, y);
-        let color = trace_ray(ray, BOUNCES, &scene);
-        *pixel = color.gamma_correct().into_u32();
+        let mut color = Color::BLACK;
+
+        for x_offset in 0..AA_SIZE {
+            for y_offset in 0..AA_SIZE {
+                let ray = scene.camera.ray_from((x * AA_SIZE) + x_offset, (y * AA_SIZE) + y_offset);
+                color += trace_ray(ray, BOUNCES, &scene);
+            }
+        }
+
+        *pixel = (color / (AA_SIZE * AA_SIZE) as f32).gamma_correct().into_u32();
     }
 }
 

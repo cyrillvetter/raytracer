@@ -1,6 +1,5 @@
 use crate::{
-    IMAGE_WIDTH, IMAGE_HEIGHT,
-    primitive::Ray
+    primitive::Ray, AA_SIZE, IMAGE_HEIGHT, IMAGE_WIDTH
 };
 
 use glam::{Vec3A, Affine3A};
@@ -19,8 +18,8 @@ impl Camera {
     pub fn new(aspect_ratio: f32, y_fov: f32, transform: Affine3A) -> Self {
         let h = aspect_ratio.recip();
 
-        let pixel_height = IMAGE_HEIGHT as f32;
-        let pixel_width = IMAGE_WIDTH as f32;
+        let pixel_height = (IMAGE_HEIGHT * AA_SIZE) as f32;
+        let pixel_width = (IMAGE_WIDTH * AA_SIZE) as f32;
 
         Camera {
             half_width: pixel_width / 2.0,
