@@ -6,7 +6,7 @@ use crate::{
 pub const ROOT_IDX: usize = 0;
 
 // Higher amount leads to better BVH at longer construction time.
-const SPACES: usize = 20;
+const SPACES: usize = 10;
 
 #[derive(Debug)]
 pub struct Bvh {

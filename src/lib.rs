@@ -2,7 +2,7 @@ pub const IMAGE_WIDTH: usize = 1024;
 pub const IMAGE_HEIGHT: usize = 1024;
 
 pub const BOUNCES: usize = 6;
-pub const AA_SIZE: usize = 4;
+pub const AA_SIZE: usize = 1;
 
 mod render;
 pub use render::render_scene;
