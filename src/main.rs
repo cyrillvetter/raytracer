@@ -4,10 +4,10 @@ use std::io::stdin;
 use std::path::PathBuf;
 
 use raytracer::{
-    IMAGE_HEIGHT, IMAGE_WIDTH, SAMPLES, BOUNCES,
+    BOUNCES, IMAGE_HEIGHT, IMAGE_WIDTH, SAMPLES,
+    scene::Scene,
     render_scene,
-    scene::Scene, 
-    util::Statistics
+    util::{save_png, Statistics}
 };
 
 static SCENES_PATH: &str = "scenes/";
@@ -28,8 +28,10 @@ fn main() {
     statistics.add_str("BVH construction time", format!("{:.2?}", bvh_elapsed));
 
     now = Instant::now();
-    render_scene(&scene);
+    let pixels = render_scene(&scene);
     let render_elapsed = now.elapsed();
+
+    save_png(&scene.name, IMAGE_WIDTH, IMAGE_HEIGHT, pixels);
 
     statistics.add_str("Render time", format!("{:.2?}", render_elapsed));
     statistics.add_str("Total time", format!("{:.2?}", bvh_elapsed + render_elapsed));
