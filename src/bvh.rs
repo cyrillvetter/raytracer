@@ -1,3 +1,5 @@
+use std::f32;
+
 use crate::{
     primitive::{Aabb, Ray},
     triangle::{Triangle, HitRecord}
@@ -124,19 +126,18 @@ impl Bvh {
                 continue;
             }
 
-            let child1 = &self.nodes[node.left_child];
-            let child2 = &self.nodes[node.left_child + 1];
+            let mut child1 = &self.nodes[node.left_child];
+            let mut child2 = &self.nodes[node.left_child + 1];
 
-            let dist1 = child1.aabb.hit(ray).and_then(|d| (d < nearest_dist).then_some(d));
-            let dist2 = child2.aabb.hit(ray).and_then(|d| (d < nearest_dist).then_some(d));
+            let mut dist1 = child1.aabb.hit(ray, nearest_dist);
+            let mut dist2 = child2.aabb.hit(ray, nearest_dist);
 
-            let ((near_dist, near_child), (far_dist, far_child)) = if dist1.unwrap_or(f32::INFINITY) > dist2.unwrap_or(f32::INFINITY) {
-                ((dist2, child2), (dist1, child1))
-            } else {
-                ((dist1, child1), (dist2, child2))
-            };
+            if dist1 > dist2 {
+                std::mem::swap(&mut dist1, &mut dist2);
+                std::mem::swap(&mut child1, &mut child2);
+            }
 
-            if near_dist.is_none() {
+            if dist1 == f32::INFINITY {
                 if stack_pointer == 0 {
                     break;
                 } else {
@@ -144,9 +145,9 @@ impl Bvh {
                     node = stack[stack_pointer];
                 }
             } else {
-                node = near_child;
-                if far_dist.is_some() {
-                    stack[stack_pointer] = far_child;
+                node = child1;
+                if dist2 != f32::INFINITY {
+                    stack[stack_pointer] = child2;
                     stack_pointer += 1;
                 }
             }
@@ -158,7 +159,7 @@ impl Bvh {
     fn subdivide(&mut self, node_idx: usize) {
         let node = &mut self.nodes[node_idx];
 
-        let mut best_axis = 5;
+        let mut best_axis = 3;
         let mut best_pos = 0.0;
         let mut best_cost = f32::INFINITY;
 
