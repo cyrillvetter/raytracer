@@ -1,4 +1,3 @@
-
 use crate::{
     primitive::{Aabb, Ray},
     triangle::{Triangle, HitRecord}

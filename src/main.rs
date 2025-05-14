@@ -1,11 +1,13 @@
-use std::time::Instant;
-use std::fs::read_dir;
-use std::io::stdin;
-use std::path::PathBuf;
+use std::{
+    time::Instant,
+    fs::read_dir,
+    io::stdin,
+    path::PathBuf
+};
 
 use raytracer::{
     BOUNCES, IMAGE_HEIGHT, IMAGE_WIDTH, SAMPLES,
-    scene::Scene,
+    Scene,
     render_scene,
     util::{save_png, Statistics}
 };
@@ -14,7 +16,7 @@ static SCENES_PATH: &str = "scenes/";
 
 fn main() {
     let mut statistics = Statistics::new();
-    statistics.add_str("Resolution", format!("{}x{}", IMAGE_WIDTH, IMAGE_HEIGHT));
+    statistics.add_str("Resolution", &format!("{}x{}", IMAGE_WIDTH, IMAGE_HEIGHT));
     statistics.add("Samples", &SAMPLES);
     statistics.add("Bounces", &BOUNCES);
 
@@ -25,7 +27,7 @@ fn main() {
     let bvh_elapsed = now.elapsed();
     statistics.add("Triangles", &scene.bvh.triangles.len());
     statistics.add("BVH nodes", &scene.bvh.nodes_used);
-    statistics.add_str("BVH construction time", format!("{:.2?}", bvh_elapsed));
+    statistics.add_str("Scene construction time", &format!("{:.2?}", bvh_elapsed));
 
     now = Instant::now();
     let pixels = render_scene(&scene);
@@ -33,8 +35,8 @@ fn main() {
 
     save_png(&scene.name, IMAGE_WIDTH, IMAGE_HEIGHT, pixels);
 
-    statistics.add_str("Render time", format!("{:.2?}", render_elapsed));
-    statistics.add_str("Total time", format!("{:.2?}", bvh_elapsed + render_elapsed));
+    statistics.add_str("Render time", &format!("{:.2?}", render_elapsed));
+    statistics.add_str("Total time", &format!("{:.2?}", bvh_elapsed + render_elapsed));
     statistics.print();
 }
 
