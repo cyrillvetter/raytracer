@@ -1,3 +1,4 @@
+use std::time::Instant;
 use std::f32;
 
 use crate::{
@@ -8,7 +9,7 @@ use crate::{
 pub const ROOT_IDX: usize = 0;
 
 // Higher amount leads to better BVH at longer construction time.
-const SPACES: usize = 10;
+const SPACES: usize = 4;
 
 #[derive(Debug)]
 pub struct Bvh {
