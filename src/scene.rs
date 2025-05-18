@@ -1,6 +1,5 @@
 use crate::{
     IMAGE_WIDTH, IMAGE_HEIGHT,
-    primitive::Color,
     triangle::{Triangle, Vertex},
     material, Material,
     Sampler,
@@ -146,15 +145,8 @@ fn import_materials(gltf: &Document) -> Vec<Material> {
                     color_sampler
                 })
             } else {
-                // Roughness values are samples from the G channel (https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html#_material_pbrmetallicroughness_metallicroughnesstexture).
-                let roughness_sampler = match pbr.metallic_roughness_texture() {
-                    Some(texture_info) => Sampler::Texture(texture_info.texture().index()),
-                    _ => Sampler::Color(Color::rgb(0.0, pbr.roughness_factor(), 0.0))
-                };
-
                 Material::Metal(material::Metal {
                     color_sampler,
-                    roughness_sampler
                 })
             }
         })
