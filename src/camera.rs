@@ -15,7 +15,6 @@ pub struct Camera {
     transform: Affine3A
 }
 
-// TODO: Try to simplify the orthographic/perspective calculation.
 impl Camera {
     pub fn new(aspect_ratio: f32, y_fov: f32, transform: Affine3A) -> Self {
         let h = aspect_ratio.recip();

@@ -14,7 +14,7 @@ use gltf::{
     buffer::Data,
     camera::Projection::Perspective,
 };
-use glam::{Vec3A, Vec3, Vec2, Affine3A, Mat4};
+use glam::{Vec3A, Vec2, Affine3A, Mat4};
 
 #[derive(Debug)]
 pub struct Scene {
@@ -84,10 +84,9 @@ fn import_triangles(gltf: &Document, buffers: &Vec<Data>) -> Vec<Triangle> {
                     .map(|a| a.into())
                     .collect());
 
-            // TODO: Remove into_32 to avoid casting twice.
             let indices: Vec<usize> = reader
                 .read_indices()
-                .expect("No indices found")
+                .unwrap()
                 .into_u32()
                 .map(|i| i as usize)
                 .collect();
@@ -136,7 +135,7 @@ fn import_materials(gltf: &Document) -> Vec<Material> {
                 Material::Glass(material::Glass {
                     color_sampler
                 })
-            } else if Into::<Vec3>::into(material.emissive_factor()).length_squared() > 0.0 {
+            } else if material.emissive_factor().iter().any(|v| *v > 0.0) {
                 Material::Emissive(material::Emissive {
                     color: material.emissive_factor().into()
                 })

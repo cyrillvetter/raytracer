@@ -3,6 +3,8 @@ use crate::{
     triangle::{Triangle, HitRecord}
 };
 
+use std::ops::Range;
+
 pub const ROOT_IDX: usize = 0;
 
 // Higher amount leads to better BVH at longer construction time.
@@ -46,6 +48,10 @@ impl BvhNode {
 
     fn is_leaf(&self) -> bool {
         self.tri_count > 0
+    }
+
+    fn tri_range(&self) -> Range<usize> {
+        self.first_tri..self.first_tri+self.tri_count
     }
 
     fn evaluate_sah(&self, axis: usize, pos: f32, triangles: &Vec<Triangle>) -> f32 {
@@ -100,15 +106,15 @@ impl Bvh {
         let mut stack_pointer = 0;
 
         let mut nearest_dist = f32::INFINITY;
-        let mut nearest_triangle: Option<&Triangle> = None;
+        let mut nearest_tri: Option<&Triangle> = None;
 
         loop {
             if node.is_leaf() {
-                for triangle in &self.triangles[node.first_tri..node.first_tri+node.tri_count] {
-                    match triangle.hit(&ray) {
+                for tri in &self.triangles[node.tri_range()] {
+                    match tri.hit(ray) {
                         Some(dist) if dist < nearest_dist => {
                             nearest_dist = dist;
-                            nearest_triangle = Some(triangle);
+                            nearest_tri = Some(tri);
                         },
                         _ => ()
                     }
@@ -151,7 +157,7 @@ impl Bvh {
             }
         }
 
-        nearest_triangle.map(|tri| tri.create_record(ray, nearest_dist))
+        nearest_tri.map(|tri| tri.create_record(ray, nearest_dist))
     }
 
     fn subdivide(&mut self, node_idx: usize) {

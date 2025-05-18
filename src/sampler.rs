@@ -20,13 +20,9 @@ impl Sampler {
     pub fn sample(&self, uv: Option<Vec2>, scene: &Scene) -> Color {
         match self {
             Sampler::Color(color) => *color,
-            Sampler::Texture(index) => {
-                let Some(uv) = uv else {
-                    panic!("Missing uv coordinates required for texture sampling");
-                };
-
-                scene.textures[*index].sample(uv)
-            }
+            Sampler::Texture(index) => scene
+                .textures[*index]
+                .sample(uv.expect("Missing uv coordinates required for texture sampling"))
         }
     }
 

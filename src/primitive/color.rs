@@ -47,7 +47,7 @@ impl Color {
     }
 
     pub fn gamma_correct(self) -> Self {
-        let convert = |c: f32| {
+        let correct = |c: f32| {
             if c <= 0.0031308 {
                 return 12.92 * c;
             } else {
@@ -56,14 +56,14 @@ impl Color {
         };
 
         Self {
-            r: convert(self.r),
-            g: convert(self.g),
-            b: convert(self.b),
+            r: correct(self.r),
+            g: correct(self.g),
+            b: correct(self.b),
         }
     }
 
     pub fn gamma_uncorrect(self) -> Self {
-        let convert = |c: f32| {
+        let uncorrect = |c: f32| {
             if c <= 0.04045 {
                 c / 12.92
             } else {
@@ -72,9 +72,9 @@ impl Color {
         };
 
         Self {
-            r: convert(self.r),
-            g: convert(self.g),
-            b: convert(self.b),
+            r: uncorrect(self.r),
+            g: uncorrect(self.g),
+            b: uncorrect(self.b),
         }
     }
 }
@@ -95,6 +95,12 @@ impl From<Vec3> for Color {
     }
 }
 
+impl fmt::Display for Color {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "R: {:.2}, G: {:.2}, B: {:.2}", self.r, self.g, self.b)
+    }
+}
+
 impl From<[f32; 4]> for Color {
     fn from(a: [f32; 4]) -> Self {
         Color::rgb(a[0], a[1], a[2])
@@ -104,12 +110,6 @@ impl From<[f32; 4]> for Color {
 impl From<[f32; 3]> for Color {
     fn from(a: [f32; 3]) -> Self {
         Color::rgb(a[0], a[1], a[2])
-    }
-}
-
-impl fmt::Display for Color {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "R: {:.2}, G: {:.2}, B: {:.2}", self.r, self.g, self.b)
     }
 }
 
