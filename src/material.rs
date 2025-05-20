@@ -92,7 +92,6 @@ pub struct Metal {
 
 impl Scatterable for Metal {
     fn scatter(&self, ray: &Ray, hit_record: &HitRecord, scene: &Scene) -> (Option<Ray>, Color) {
-        // Roughness values are samples from the G channel (https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html#_material_pbrmetallicroughness_metallicroughnesstexture).
         let reflection_dir = ray.direction.reflect(hit_record.normal).normalize();
         let color = self.color_sampler.sample(hit_record.uv, scene);
         (Some(Ray::new(hit_record.point + reflection_dir * 1e-5, reflection_dir)), color)

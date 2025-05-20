@@ -1,4 +1,3 @@
-use std::time::Instant;
 use std::f32;
 
 use crate::{
