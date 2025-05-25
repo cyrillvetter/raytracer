@@ -23,7 +23,6 @@ pub fn render_scene(scene: &Scene) -> Vec<u32> {
         });
 
     progress_bar.end();
-
     pixels
 }
 
@@ -41,7 +40,7 @@ fn render_line(pixels: &mut [u32], y: usize, scene: &Scene) {
 }
 
 fn trace_ray(ray: Ray, depth: usize, scene: &Scene) -> Color {
-    if depth <= 0 {
+    if depth == 0 {
         return Color::BLACK;
     }
 

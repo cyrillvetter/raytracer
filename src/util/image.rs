@@ -14,7 +14,6 @@ pub fn save_png(image_name: &str, width: usize, height: usize, pixels: Vec<u32>)
     let file = File::create(out_path).unwrap();
     let w = BufWriter::new(file);
 
-    // TODO: Check these settings.
     let mut encoder = png::Encoder::new(w, width as u32, height as u32);
     encoder.set_color(png::ColorType::Rgb);
     encoder.set_depth(png::BitDepth::Eight);

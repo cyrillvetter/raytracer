@@ -19,8 +19,8 @@ impl Statistics {
         self.values.push_str(&format!(" {}{} |", value, " ".repeat(max_len - value_len)));
     }
 
-    pub fn add(&mut self, key: &str, value: &dyn Display) {
-        self.add_str(key, &format!("{}", value));
+    pub fn add(&mut self, key: &str, value: &impl Display) {
+        self.add_str(key, &value.to_string());
     }
 
     pub fn print(&self) {
