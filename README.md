@@ -1,8 +1,8 @@
-# Raytracer
+# Ray Tracer
 
 A Monte Carlo Ray Tracer (Path Tracer) written in Rust.
 
-This project was developed as an educational exploration of ray tracing and global illumination.
+This project was developed as an educational exploration of ray tracing and global illumination. The implementation is inspired by the book [Ray Tracing in One Weekend](https://raytracing.github.io/books/RayTracingInOneWeekend.html).
 
 ## Features
 
